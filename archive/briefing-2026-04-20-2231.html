@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 20/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Monday 20 April 2026</h1>
+      <div class="greeting">Good morning Nick, welcome to Monday, April 20th, 2026 — I hope you're enjoying your well-deserved leave day.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 22:19</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick / Charlotte - Introduction</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Prepare brief overview of your role and current priorities</li><li>Ask about Charlotte's background and objectives for the collaboration</li><li>Identify immediate next steps or follow-up actions needed</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Establish clear working relationship and communication preferences</li><li>Agree on initial priorities and timeline for collaboration</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical platform decision significantly overdue — needs immediate attention to unblock team progress.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR dependency blocking other organizational processes — quick administrative task to complete.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security-critical code review that's been pending — James is waiting on your feedback.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Holiday planning and bathroom completion both overdue — consider delegating or rescheduling to focus on work priorities.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Critical security PR review and API gateway decision both blocking team progress — prioritize these immediately after leave.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Org chart update to HR is straightforward but overdue — complete this week to unblock organizational processes.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 20 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">AWS Launches Amazon Bio Discovery to Speed AI Drug Development</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">pymnts.com</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Amazon Web Services has unveiled Amazon Bio Discovery, an AI-powered application designed to accelerate drug development. The platform offers scientists direct access to specialized AI models for biological research, potentially transforming pharmaceutical innovation timelines.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">Lantheus Holdings Inc Among Best Medical AI Stocks</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Yahoo Entertainment</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Lantheus Holdings Inc (NASDAQ:LNTH) is highlighted as one of the top medical AI investment opportunities. The company's shares have climbed approximately 23% year-to-date, reflecting growing investor confidence in medical AI applications.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">agent-diagnostics 0.8.1 Released</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Pypi.org</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A new behavioral taxonomy and annotation framework has been released for analyzing coding agent performance. The Agent Reliability Observatory helps understand why AI coding agents succeed or fail, providing valuable insights for improving automated development tools.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">Racecar Driver Dead at 66 After Seven-Car Crash</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">New York Post</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">BMW driver Juha Miettinen died following a seven-car crash during an endurance sports car race at Germany's Nurburgring Nordschleife circuit on Saturday. The incident highlights ongoing safety concerns in motorsport despite advances in protective technology.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">George Russell Returns to Karting Roots with Toto and Susie Wolff</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Motorsport.com</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">During Formula 1's break, George Russell revisited his karting origins, supporting young talent at South Garda Karting alongside Toto and Susie Wolff. The initiative demonstrates F1's commitment to nurturing the next generation of racing talent.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">Bayern Crowned Bundesliga Champions</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">101 Great Goals</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Bayern Munich secured another Bundesliga title in Sunday's European football action. This continues their domestic dominance in German football, representing one of the major title decisions across Europe's top leagues.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">India Cancels Plan to Place Biometric App on Smartphones</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">pymnts.com</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">India has abandoned plans requiring smartphone manufacturers to include the country's biometric ID app on devices. The decision follows opposition from major companies including Apple and Samsung, highlighting tensions between digital identity initiatives and tech industry resistance.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;">Solana Price Prediction: Can Solana Overtake Bitcoin?</div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">24/7 Wall St.</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Solana trades around $85, down 70% from its January 2025 all-time high, despite its network achieving usage records. Analysts examine whether SOL has potential to challenge Bitcoin's market position amid current cryptocurrency market dynamics.</div>
+    </div>
+
+  <div style="border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
