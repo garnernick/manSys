@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 19/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Sunday 19 April 2026</h1>
+      <div class="greeting">Good morning Nick, I hope you're enjoying your well-deserved leave this Sunday, 19th April 2026.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 11:57</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">This is significantly overdue and blocking platform modernisation progress.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR likely waiting on this for personnel planning and reporting.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">James Okafor is also waiting on written feedback for this same PR.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Use some leave time to finalize holiday plans and complete the bathroom project this week.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Both critical deliverables are overdue and need immediate attention when you return tomorrow.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">The org chart is a month overdue and likely blocking HR's planning activities.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
