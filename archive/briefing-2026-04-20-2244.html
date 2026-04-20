@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 20/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Monday 20 April 2026</h1>
+      <div class="greeting">Good morning Nick, welcome to Monday 20th April 2026 - hoping you have a refreshing day off.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 22:38</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick / Charlotte - Introduction</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Prepare brief background on current platform priorities and team structure</li><li>Ask about Charlotte's experience and immediate focus areas</li><li>Discuss communication preferences and meeting cadences going forward</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Establish clear working relationship and expectations</li><li>Identify Charlotte's key strengths and how they align with team needs</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical platform decision significantly overdue - prioritize immediate review and decision.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">Administrative task blocking HR processes - quick turnaround needed.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security enhancement waiting for final approval - coordinate with James on any remaining concerns.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Use leave day to finalize holiday planning and complete bathroom project this week.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Critical vendor decision and security PR both significantly overdue - immediate action required.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">HR org chart update needed urgently to unblock administrative processes.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 20 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.pymnts.com/amazon/2026/aws-launches-amazon-bio-discovery-to-speed-ai-drug-development/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">AWS Launches Amazon Bio Discovery to Speed AI Drug Development</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">pymnts.com</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Amazon Web Services has unveiled Amazon Bio Discovery, an AI-powered application designed to accelerate drug development. The platform offers scientists direct access to specialized AI models for biological research, representing AWS's significant push into healthcare AI infrastructure.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://finance.yahoo.com/sectors/healthcare/articles/why-lantheus-holdings-inc-lnth-205100222.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Here is Why Lantheus Holdings Inc (LNTH) Is Among the Best Medical AI Stocks to Invest In</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Yahoo Entertainment</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Lantheus Holdings is being highlighted as a top medical AI investment opportunity, with shares climbing roughly 23% year-to-date. The company appears to be benefiting from the growing intersection of medical imaging and artificial intelligence technologies.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://pypi.org/project/agent-diagnostics/0.8.1/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">agent-diagnostics 0.8.1</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Pypi.org</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A new diagnostic framework has been released for analyzing AI agent reliability and performance. The Agent Reliability Observatory provides behavioral taxonomy and annotation tools for understanding why coding agents succeed or fail in their tasks.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.ubergizmo.com/2026/04/google-and-gucci-smartglasses/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Google And Gucci Collaborate On Luxury AI-Enhanced Smart Glasses For 2027</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Ubergizmo</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Google is pivoting its smart eyewear strategy toward luxury fashion with a new Gucci collaboration. More than a decade after Google Glass failed mainstream adoption, this partnership aims to redefine smart glasses as desirable consumer accessories launching in 2027.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://japantoday.com/category/sports/liverpool-beat-everton-ahead-of-city-arsenal-showdown" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Man City beats Arsenal to seize control of title race; Liverpool wins</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Japan Today</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Manchester City defeated Arsenal 2-1 to take control of the Premier League title race, while Liverpool strengthened their Champions League qualification push. Arsenal's stumble comes at a crucial time after months of leading the table, with City now in the driving seat.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://japantoday.com/category/tech/ai-%27agent%27-fever-comes-with-lurking-security-threats" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">AI 'agent' fever comes with lurking security threats</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Japan Today</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The growing power of AI agents like OpenClaw is raising cybersecurity concerns among experts. While these systems promise to automate tasks and save time, their increasing capabilities are creating new potential attack vectors and security vulnerabilities.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://techcrunch.com/2026/04/19/openais-existential-questions/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">OpenAI's existential questions | TechCrunch</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">TechCrunch</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">TechCrunch discusses OpenAI's latest acquisitions and whether they address fundamental challenges facing the company. The analysis explores two major existential problems that OpenAI must solve to maintain its market position.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.sportingnews.com/us/darts/news/gerwyn-price-history-2026-european-darts-grand-prix-title/259595f1f5ea6a71dabd7cb9" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Gerwyn Price makes history with 2026 European Darts Grand Prix title win</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Sporting News</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Gerwyn Price has claimed a historic victory at the 2026 European Darts Grand Prix. Price has been in exceptional form recently, with this title win marking another significant milestone in his career.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://pypi.org/project/mmedia-deliverability/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">mmedia-deliverability added to PyPI</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Pypi.org</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://japantoday.com/category/sports/tottenham-reports-racist-abuse-of-defender-kevin-danso-to-police" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Tottenham reports racist abuse of defender Kevin Danso to police</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Japan Today</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://punchng.com/endrick-stars-as-lyon-dent-psgs-ligue-1-title-hopes/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Endrick stars as Lyon dent PSG's Ligue 1 title hopes</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">The Punch</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://japantoday.com/category/sports/liverpool-beat-everton-ahead-of-city-arsenal-showdown" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Manchester City 2-1 Arsenal</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">City now control the title race after Arsenal's months at the top</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Arsenal's wobble at crucial stage could prove decisive in championship race</li>
+          </ul>
+        </div>
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://eplindex.com/145488/player-ratings-ollie-watkins-scores-twice-as-aston-villa-beat-sunderland.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Aston Villa Villa win Sunderland</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Ollie Watkins' brace continues his strong goalscoring form this season</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Villa maintain their push for European qualification places</li>
+          </ul>
+        </div>
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Ligue 1</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://punchng.com/endrick-stars-as-lyon-dent-psgs-ligue-1-title-hopes/" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Lyon 2-1 PSG</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">PSG's title hopes suffer major blow in shock defeat</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Endrick's goal and assist showcase his rising star status</li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
