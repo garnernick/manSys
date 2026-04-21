@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 21/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Tuesday 21 April 2026</h1>
+      <div class="greeting">Good morning Nick, it's Tuesday 21st April 2026 - hope you're ready for a packed day of quarterly business reviews.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 22:17</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PEC Diagnostics - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review Q1 performance against targets and key metrics</li><li>Identify operational challenges and resource requirements</li><li>Discuss strategic priorities for Q2</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of divisional health and priorities</li><li>Agreement on Q2 action items and support needed</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PEC Screening - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Assess screening program performance and uptake rates</li><li>Review capacity planning and resource allocation</li><li>Evaluate technology roadmap and upgrade priorities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Alignment on screening strategy and investment priorities</li><li>Resolution of any capacity or operational bottlenecks</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mammo / AAA - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review mammography and AAA screening volumes</li><li>Discuss equipment utilization and maintenance schedules</li><li>Address any quality or compliance concerns</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Confirmation of service delivery standards</li><li>Clear plan for equipment and capacity optimization</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Vista - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Evaluate Vista platform performance and user adoption</li><li>Review integration challenges and technical roadmap</li><li>Assess training needs and user satisfaction</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Strategic direction for Vista platform development</li><li>Resolution of key technical or user experience issues</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:45</div>
+      <div class="duration">15m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Preventicum - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Quick review of preventive care program metrics</li><li>Address any urgent operational issues</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Confirmation of program health and immediate action items</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:30</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">LCS - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review lung cancer screening program performance</li><li>Discuss referral pathways and clinical outcomes</li><li>Evaluate technology and process improvements</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Strategic alignment on LCS program development</li><li>Clear priorities for clinical and operational excellence</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:15</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">DESP &amp; CHIS - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review data and intelligence service performance</li><li>Assess reporting quality and stakeholder satisfaction</li><li>Discuss technology infrastructure and analytics capabilities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Enhanced data strategy and reporting framework</li><li>Investment priorities for analytics and infrastructure</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Cardiac - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review cardiac screening and diagnostic services</li><li>Assess clinical pathways and patient outcomes</li><li>Discuss capacity and equipment requirements</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Optimized cardiac service delivery model</li><li>Clear equipment and capacity investment plan</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mobiles - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review mobile service deployment and utilization</li><li>Assess operational efficiency and route optimization</li><li>Discuss fleet management and maintenance strategies</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Improved mobile service efficiency and coverage</li><li>Strategic plan for fleet expansion or optimization</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical platform decision overdue - needs immediate attention to unblock development work</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR waiting on this for payroll and compliance purposes - simple but urgent administrative task</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security improvements blocked pending your review - team needs this merged to proceed</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Holiday plans and bathroom completion both need attention despite work demands today</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">API gateway decision and security PR review are blocking critical development work</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Updated org chart required for HR compliance - straightforward but urgent administrative task</div></div></div>
+  </div>
+  <div class="footer">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Tuesday 21 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.prnewswire.com/news-releases/six-london-nhs-trusts-move-to-sectras-enterprise-imaging-as-a-cloud-service-to-strengthen-cybersecurity-and-patient-care-302748345.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Six London NHS Trusts move to Sectra's enterprise imaging as a cloud service to strengthen cybersecurity and patient care</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">cision</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Sectra has signed a contract to deliver its enterprise imaging solution as a fully managed cloud service to six NHS Trusts in north central London. This move represents a significant shift towards cloud-based medical imaging infrastructure within the NHS, with cybersecurity and patient care improvements as key drivers.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.dailypost.co.uk/news/north-wales-news/gwynedd-dads-wish-granted-nhs-33807412" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Gwynedd dad's wish granted as NHS approves life-extending cancer drug</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">dailypost_uk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS has approved a life-extending cancer drug following advocacy by Huw Jones, a Gwynedd father who campaigned for wider availability after being given a year to live with his baby son. This represents a positive outcome for patient advocacy and access to innovative cancer treatments within the NHS system.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.chroniclelive.co.uk/news/uk-news/long-covid-symptoms-warning-doctors-33807081" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Long Covid symptoms warning as doctors urge three groups to get NHS booster jab</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">chroniclelive_co_uk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Medical professionals are recommending NHS booster vaccinations for three specific groups as a preventive measure against long Covid symptoms. With over two million people in the UK currently living with long Covid, this guidance represents ongoing efforts to manage the condition's long-term public health impact.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.chronicleonline.com/news/world/pakistan-presses-ahead-with-preparations-for-iran-us-talks-even-with-tehrans-participation-unclear/article_01b6ced8-0e24-5477-88dd-8f0b44f3d942.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Pakistan presses ahead with preparations for Iran-US talks even with Tehran's participation unclear</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">chronicleonline</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Pakistan is continuing preparations for a second round of Iran-US talks in Islamabad despite uncertainty over Tehran's participation. The diplomatic initiative comes as a fragile ceasefire hangs in the balance, representing a critical moment in Middle Eastern geopolitics.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.thestar.com.my/tech/tech-news/2026/04/21/uk-regulator-investigates-telegram-over-child-sexual-abuse-concerns" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">UK regulator investigates Telegram over child sexual abuse concerns</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thestar_my</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Britain's communications regulator has launched an investigation into Telegram following evidence of child sexual abuse material being shared on the platform. The investigation also covers concerns about teen chat sites being used by predators to groom children, marking a significant regulatory action against the messaging platform.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.timeslive.co.za/sport/soccer/2026-04-21-2026-world-cup-group-b-hosts-canada-might-progress-from-group-of-minnows/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">2026 WORLD CUP GROUP B | Hosts Canada might progress from Group of Minnows</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">timeslive</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Analysis suggests Canada has a reasonable chance of progressing from Group B in the 2026 World Cup, though they face challenges from Switzerland and Bosnia and Herzegovina. Qatar is also expected to be competitive, making it a potentially tight group for the co-hosts.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.globenewswire.com/fr/news-release/2026/04/21/3277666/28124/en/Pharmaceutical-Quality-Control-Release-Testing-Services-Market-Report-2026-Total-Revenue-to-Grow-by-Nearly-3-Billion-Over-2026-2030.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Pharmaceutical Quality Control Release Testing Services Market Report 2026: Total Revenue to Grow by Nearly $3 Billion Over 2026-2030</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">globenewswire_fr</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The pharmaceutical quality control testing market is projected to grow by nearly $3 billion between 2026-2030. Growth drivers include expanding cell and gene therapy pipelines, increased regulatory audits, and demand for faster batch release cycles, with AI and automation driving innovation in the sector.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://thebftonline.com/2026/04/21/oil-fields-of-alkebulan-with-with-juanita-sallah-the-golden-axis-2-why-the-gold-strategy-outlasts-the-geopolitical-panic/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Oil Fields of Alkebulan with with Juanita Sallah: The Golden Axis (2): Why the gold strategy outlasts the geopolitical panic</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thebftonline</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Analysis of how Ghana and Egypt are taking divergent approaches to gold strategy amid geopolitical uncertainty. While Egypt uses gold as a central bank hedge, Ghana is positioning itself as a sovereign commodity manager, reflecting different strategic approaches to economic resilience through gold reserves.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://menafn.com/1111010730/2-Axis-Piezo-Scanning-Stage-Delivers-Precision-Motion-For-Sharper-More-Stable-Imaging" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">2-Axis Piezo Scanning Stage Delivers Precision Motion For Sharper, More Stable Imaging</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">menafn</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="http://www.businesswire.com/news/home/20260420658752/en/Teledyne-e2v-Introduces-Caiman-a-Compact-Solution-for-Low-Light-Imaging/?feedref=JjAwJuNHiystnCoBq_hl-eAh7yh3ccNzLJZaxyWkP0mljpP0CpzuEOW8PSMzp0v37dI9_69nqXXndEkzoNy31peBvhKXN8xoKDPrCnMXhC58cMd5Jhr97vTYoLZQbGkSHGnYFEfW-VLubTIB9HxyrA%3D%3D" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Teledyne e2v Introduces Caiman, a Compact Solution for Low Light Imaging</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">businesswire</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailyrecord.co.uk/in-your-area/lanarkshire/lanarkshire-mental-health-nhs-failures-37044232" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Lanarkshire mental health NHS 'failures' laid bare during investigation</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailyrecord</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;color:#aaa;font-style:italic;">None</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://uk.sports.yahoo.com/news/west-ham-hold-precious-point-213538278.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">West Ham Draw Wolves</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">West Ham secure crucial point in their fight against relegation</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Result confirms Wolves relegation to Championship after disappointing season</li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
