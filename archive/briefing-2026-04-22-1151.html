@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 22/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Wednesday 22 April 2026</h1>
+      <div class="greeting">Good morning Nick, I hope you're ready for Wednesday 22nd April 2026 - quite a packed day of introductory calls and strategic sessions ahead.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 07:46</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">WFH</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">07:45</div>
+      <div class="duration">1h 30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Oliver Drop off</div>
+      <div class="meeting-location">InHealthWork</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Plan timing to avoid traffic delays</li><li>Confirm pickup arrangements for later</li><li>Check Oliver has everything needed for the day</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Smooth handoff with minimal disruption</li><li>Clear coordination for pickup timing</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:30</div>
+      <div class="duration">25m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">InHealth &amp; Microsoft Synch</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review current integration status and blockers</li><li>Align on upcoming milestone deliverables</li><li>Discuss any resource or timeline adjustments needed</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear next steps for both teams</li><li>Resolution of any immediate technical issues</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">People Manager Training: Stress Awareness</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Focus on practical tools for team stress recognition</li><li>Consider how to apply learnings to current team dynamics</li><li>Note strategies relevant to upcoming org changes</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Enhanced skills for supporting team wellbeing</li><li>Actionable approaches for stress prevention</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Ben Stanfield-Davis</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Understand Ben's background and current role</li><li>Explore potential collaboration opportunities</li><li>Assess alignment with InHealth's strategic direction</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear mutual understanding of capabilities</li><li>Decision on follow-up actions or next steps</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">InHealth / Axiologik - Kick Off Call</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Establish project scope and success criteria</li><li>Define roles, responsibilities and communication cadence</li><li>Identify key risks and mitigation strategies</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Aligned project charter and timeline</li><li>Clear governance structure established</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:30</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Cyber security: insurance kick-off session (see meeting agenda)</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review current security posture against insurance requirements</li><li>Identify gaps that need addressing for coverage</li><li>Establish timeline for compliance improvements</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear roadmap for insurance compliance</li><li>Understanding of coverage options and costs</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Matt Pridmore / Nick Garner</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Learn about Matt's expertise and experience</li><li>Discuss potential areas of mutual interest</li><li>Assess fit with InHealth's current needs</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Mutual understanding of backgrounds</li><li>Clear next steps if there's alignment</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Mike Sopel</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Understand Mike's professional background</li><li>Explore potential synergies with InHealth</li><li>Discuss any immediate collaboration opportunities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear picture of Mike's capabilities</li><li>Decision on future engagement</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">[Deep Work] Summary</div>
+      <div class="meeting-location">InHealthWork</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Synthesize insights from morning meetings</li><li>Progress overdue commitments where possible</li><li>Review and prioritize must-achieve items</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear action plan for outstanding items</li><li>Updated status on key deliverables</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">16:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Antony Keay</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Explore Antony's background and expertise</li><li>Identify potential collaboration areas</li><li>Assess strategic fit with InHealth priorities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Mutual understanding of capabilities</li><li>Clear follow-up plan if appropriate</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical platform decision that's been overdue for over a month.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR needs this for upcoming planning and resource allocation.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security improvement waiting for your review and approval.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Holiday and home completion deadlines approaching - both need immediate attention.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Critical security and vendor decisions are significantly overdue and blocking team progress.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Org chart update needed for HR planning - straightforward but time-sensitive.</div></div></div>
+  </div>
+  <div class="footer">
+
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Wednesday 22 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/accwirecq-2026-4-21-ai-portable-chest-x-ray-triage-device-market-to-reach-usd-900-million-by-2036-driven-by-tb-screening-expansion-and-ai-powered-point-of-care-diagnostics" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">AI Portable Chest X-ray Triage Device Market to Reach USD 900 Million by 2036, Driven by TB Screening Expansion and AI-Powered Point-of-Care Diagnostics</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The AI-powered portable chest X-ray market is projected to reach $900 million by 2036, driven by tuberculosis screening expansion and point-of-care diagnostics. These compact systems integrate artificial intelligence for real-time chest condition analysis and triage. The growth reflects increasing demand for portable diagnostic solutions that can provide immediate results in various healthcare settings.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/bizwire-2026-4-21-emids-unveils-healthcare-agentic-ai-suite-integrated-with-anthropic-at-the-emids-healthcare-summit" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Emids Unveils Healthcare Agentic AI Suite Integrated With Anthropic at the Emids Healthcare Summit</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Emids has launched production-ready agentic AI workflows built on Anthropic's Claude models, alongside their Pacca AI Agent Builder platform. This allows healthcare enterprises to design, deploy, and govern AI agents without building infrastructure from scratch. The move positions Emids at the forefront of healthcare AI execution, moving beyond pilot projects to scalable, outcome-driven solutions.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://medicalxpress.com/news/2026-04-advanced-imaging-uncovers-immune-cells.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Advanced imaging uncovers immune cells' changing role during glioblastoma invasion</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">medicalxpress</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Researchers from DZNE and University Hospital Bonn have used advanced microscopy to capture glioblastoma infiltration in living brain tissue. The study, conducted on mice with brain cancer similar to human glioblastoma, reveals how immune cells change their role during tumor invasion. This research provides new insights into the most aggressive form of brain cancer and its ability to spread beyond the main tumor site.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.planetf1.com/news/mercedes-fia-ban-technical-directive" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Banned Mercedes trick addressed, F1 2026 rule changes under microscope – roundup</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">planetf1</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The FIA has banned a Mercedes deployment trick that Kimi Antonelli admitted was 'not so safe.' The technical directive highlights ongoing scrutiny of the 2026 F1 rule changes. This development is part of broader discussions about the technical direction Formula 1 is taking with its upcoming regulation overhaul.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsportweek.com/2026/04/21/pato-oward-damns-mario-kart-f1/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Pato O'Ward issues damning verdict on 'Mario Kart' F1 with heightened IndyCar aims</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">motorsportweek</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">IndyCar driver Pato O'Ward has criticized F1's direction, calling it 'Mario Kart' due to what he sees as artificial elements in the 2026 regulations. O'Ward says he's no longer chasing F1 opportunities after falling out of love with the sport's current trajectory. Instead, he's focusing his ambitions on IndyCar where he feels the racing is more authentic.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.reuters.com/world/americas/mining-investors-jittery-about-politics-peru-vote-count-drags-analysts-say-2026-04-21/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Mining investors jittery about politics in Peru as vote count drags on, analysts say</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">reuters_com</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Investors in Peru's copper and gold mining sector are concerned about the prolonged presidential vote count, which has been slowed by irregularity allegations. Despite the political uncertainty, analysts expect the mining sector to weather the election with limited direct impact. Peru is a major global copper producer, making political stability important for international mining investments.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsportweek.com/2026/04/21/honda-issues-f1-update-with-pledge-to-enhance-ongoing-progress/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Honda issues F1 update with pledge to 'enhance' ongoing progress</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">motorsportweek</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Honda's trackside general manager Shintaro Orihara has provided an update on the Japanese manufacturer's efforts to improve after a difficult start to the F1 season. Honda is working to 'enhance' the improvements already made to their power units. The company is focusing on continuing the progress they've achieved so far in addressing their early-season performance issues.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://yorkshiretimes.co.uk/article/Rising-Global-Energy-Costs-Trigger-Rapid-Shift-Toward-Digital-Twin-Technology-As-" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Rising Global Energy Costs Trigger Rapid Shift Toward Digital Twin Technology As Businesses Face Unprecedented Travel Inflation</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">yorkshiretimes_uk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Surging fuel prices and restricted global mobility are forcing British businesses to adopt digital twin technology and virtual site access solutions. Yorkshire-based Apollo3D is advising companies to use virtualized tours to insulate against escalating energy costs. This represents a structural shift in how businesses operate, with virtual solutions becoming essential for cost management rather than just convenience.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.financialcontent.com/article/accwirecq-2026-4-21-vadzo-imaging-expands-usb-32-gen-1-camera-portfolio-with-integrated-9-axis-imu" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Vadzo Imaging Expands USB 3.2 Gen 1 Camera Portfolio with Integrated 9-Axis IMU</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">financialcontent</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.autosport.com/f1/news/video-what-makes-a-good-f1-driver-and-race-engineer-partnership/10814348/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Video: What makes a good F1 driver and race engineer partnership</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">autosport</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailyrecord.co.uk/news/politics/scottish-politics-today-labour-row-37049784" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Scottish politics today: Labour row with Reform UK 'ridiculous' and voters should scrutinise policies</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailyrecord</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+  
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
