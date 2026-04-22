@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 22/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+
+  /* ── Day Timeline ── */
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-hour-row { display: flex; padding-left: 0; margin-bottom: 2px; }
+  .tl-hour-label { font-size: 5.5pt; color: #ccc; font-family: monospace; flex: none; text-align: left; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting  { background: #2563eb; color: #fff; }
+  .tl-deep     { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free     { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-allday   { background: #f1f5f9; color: #64748b; border: 0.5px solid #e2e8f0; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Wednesday 22 April 2026</h1>
+      <div class="greeting">Good morning Nick, I hope you're having a restful day off this Wednesday, 22nd April 2026.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 12:11</div>
+  </div>
+  
+<div class="tl-wrap">
+  <div class="tl-section-title">Day at a Glance</div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Nick Garner on leave</span><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">WFH</span></div>
+  <div class="tl-outer">
+    <div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div>
+    <div class="tl-lane">
+      <div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div>
+      <div class="tl-block tl-personal" style="left:5.357%;width:10.714000000000002%;" title="Oliver Drop off"><span>Oliver Drop off</span></div><div class="tl-block tl-meeting" style="left:17.857%;width:2.975999999999999%;" title="InHealth &amp; Microsoft Synch"><span>InHealth &amp; Microsoft Synch</span></div><div class="tl-block tl-meeting" style="left:21.429%;width:7.142000000000003%;" title="People Manager Training: Stress Awareness"><span>People Manager Training: Stress Awareness</span></div><div class="tl-block tl-meeting" style="left:21.429%;width:3.5710000000000015%;" title="Intro call - Nick Garner / Ben Stanfield-Davis"><span>Intro call - Nick Garner / Ben Stanfield-Davis</span></div><div class="tl-block tl-meeting" style="left:28.571%;width:7.142999999999997%;" title="InHealth / Axiologik - Kick Off Call"><span>InHealth / Axiologik - Kick Off Call</span></div><div class="tl-block tl-meeting" style="left:39.286%;width:5.356999999999999%;" title="Cyber security: insurance kick-off session (see meeting agenda)"><span>Cyber security: insurance kick-off session (see meeting agenda)</span></div><div class="tl-block tl-meeting" style="left:46.429%;width:3.570999999999998%;" title="Intro call - Matt Pridmore / Nick Garner"><span>Intro call - Matt Pridmore / Nick Garner</span></div><div class="tl-block tl-meeting" style="left:53.571%;width:3.5720000000000027%;" title="Intro call - Nick Garner / Mike Sopel"><span>Intro call - Nick Garner / Mike Sopel</span></div><div class="tl-block tl-deep" style="left:57.143%;width:7.143000000000001%;" title="[Deep Work] Summary"><span>[Deep Work] Summary</span></div><div class="tl-block tl-meeting" style="left:64.286%;width:5.356999999999999%;" title="Intro call - Nick Garner / Antony Keay"><span>Intro call - Nick Garner / Antony Keay</span></div><div class="tl-block tl-free" style="left:16.071%;width:1.7859999999999978%;" title="Free time (15m)"><span>Free 15m</span></div><div class="tl-block tl-free" style="left:35.714%;width:3.5720000000000027%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:44.643%;width:1.7860000000000014%;" title="Free time (15m)"><span>Free 15m</span></div><div class="tl-block tl-free" style="left:50%;width:3.570999999999998%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:69.643%;width:8.927999999999997%;" title="Free time (1h 15m)"><span>Free 1h 15m</span></div>
+    </div>
+  </div>
+  <div class="tl-legend-row">
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div>
+  </div>
+  <div class="tl-summary-row">
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>8 meetings · 5h 25m</div>
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#7c3aed"></div>Deep work · 1h</div>
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#0891b2"></div>Personal · 1h 30m</div>
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 2h 45m</div>
+</div>
+</div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day</div>
+      <div class="duration">all day</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day</div>
+      <div class="duration">all day</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">WFH</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">07:45</div>
+      <div class="duration">1h 30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Oliver Drop off</div>
+      <div class="meeting-location">InHealthWork</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Ensure Oliver has everything needed for the day</li><li>Confirm pickup arrangements</li><li>Check if any school events or activities coming up</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Successful handoff with clear pickup plan</li><li>Oliver feels prepared and supported</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:30</div>
+      <div class="duration">25m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">InHealth &amp; Microsoft Synch</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review current Microsoft partnership deliverables</li><li>Discuss any blocking issues or support needs</li><li>Align on upcoming milestones and priorities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear action items for both teams</li><li>Resolved blockers and improved collaboration</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">People Manager Training: Stress Awareness</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Identify early warning signs of team stress</li><li>Learn practical intervention techniques</li><li>Discuss creating psychologically safe environments</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Enhanced ability to support team wellbeing</li><li>Actionable stress management strategies for the team</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Ben Stanfield-Davis</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Understand Ben's background and expertise</li><li>Explore potential collaboration opportunities</li><li>Discuss mutual connections and interests</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of potential working relationship</li><li>Next steps identified if there's mutual interest</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">InHealth / Axiologik - Kick Off Call</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Define project scope and success metrics</li><li>Establish communication cadence and key stakeholders</li><li>Review timeline and resource allocation</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Aligned project charter and expectations</li><li>Clear governance structure established</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:30</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Cyber security: insurance kick-off session (see meeting agenda)</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review current security posture and gaps</li><li>Understand insurance requirements and coverage options</li><li>Discuss compliance and audit readiness</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Risk assessment baseline established</li><li>Insurance strategy and next steps defined</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Matt Pridmore / Nick Garner</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Learn about Matt's professional background</li><li>Discuss potential synergies with InHealth's mission</li><li>Explore collaboration or partnership opportunities</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Mutual understanding of capabilities and interests</li><li>Decision on follow-up engagement</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Mike Sopel</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Understand Mike's expertise and current focus areas</li><li>Share InHealth's strategic priorities</li><li>Identify potential areas of mutual benefit</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear picture of collaboration potential</li><li>Next steps or follow-up actions agreed</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">[Deep Work] Summary</div>
+      <div class="meeting-location">InHealthWork</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review and synthesize key insights from today's meetings</li><li>Update project status and action items</li><li>Plan follow-up communications and next steps</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Consolidated view of day's progress</li><li>Clear action plan for tomorrow</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">16:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Intro call - Nick Garner / Antony Keay</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Explore Antony's background and current initiatives</li><li>Discuss InHealth's platform and technology focus</li><li>Assess potential for professional collaboration</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understanding of mutual value proposition</li><li>Clear next steps or follow-up plan</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical infrastructure decision that's significantly overdue and blocking platform modernisation efforts.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR needs this for compliance and planning purposes - quick win to clear from backlog.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security improvements are waiting and this aligns with the cyber security insurance session today.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Holiday plans and bathroom completion both overdue - consider addressing during time off today.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">API gateway decision and security PR review are critical blockers - both significantly overdue.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Org chart update is a quick administrative task that can be completed today.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Wednesday 22 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.thescottishsun.co.uk/health/16180040/nhs-hospital-repairs-risk-patients-staff/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NHS hospitals face major crisis as £16bn repair backlog leaves buildings crumbling and patients at risk</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thescottishsun</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">MPs warn that NHS hospitals with sub-standard concrete are 'on borrowed time' with repair plans already three years behind schedule. At least seven hospitals in England remain at serious risk of deterioration, highlighting the massive infrastructure challenges facing the health service.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNWVIxalR1bWtIeHdmWGJNQ0hhdVBQWWtPY0t4dThiQVNQQ1hsVE1yWEh5bS1rZ0tSLWdha3VEZnpXNDQyU0RzMGdvTWRNUDViMlFBMjBmd29WRHNuc1VEX3lhTnA1bzBXVkkxZmpKQ0xxVDRicmVBWGlPQnk3ckRMYnVCT1VjWHItQXRNeDFn?oc=5" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NHS could offer key health tests at home</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Telegraph</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS is exploring opportunities to provide key health tests directly in patients' homes. This shift towards home-based diagnostics could improve access and convenience while reducing pressure on hospital services.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.technologyreview.com/2026/04/21/1134945/inventor-recalls-eye-imaging-breakthrough/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Inventor recalls eye imaging breakthrough</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">technologyreview</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">David Huang reflects on inventing optical coherence tomography (OCT), now used in 40 million eye procedures annually. The noninvasive imaging technique revolutionized ophthalmology and demonstrates the impact of medical imaging innovation on patient care.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/accwirecq-2026-4-21-oteemo-launches-oteemo-axiomtm-enterprise-ai-delivery-framework-built-for-organizations-where-failure-is-not-an-option" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Oteemo Launches Oteemo AXIOM(TM): Enterprise AI Delivery Framework Built for Organizations Where Failure Is Not an Option</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">AI transformation specialists introduce a governed delivery framework specifically designed for regulated industries. The framework aims to accelerate enterprise AI adoption while maintaining compliance, security, and auditability standards.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.fox10phoenix.com/news/kash-patel-sues-atlantic-over-article-alleging-excessive-drinking-while-working" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Kash Patel sues The Atlantic over article alleging 'excessive drinking' while working</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">fox10phoenix</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">FBI Director Kash Patel has filed a $250 million lawsuit against The Atlantic magazine. Patel describes the article as a 'malicious hit piece' and is seeking significant damages for what he claims are false allegations about his conduct.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.thestar.com.my/tech/tech-news/2026/04/22/microsoft-cuts-xbox-game-pass-price-to-remove-039call-of-duty039-day-one-inclusions" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Microsoft cuts Xbox Game Pass price, to remove 'Call of Duty' day one inclusions</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thestar_my</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Microsoft has reduced the price of its Xbox Game Pass subscription service but will no longer include new Call of Duty games on launch day. This represents the first major strategic shift under new gaming boss Asha Sharma and could impact the competitive landscape in gaming subscriptions.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="http://www.memeorandum.com/260421/p129" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Vote Blue No Matter Who: Party Politics as Political Agency</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">memeorandum</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Analysis of American political party dynamics, contrasting what the author describes as 'a party of ordinary governance' with 'a personality cult party'. The piece examines how collective political action requires working together as co-partisans to effectively control state power.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="http://www.spectrumlocalnews.com/nys/buffalo/news/2026/04/21/state-prison-officials-are-grappling-with-a-crisis-behind-bars" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">State prison officials are grappling with a crisis behind bars</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">spectrumlocalnews</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">NY1 provides an exclusive look inside Green Haven Correctional Facility, one of New York State's largest prisons. The report examines ongoing challenges and crises facing state prison officials and the corrections system.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.enidnews.com/region/aktis-oncology-announces-presentation-of-first-clinical-imaging-and-dosimetry-data-for-aky-2519/article_6dcf688f-ddc1-510d-9ab4-02d0c4d5c3c9.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Aktis Oncology Announces Presentation of First Clinical Imaging and Dosimetry Data for AKY-2519</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">enidnews</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://hoodline.com/2026/04/north-philly-s-black-doctors-break-ground-on-new-imaging-lifeline/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">New Imaging Center Expands Access In North Philadelphia</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">hoodline</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://news.mit.edu/2026/tl-taylor-named-casbs-fellow-0421" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">T.L. Taylor named 2026-27 CASBS Fellow</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">mit</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.kbzk.com/news/local-news/major-projects-ahead-as-construction-season-nears-msu-including-west-side-houses-demolition" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Major Projects Ahead as Construction Season Nears MSU, Including West Side Houses Demolition</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">kbzk</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://www.sportsmole.co.uk/football/chelsea/news/that-doesnt-represent-me-rosenior-blames-chelsea-stars-for-brighton-defeat_596155.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Brighton 3-0 Chelsea</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Chelsea manager Liam Rosenior faces mounting pressure after heavy defeat extends poor run</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Result represents Chelsea's worst Premier League season in 114 years amid growing crisis</li>
+          </ul>
+        </div>
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Championship</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://www.skysports.com/football/news/12040/13534814/leicester-city-relegated-to-league-one-this-could-be-catastrophic-for-the-club" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Leicester City Relegated to League One Various opponents</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Dramatic fall from Premier League champions just 10 years ago to third tier</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Relegation could be catastrophic financially and operationally for the club</li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
