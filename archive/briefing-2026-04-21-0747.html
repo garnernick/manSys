@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 21/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 4px 0; border-bottom: 0.5px solid #eee; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Tuesday 21 April 2026</h1>
+      <div class="greeting">Good morning Nick, it's Tuesday 21st April 2026 - hoping you have a productive day of quarterly business reviews ahead.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 22:36</div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day (ongoing)</div>
+      
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner on leave</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PEC Diagnostics - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review Q1 revenue performance against targets</li><li>Discuss key operational challenges and resource needs</li><li>Identify strategic priorities for Q2</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of diagnostic service performance</li><li>Agreement on Q2 objectives and support needed</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PEC Screening - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Assess screening program uptake and efficiency metrics</li><li>Review technology integration progress</li><li>Address any capacity or staffing concerns</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Confirmation of screening targets on track</li><li>Resolution of any blocking issues</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mammo / AAA - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review mammography and AAA screening volumes</li><li>Discuss equipment utilisation and maintenance</li><li>Address patient experience feedback</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear view of service quality metrics</li><li>Action plan for any improvement areas</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:45</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Vista - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Evaluate Vista platform performance and user adoption</li><li>Review integration challenges with existing systems</li><li>Discuss roadmap alignment with business needs</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Agreement on Vista optimisation priorities</li><li>Clear timeline for outstanding integrations</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:30</div>
+      <div class="duration">15m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Preventicum - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Quick review of preventive care metrics</li><li>Address any urgent operational issues</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Confirmation service is meeting expectations</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:15</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">LCS - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review lung cancer screening program outcomes</li><li>Discuss referral pathways and turnaround times</li><li>Address capacity planning for anticipated demand</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of LCS performance</li><li>Agreement on capacity expansion plans</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">DESP &amp; CHIS - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review data exchange and health information system performance</li><li>Discuss cybersecurity and compliance status</li><li>Address integration priorities with other services</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Confirmation of system security and reliability</li><li>Clear roadmap for system enhancements</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Cardiac - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review cardiac screening and diagnostic volumes</li><li>Discuss clinical outcomes and patient pathways</li><li>Address equipment and staffing requirements</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understanding of cardiac service performance</li><li>Action plan for any capacity issues</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:30</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mobiles - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review mobile screening unit utilisation and routes</li><li>Discuss maintenance schedules and operational efficiency</li><li>Address community engagement and accessibility</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Optimised mobile service deployment strategy</li><li>Clear maintenance and operational plan</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical infrastructure decision that's significantly overdue - needs immediate attention.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">Required for HR processes and team clarity - quick administrative task.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security fix blocking other development work - James Okafor also awaiting feedback.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Holiday planning and bathroom completion both need urgent attention to meet end-of-month deadlines.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">API gateway decision and security PR merge are critical blockers requiring immediate resolution.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Org chart update to HR is a quick win that can be completed between meetings today.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Tuesday 21 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.prnewswire.com/news-releases/six-london-nhs-trusts-move-to-sectras-enterprise-imaging-as-a-cloud-service-to-strengthen-cybersecurity-and-patient-care-302748345.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Six London NHS Trusts move to Sectra's enterprise imaging as a cloud service to strengthen cybersecurity and patient care</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">cision</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Sectra has signed a major contract to provide enterprise imaging as a fully managed cloud service to six NHS Trusts in north central London. This move strengthens cybersecurity and enhances patient care through improved medical imaging capabilities. The deal represents a significant shift towards cloud-based imaging solutions in the NHS.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.dailypost.co.uk/news/north-wales-news/gwynedd-dads-wish-granted-nhs-33807412" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Gwynedd dad's wish granted as NHS approves life-extending cancer drug</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">dailypost_uk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS has approved a life-extending cancer drug following campaigning by Huw Jones, a Gwynedd father who was given just one year with his baby son. Jones had called for the drug to be made available for widespread use after his diagnosis. This represents a positive outcome for patient advocacy and access to innovative cancer treatments.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="http://www.businesswire.com/news/home/20260420658752/en/Teledyne-e2v-Introduces-Caiman-a-Compact-Solution-for-Low-Light-Imaging/?feedref=JjAwJuNHiystnCoBq_hl-eAh7yh3ccNzLJZaxyWkP0mljpP0CpzuEOW8PSMzp0v37dI9_69nqXXndEkzoNy31peBvhKXN8xoKDPrCnMXhC58cMd5Jhr97vTYoLZQbGkSHGnYFEfW-VLubTIB9HxyrA%3D%3D" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Teledyne e2v Introduces Caiman, a Compact Solution for Low Light Imaging</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">businesswire</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Teledyne e2v has launched the Caiman imaging module, a compact, lightweight solution for demanding low-light applications. Built around the OnyxMax sensor, it delivers high quantum efficiency and spatial resolution in near-infrared, with low noise performance for high sensitivity in conditions less than 1 mlx.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.planetf1.com/news/f1-2026-rule-changes-james-vowles-fia-sensible-updates" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">F1 2026 rule tweaks billed as 'sensible' ahead of Miami debut</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">planetf1</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">After driver concerns and FIA discussions, James Vowles has expressed encouragement about the agreed F1 2026 rule changes. The modifications are being described as 'sensible' updates ahead of their debut at the Miami Grand Prix.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsportweek.com/2026/04/21/martin-brundle-recalls-harsh-firing-that-ended-f1-career/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Martin Brundle recalls 'harsh' firing that ended F1 career</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">motorsportweek</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Sky Sports commentator Martin Brundle has revealed details about the end of his F1 driving career in 1996. He described being unceremoniously fired by Eddie Jordan as 'harsh', sharing previously untold details about how his Formula 1 career came to an abrupt end.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsport.com/f1/news/the-more-you-run-the-more-you-learn-how-f1s-april-break-is-impacting-ferrari/10814250/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">&quot;The more you run, the more you learn&quot; - how F1's break is impacting Ferrari</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">motorsport_en</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Formula 1's five-week break following the cancellation of Bahrain and Saudi Arabian GPs due to Middle East conflict has impacted teams differently. While fans waited, teams continued working on car development and upgrades for the upcoming Miami race. Ferrari is using this extended period to learn and prepare significant improvements.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://techbullion.com/the-role-of-technology-in-modern-plastic-surgery-practices/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The Role Of Technology In Modern Plastic Surgery Practices</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">techbullion</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The cosmetic medicine field has transformed dramatically over the past decade with new technological tools. These advances help doctors achieve previously impossible results while providing patients with safer procedures and faster recovery times. The technology integration has made the experience more comfortable for both practitioners and patients.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.newsletter.co.uk/business/how-customers-book-and-experience-travel-is-changing-northern-irelands-largest-independent-travel-agency-invests-ps100000-in-digital-technology-7023320" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">'How customers book and experience travel is changing': Northern Ireland's largest independent travel agency invests £100,000 in digital technology</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">newsletter</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Oasis Travel has invested £100,000 in digital technology to enhance the holiday experience. The investment includes a real-time travel app and dedicated concierge team, reflecting how customer booking and travel experiences are evolving in the digital age.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://menafn.com/1111010730/2-Axis-Piezo-Scanning-Stage-Delivers-Precision-Motion-For-Sharper-More-Stable-Imaging" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">2-Axis Piezo Scanning Stage Delivers Precision Motion For Sharper, More Stable Imaging</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">menafn</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.chroniclelive.co.uk/news/uk-news/long-covid-symptoms-warning-doctors-33807081" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Long Covid symptoms warning as doctors urge three groups to get NHS booster jab</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">chroniclelive_co_uk</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailyrecord.co.uk/in-your-area/lanarkshire/lanarkshire-mental-health-nhs-failures-37044232" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Lanarkshire mental health NHS 'failures' laid bare during investigation</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailyrecord</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxQaE1QSWpwVkExSl96cHdpRG1UWjdiRFRGc3d1MmlWRzBrUkJHeXVwZ0dvTHFXekhnSnQzM3ZfYlRIelNxS1FLcmRSRmFOSlF1enhIdDlCN3p6VDl1V3NGS1VpUHFvZnlEZUVIbmdEbTRQSVFKUUM4dTAxVTdCSVZhaGRZZUJBMFpjSlMtRTBEcFIxeHk1VzdMT25NemxPWVQzNGFremlPTUZyQ3c?oc=5" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">&quot;I want to return to Manchester City&quot; – Defender explains loan, growth and ambitions</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">google</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.express.co.uk/sport/tennis/2196473/tennis-live-sinner-alcaraz-djokovic-madrid-open" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Tennis LIVE: Jannik Sinner responds to Carlos Alcaraz injury as Djokovic eyes new sport</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">expresscouk</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.walesonline.co.uk/sport/dan-walker-calls-tv-sport-33807586" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Dan Walker calls in TV and sport stars as response to allegations leaves him stunned</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">walesonline</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://uk.sports.yahoo.com/news/west-ham-hold-precious-point-213538278.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">West Ham Draw Wolves</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">West Ham secure crucial point in their fight against relegation</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Result confirms Wolves relegation from the Premier League</li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>garnernick.github.io/manSys/briefing.html</span>
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
