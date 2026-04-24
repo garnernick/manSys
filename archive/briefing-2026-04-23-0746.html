@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 23/04/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+
+  /* ── Day Timeline ── */
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-hour-row { display: flex; padding-left: 0; margin-bottom: 2px; }
+  .tl-hour-label { font-size: 5.5pt; color: #ccc; font-family: monospace; flex: none; text-align: left; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting  { background: #2563eb; color: #fff; }
+  .tl-deep     { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free     { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-allday   { background: #f1f5f9; color: #64748b; border: 0.5px solid #e2e8f0; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Thursday 23 April 2026</h1>
+      <div class="greeting">Good morning Nick, it's Thursday 23rd April 2026 - wishing you a productive day ahead with your quarterly business reviews.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 07:46</div>
+  </div>
+  
+<div class="tl-wrap">
+  <div class="tl-section-title">Day at a Glance</div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Burnham Yard</span></div>
+  <div class="tl-outer">
+    <div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div>
+    <div class="tl-lane">
+      <div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div>
+      <div class="tl-block tl-meeting" style="left:14.286%;width:7.142999999999999%;" title="Endo - Quarterly Business Review"><span>Endo - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:21.429%;width:3.5710000000000015%;" title="Audiology - Quarterly Business Review"><span>Audiology - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:25%;width:7.143000000000001%;" title="Imaging Centres - Quarterly Business Review"><span>Imaging Centres - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:32.143%;width:14.286000000000001%;" title="CDCs - Quarterly Business Review"><span>CDCs - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:48.214%;width:5.356999999999999%;" title="Capital Projects - Quarterly Business Review"><span>Capital Projects - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:53.571%;width:3.5720000000000027%;" title="UOMRI - Quarterly Business Review"><span>UOMRI - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:57.143%;width:7.143000000000001%;" title="PET-CT - Quarterly Business Review"><span>PET-CT - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:85.714%;width:7.143000000000001%;" title="Weekly Call"><span>Weekly Call</span></div><div class="tl-block tl-free" style="left:10.714%;width:3.571999999999999%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:46.429%;width:1.7849999999999966%;" title="Free time (15m)"><span>Free 15m</span></div><div class="tl-block tl-free" style="left:64.286%;width:14.284999999999997%;" title="Free time (2h)"><span>Free 2h</span></div>
+    </div>
+  </div>
+  <div class="tl-legend-row">
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div>
+  </div>
+  <div class="tl-summary-row">
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>8 meetings · 7h 45m</div>
+  
+  
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 2h 45m</div>
+</div>
+</div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">all day</div>
+      <div class="duration">all day</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Burnham Yard</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Endo - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review Q1 performance against targets and identify key growth opportunities</li><li>Assess current operational challenges and resource requirements</li><li>Discuss strategic priorities for Q2 and upcoming initiatives</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of Endo division performance and blockers</li><li>Agreed action plan for Q2 priorities and resource allocation</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Audiology - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Evaluate patient volume trends and service delivery metrics</li><li>Discuss technology upgrades and equipment investment needs</li><li>Review staff capacity and training requirements</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Assessment of Audiology service performance and patient satisfaction</li><li>Investment priorities agreed for service improvement</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:30</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Imaging Centres - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Analyze imaging volumes and utilization rates across centres</li><li>Review AI integration progress and diagnostic accuracy improvements</li><li>Discuss expansion plans and new modality investments</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear picture of imaging capacity and performance metrics</li><li>Strategic roadmap for technology advancement and expansion</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:30</div>
+      <div class="duration">2h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">CDCs - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review CDC performance against national benchmarks</li><li>Assess patient pathway efficiency and wait times</li><li>Discuss integration opportunities with other services</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understanding of CDC operational effectiveness</li><li>Action plan for improving patient outcomes and efficiency</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:45</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Capital Projects - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review current project status, timelines and budget variances</li><li>Identify risks and mitigation strategies for ongoing projects</li><li>Prioritize upcoming capital investments and resource allocation</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear status update on all capital projects and risk assessment</li><li>Agreed priorities for Q2 capital expenditure and project pipeline</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">UOMRI - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Evaluate research collaboration outcomes and publication metrics</li><li>Review funding pipeline and grant application success rates</li><li>Discuss translation of research into clinical applications</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Assessment of research impact and commercial potential</li><li>Strategic plan for strengthening academic partnerships</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PET-CT - Quarterly Business Review</div>
+      <div class="meeting-location">Burnham Yard Daffodil.Room</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Review PET-CT utilization rates and referral patterns</li><li>Assess clinical outcomes and diagnostic accuracy metrics</li><li>Discuss capacity planning and potential service expansion</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understanding of PET-CT service performance and demand</li><li>Investment plan for capacity optimization and growth</li></ul></div></div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">19:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Weekly Call</div>
+      <div class="meeting-location">https://meet.google.com/nqc-utut-tww</div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Provide update on quarterly business review findings</li><li>Discuss key decisions and action items from today's sessions</li><li>Review upcoming priorities and resource needs</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Team alignment on quarterly review outcomes</li><li>Clear next steps and accountability for follow-up actions</li></ul></div></div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="task-title">Sign off API gateway vendor shortlist</td><td class="task-due">2026-03-16</td><td class="task-note">Critical decision overdue - review final vendor recommendations and approve selection.</td></tr><tr><td class="task-title">Send updated org chart to HR</td><td class="task-due">2026-03-16</td><td class="task-note">HR waiting for org structure changes to process team moves and reporting lines.</td></tr><tr><td class="task-title">Review and merge platform security PR #447</td><td class="task-due">2026-03-17</td><td class="task-note">Security enhancement ready for deployment - review and approve merge.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="task-title">Share the Q4 retrospective deck from the exec offsite</td><td class="task-due">Priya Sharma</td><td class="task-note">Was due 2026-03-10</td></tr><tr><td class="task-title">Provide written feedback on the platform security PR before it goes to merge</td><td class="task-due">James Okafor</td><td class="task-note">Was due 2026-03-13</td></tr><tr><td class="task-title">Confirm whether the partnership proposal has been reviewed by their legal team</td><td class="task-due">Tom Hendricks</td><td class="task-note">Was due 2026-03-12</td></tr><tr><td class="task-title">Create intro email</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-03-22</td></tr><tr><td class="task-title">Commitment to CEO</td><td class="task-due">Geoff Searle</td><td class="task-note">Was due 2026-04-13</td></tr><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Focus on completing bathroom project and finalizing holiday plans after today's intensive meeting schedule.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">API gateway vendor decision and security PR approval both critically overdue - prioritize completion today.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Org chart update needed urgently for HR to process pending team changes.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Thursday 23 April 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.independent.co.uk/news/health/nhs-eye-gene-therapy-lebers-congenital-amaurosis-b2962908.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Six-year-old girl has vision restored after first-of-its-kind NHS eye gene therapy</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Independent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Saffie Sandford was diagnosed with the rare condition Leber's Congenital Amaurosis (LCA) that affects vision in low light. This breakthrough NHS gene therapy represents a significant advancement in personalized medicine and genetic treatments for rare conditions.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.forbes.com/sites/innovationrx/2026/04/22/using-ai-to-personalize-healthcarewithout-losing-patient-trust/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Using AI To Personalize Healthcare–Without Losing Patient Trust</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Forbes</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">This week's InnovationRx examines the opportunities and challenges of using AI to personalize healthcare and speed up clinical trials. The article explores the future of genetic medicine and discusses how to maintain patient trust while implementing AI-driven healthcare solutions.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.independent.co.uk/bulletin/news/nhs-home-health-checks-app-b2962813.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Patients could soon use NHS app to help test for key health conditions</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Independent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS is developing new app functionality that will allow patients to conduct home health checks for key conditions. This digital health initiative represents a significant step toward more accessible and convenient healthcare delivery.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.nytimesnewstoday.com/bessent-says-many-u-s-allies-have-asked-for-currency-swaps-amid-iran-war-turbulence/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Bessent says 'many' U.S. allies have asked for currency swaps amid Iran war turbulence</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">NY Times News Today</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Treasury Secretary Scott Bessent revealed that many oil-rich U.S. allies in the Persian Gulf have requested currency swap arrangements due to ongoing turbulence from the Iran conflict. This highlights significant geopolitical financial stress in global markets.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.teslarati.com/spacex-following-tesla-footsteps-way-nobody-expected/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">SpaceX is following in Tesla's footsteps in a way nobody expected</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Teslarati</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">In early 2026, SpaceX transformed into one of the world's most ambitious AI companies following its February acquisition of xAI. This strategic move mirrors Tesla's AI integration approach and positions SpaceX at the forefront of artificial intelligence development.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.cbsnews.com/video/trump-says-iranian-women-he-asked-to-be-released-wont-be-executed/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Trump says 8 Iranian women protesters he asked to be released won't be executed</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">CBS News</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">President Trump posted on social media that eight women protesters who were going to be executed in Iran will no longer be killed. This diplomatic intervention represents a significant development in U.S.-Iran relations and human rights advocacy.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.themirror.com/news/politics/white-house-mocks-global-warming-1802917" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">White House mocks global warming with sarcastic Earth Day post</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Mirror</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The White House shared a meme on social media in honor of Earth Day that insinuated global warming is a 'hoax'. This controversial post has sparked significant debate about the administration's climate policy stance.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://completeaitraining.com/news/capacity-acquires-langai-to-add-agentic-ai-analytics-to-its/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Capacity acquires Lang.ai to add agentic AI analytics to its support platform</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Complete AI Training</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Capacity has acquired Lang.ai, adding agentic analytics tools that let support teams query customer data in real time. Lang.ai's founder joins Capacity to lead AI analytics across its 20,000-company user base, representing significant consolidation in the AI tools market.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.mobihealthnews.com/news/qa-treehub-ai-health-fund-launches-back-academic-innovators-healthcare-ai" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Q&amp;A: Treehub with AI Health Fund launches to back academic innovators in healthcare AI</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">MobiHealthNews</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.mirror.co.uk/news/health/uk-adults-fall-short-nhs-37053083" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">UK adults fall short of NHS sleep guidelines - averaging just 6 hours a night</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Mirror</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://seekingalpha.com/article/4892997-polaris-international-equity-composite-q1-2026-commentary" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Polaris International Equity Composite Q1 2026 Commentary</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Seeking Alpha</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://english.aawsat.com/node/5265483" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">ISIS Shifts Priorities, Seeks to Raise Cost of Rule in Syria</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">AAWSAT</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.business-standard.com/content/press-releases-ani/tredence-named-a-market-leader-in-the-inaugural-isg-provider-lens-2026-databricks-ecosystem-partners-report-126042300006_1.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Tredence Named a Market Leader in the Inaugural ISG Provider LensTM 2026 Databricks Ecosystem Partners Report</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Business Standard</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
