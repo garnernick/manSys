@@ -656,7 +656,7 @@ function openEdit(id) {
   if (!r) return;
   editingId = id;
   const label = TABS.find(t => t.id === activeTab)?.label || activeTab;
-  document.getElementById('sheet-title').textContent = 'Edit ' + if(label.toLowerCase()='people') label.toLowerCase().slice(0,-1) else label.toLowerCase().slice(0,-1);
+  document.getElementById('sheet-title').textContent = 'Edit ' + if(label.toLowerCase()='people') label.toLowerCase() else label.toLowerCase().slice(0,-1);
   document.getElementById('sheet-body').innerHTML = buildForm(activeTab, r) + '<div class="form-error" id="form-error"></div>';
   document.getElementById('sheet-footer').innerHTML = '<button class="btn-delete-sheet" onclick="confirmDelete(' + id + ')">Delete</button><button class="btn-cancel" onclick="closeSheet()">Cancel</button><button class="btn-save" onclick="saveRecord()">Save</button>';
   openSheet();
