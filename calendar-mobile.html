@@ -496,15 +496,9 @@ function scrollToCurrentTime() {
 
 // ---- Helpers ----
 function isAllDay(e) {
-  if (!e.start_at) return false;
-  const s = new Date(e.start_at);
-  const end = e.end_at ? new Date(e.end_at) : null;
-  // All-day if starts at midnight and duration is multiple of whole days
-  const startMidnight = s.getHours() === 0 && s.getMinutes() === 0;
-  if (!end) return startMidnight;
-  const durationMs = end - s;
-  const wholeDays = durationMs > 0 && durationMs % (24*60*60*1000) === 0;
-  return startMidnight && wholeDays;
+  if (!e.start_at || !e.end_at) return false;
+  const durationMs = new Date(e.end_at) - new Date(e.start_at);
+  return durationMs >= 20 * 60 * 60 * 1000 && durationMs % (24 * 60 * 60 * 1000) === 0;
 }
 
 function eventStartMins(e) {
