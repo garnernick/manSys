@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Management Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #e8e8e8;
+    --text2: #888;
+    --text3: #555;
+    --accent: #c8ff00;
+    --accent-dim: rgba(200,255,0,0.08);
+    --accent-dim2: rgba(200,255,0,0.15);
+    --blue: #4a9eff;
+    --blue-dim: rgba(74,158,255,0.1);
+    --red: #ff5f5f;
+    --red-dim: rgba(255,95,95,0.1);
+    --amber: #ffb347;
+    --amber-dim: rgba(255,179,71,0.1);
+    --green: #4dff91;
+    --green-dim: rgba(77,255,145,0.1);
+    --purple: #b47fff;
+    --purple-dim: rgba(180,127,255,0.1);
+    --radius: 4px;
+    --radius2: 6px;
+    --font: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13px; }
+
+  /* Auth gate */
+  #auth-gate { display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 12px; }
+  #auth-gate p { font-family: var(--mono); font-size: 12px; color: var(--red); }
+
+  /* Layout */
+  #app { display: none; height: 100vh; display: flex; flex-direction: column; }
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 0 20px; height: 48px; border-bottom: 1px solid var(--border); background: var(--bg2); flex-shrink: 0; }
+  .brand { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+  .nav { display: flex; gap: 2px; flex: 1; }
+  .nav-btn { padding: 6px 14px; border: none; background: transparent; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; border-radius: var(--radius); transition: all 0.12s; letter-spacing: 0.02em; }
+  .nav-btn:hover { color: var(--text); background: var(--bg3); }
+  .nav-btn.active { color: var(--accent); background: var(--accent-dim); }
+  .add-btn { padding: 7px 16px; background: var(--accent); color: #0f0f0f; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 11px; font-weight: 500; cursor: pointer; letter-spacing: 0.05em; transition: opacity 0.12s; }
+  .add-btn:hover { opacity: 0.85; }
+
+  /* Stats bar */
+  .stats-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg2); }
+  .stat { padding: 10px 24px; border-right: 1px solid var(--border); }
+  .stat-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--text); }
+  .stat-value.accent { color: var(--accent); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.blue { color: var(--blue); }
+
+  /* Main area */
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* Sidebar */
+  .sidebar { width: 200px; border-right: 1px solid var(--border); padding: 14px 12px; display: flex; flex-direction: column; gap: 14px; flex-shrink: 0; overflow-y: auto; background: var(--bg2); transition: width 0.18s, padding 0.18s; }
+  .sidebar.collapsed { width: 0; padding: 0; overflow: hidden; border-right: none; }
+  .sidebar-toggle { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 14px; height: 40px; background: var(--bg2); border: 1px solid var(--border2); border-left: none; border-radius: 0 4px 4px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--text3); z-index: 10; transition: left 0.18s; }
+  .sidebar-toggle:hover { color: var(--accent); background: var(--bg3); }
+  .main { position: relative; }
+  .filter-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  .filter-group { display: flex; flex-direction: column; }
+  select, input[type=text], input[type=date], textarea {
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
+    font-family: var(--font); font-size: 12px; border-radius: var(--radius); padding: 6px 8px;
+    width: 100%; outline: none; transition: border-color 0.12s;
+  }
+  select:focus, input:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--bg3); }
+  .search-wrap { position: relative; }
+  .search-wrap input { padding-left: 28px; }
+  .search-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 12px; pointer-events: none; }
+
+  /* Table area */
+  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .table-wrap { flex: 1; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { position: sticky; top: 0; z-index: 2; background: var(--bg2); }
+  th { padding: 10px 14px 10px; font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); line-height: 1.4; }
+  tr:hover td { background: var(--bg2); }
+  .row-actions { display: flex; gap: 6px; opacity: 0; transition: opacity 0.1s; }
+  tr:hover .row-actions { opacity: 1; }
+  .act-btn { padding: 3px 10px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-size: 11px; font-family: var(--mono); border-radius: var(--radius); cursor: pointer; transition: all 0.1s; }
+  .act-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .act-btn.del:hover { border-color: var(--red); color: var(--red); }
+  .cell-title { color: var(--text); cursor: pointer; font-weight: 400; }
+  .cell-title:hover { color: var(--accent); }
+  .cell-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: var(--mono); }
+  .empty { text-align: center; padding: 60px 24px; color: var(--text3); font-family: var(--mono); font-size: 12px; }
+  .loading { text-align: center; padding: 40px; color: var(--text3); font-family: var(--mono); font-size: 11px; }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 2px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.03em; white-space: nowrap; }
+  .b-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(77,255,145,0.2); }
+  .b-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
+  .b-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,95,95,0.2); }
+  .b-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,179,71,0.2); }
+  .b-gray { background: rgba(255,255,255,0.04); color: var(--text2); border: 1px solid var(--border2); }
+  .b-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(180,127,255,0.2); }
+  .b-accent { background: var(--accent-dim2); color: var(--accent); border: 1px solid rgba(200,255,0,0.3); }
+  .b-must { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(200,255,0,0.2); font-size: 9px; margin-left: 5px; vertical-align: middle; }
+  .b-deep { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); font-size: 9px; margin-left: 5px; vertical-align: middle; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(2px); }
+  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius2); padding: 24px; width: 500px; max-width: 95vw; max-height: 88vh; overflow-y: auto; }
+  .modal-title { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .form-row { margin-bottom: 13px; }
+  .form-row label { display: block; font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  textarea { min-height: 72px; resize: vertical; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .modal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .modal-btns { display: flex; gap: 8px; }
+  .btn-cancel { padding: 7px 16px; background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: var(--mono); font-size: 11px; border-radius: var(--radius); cursor: pointer; }
+  .btn-cancel:hover { border-color: var(--text2); color: var(--text); }
+  .btn-save { padding: 7px 20px; background: var(--accent); color: #0f0f0f; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; border-radius: var(--radius); cursor: pointer; }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-delete-modal { padding: 7px 14px; background: transparent; border: 1px solid rgba(255,95,95,0.3); color: var(--red); font-family: var(--mono); font-size: 11px; border-radius: var(--radius); cursor: pointer; }
+  .btn-delete-modal:hover { background: var(--red-dim); }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; }
+  .checkbox-row input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--accent); }
+  .checkbox-row label { font-family: var(--mono); font-size: 11px; color: var(--text2); text-transform: none; letter-spacing: 0; }
+  .error-msg { font-family: var(--mono); font-size: 11px; color: var(--red); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* Bulk actions toolbar */
+  /* Sparkline */
+  .sparkline-wrap { flex: 1; display: flex; align-items: flex-end; gap: 3px; padding: 10px 20px 10px 8px; min-width: 180px; max-width: 280px; }
+  .spark-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; }
+  .spark-seg { width: 100%; min-height: 1px; border-radius: 1px; }
+  .spark-seg.opened { background: var(--amber); opacity: 0.85; }
+  .spark-seg.closed { background: var(--green); opacity: 0.85; }
+  .spark-seg.overdue { background: var(--red); opacity: 0.85; }
+  .spark-day { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 3px; white-space: nowrap; }
+  .spark-legend { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 10px 16px 10px 0; border-right: 1px solid var(--border); }
+  .spark-legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9px; color: var(--text3); white-space: nowrap; }
+  .spark-legend-dot { width: 7px; height: 7px; border-radius: 1px; flex-shrink: 0; }
+
+  .bulk-bar { display: none; align-items: center; gap: 10px; padding: 8px 16px; background: var(--accent-dim2); border-bottom: 1px solid rgba(200,255,0,0.25); flex-shrink: 0; }
+  .bulk-bar.visible { display: flex; }
+  .bulk-count { font-family: var(--mono); font-size: 11px; color: var(--accent); flex: 1; }
+  .bulk-btn { padding: 5px 14px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-size: 11px; font-family: var(--mono); border-radius: var(--radius); cursor: pointer; transition: all 0.1s; }
+  .bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .bulk-btn.danger:hover { border-color: var(--red); color: var(--red); }
+  .bulk-btn.clear { color: var(--text3); }
+  .bulk-btn.clear:hover { border-color: var(--text2); color: var(--text2); }
+  .row-cb { width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer; }
+  th.cb-col, td.cb-col { width: 32px; padding-right: 0; }
+  tr.selected td { background: var(--accent-dim) !important; }
+  .bulk-status-wrap { display: flex; align-items: center; gap: 6px; }
+  .bulk-status-wrap select { font-size: 11px; padding: 4px 8px; background: var(--bg3); border: 1px solid var(--border2); color: var(--text); border-radius: var(--radius); font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<div id="auth-gate" style="display:none">
+  <p style="font-family:var(--mono);color:var(--red);font-size:13px;">&#x2715; Access denied</p>
+</div>
+
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="brand">&#x25A0; ManSys</div>
+    <nav class="nav" id="nav"></nav>
+    <button class="add-btn" onclick="openAdd()">+ ADD</button>
+  </div>
+  <div class="stats-bar" id="stats-bar" style="display:flex;align-items:stretch">
+    <div id="stat-cards" style="display:flex"></div>
+    <div class="spark-legend" id="spark-legend" style="display:none">
+      <div class="spark-legend-item"><div class="spark-legend-dot" style="background:var(--amber)"></div>opened</div>
+      <div class="spark-legend-item"><div class="spark-legend-dot" style="background:var(--green)"></div>closed</div>
+      <div class="spark-legend-item"><div class="spark-legend-dot" style="background:var(--red)"></div>overdue</div>
+    </div>
+    <div class="sparkline-wrap" id="sparkline-wrap" style="display:none"></div>
+  </div>
+  <div class="bulk-bar" id="bulk-bar">
+    <span class="bulk-count" id="bulk-count">0 selected</span>
+    <div class="bulk-status-wrap" id="bulk-status-wrap" style="display:none">
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">set status:</span>
+      <select id="bulk-status-sel"></select>
+      <button class="bulk-btn" onclick="bulkUpdateStatus()">Apply</button>
+    </div>
+    <button class="bulk-btn danger" onclick="bulkDelete()">Delete selected</button>
+    <button class="bulk-btn clear" onclick="clearSelection()">Clear</button>
+  </div>
+  <div class="main">
+    <div class="sidebar" id="sidebar"></div>
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle filters">‹</button>
+    <div class="content" id="main-content">
+      <div class="table-wrap" id="table-section">
+        <table>
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div id="empty-msg" class="empty" style="display:none">No records match your filters.</div>
+        <div id="loading-msg" class="loading">Loading...</div>
+      </div>
+      <div class="chat-wrap" id="chat-section" style="display:none">
+        <div id="debrief-banner" style="display:none"></div>
+        <div class="chat-toolbar">
+          <button class="chat-tool-btn" onclick="injectDebrief()">📋 Start debrief</button>
+          <button class="chat-tool-btn" onclick="injectTaskCreate()">✓ Create task</button>
+          <button class="chat-tool-btn" onclick="injectCommitment()">⟳ Log commitment</button>
+          <button class="chat-tool-btn" onclick="clearChat()">Clear chat</button>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask anything — create tasks, log commitments, capture a debrief..." rows="1" onkeydown="chatKeyDown(event)" oninput="autoResize(this)"></textarea>
+          <button class="chat-send" id="chat-send" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+
+<script>
+const ACCESS_TOKEN = 'fdb44961c5a73eb588b68e9614f58671';
+const SUPABASE_URL = 'https://dglotzmioswcmhfttcqx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbG90em1pb3N3Y21oZnR0Y3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5OTE3MzgsImV4cCI6MjA4ODU2NzczOH0.lF_8yxfnP50UpiMKCW3aQxq8HukVZ5ibRqOp-RwFvpQ';
+
+function checkAuth() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if (token !== ACCESS_TOKEN) {
+    document.getElementById('auth-gate').style.display = 'flex';
+    return false;
+  }
+  document.getElementById('app').style.display = 'flex';
+  return true;
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      ...(opts.prefer ? { Prefer: opts.prefer } : {}),
+    },
+    method: opts.method || 'GET',
+    body: opts.body != null ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+let ref = { statuses: [], themes: [], people: [], epics: [] };
+let activeTab = 'tasks';
+let allRows = [];
+let editingId = null;
+let selectedIds = new Set();
+
+function toggleRow(id, cb) {
+  if (cb.checked) { selectedIds.add(id); } else { selectedIds.delete(id); }
+  const row = cb.closest('tr');
+  if (row) row.classList.toggle('selected', cb.checked);
+  updateBulkBar();
+}
+
+function toggleAll(masterCb) {
+  const rows = document.querySelectorAll('#tbody tr');
+  rows.forEach(tr => {
+    const cb = tr.querySelector('.row-cb');
+    if (!cb) return;
+    cb.checked = masterCb.checked;
+    const id = parseInt(cb.dataset.id);
+    if (masterCb.checked) { selectedIds.add(id); tr.classList.add('selected'); }
+    else { selectedIds.delete(id); tr.classList.remove('selected'); }
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const count = document.getElementById('bulk-count');
+  const statusWrap = document.getElementById('bulk-status-wrap');
+  const n = selectedIds.size;
+  if (n === 0) {
+    bar.classList.remove('visible');
+  } else {
+    bar.classList.add('visible');
+    count.textContent = n + ' selected';
+    // Show status update only for tabs that have status
+    const hasStatus = ['tasks','themes','epics'].includes(activeTab);
+    statusWrap.style.display = hasStatus ? 'flex' : 'none';
+    if (hasStatus) {
+      const sel = document.getElementById('bulk-status-sel');
+      sel.innerHTML = ref.statuses.map(s => `<option value="${s.status_id}">${s.status_label}</option>`).join('');
+    }
+  }
+}
+
+function clearSelection() {
+  selectedIds.clear();
+  document.querySelectorAll('.row-cb').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('tr.selected').forEach(tr => tr.classList.remove('selected'));
+  const master = document.getElementById('master-cb');
+  if (master) master.checked = false;
+  updateBulkBar();
+}
+
+async function bulkDelete() {
+  if (selectedIds.size === 0) return;
+  if (!confirm('Delete ' + selectedIds.size + ' records? This cannot be undone.')) return;
+  const tables = { themes: 'themes', epics: 'roadmap_items', tasks: 'tasks', commitments: 'commitments', people: 'people' };
+  const idKeys = { themes: 'theme_id', epics: 'roadmap_item_id', tasks: 'task_id', commitments: 'commitment_id', people: 'person_id' };
+  const ids = Array.from(selectedIds).join(',');
+  await api(`${tables[activeTab]}?${idKeys[activeTab]}=in.(${ids})`, { method: 'DELETE' });
+  selectedIds.clear();
+  updateBulkBar();
+  loadTab();
+}
+
+async function bulkUpdateStatus() {
+  if (selectedIds.size === 0) return;
+  const statusId = parseInt(document.getElementById('bulk-status-sel').value);
+  if (!statusId) return;
+  const tables = { themes: 'themes', epics: 'roadmap_items', tasks: 'tasks' };
+  const idKeys = { themes: 'theme_id', epics: 'roadmap_item_id', tasks: 'task_id' };
+  const ids = Array.from(selectedIds).join(',');
+  await api(`${tables[activeTab]}?${idKeys[activeTab]}=in.(${ids})`, {
+    method: 'PATCH',
+    body: { status_id: statusId },
+    prefer: 'return=minimal'
+  });
+  selectedIds.clear();
+  updateBulkBar();
+  loadTab();
+}
+
+async function loadRef() {
+  const [s, t, p, e] = await Promise.all([
+    api('statuses?select=status_id,status_label&order=status_id.asc'),
+    api('themes?select=theme_id,title&order=title.asc'),
+    api('people?select=person_id,full_name&order=full_name.asc'),
+    api('roadmap_items?select=roadmap_item_id,title&order=title.asc'),
+  ]);
+  ref.statuses = s || [];
+  ref.themes = t || [];
+  ref.people = p || [];
+  ref.epics = e || [];
+}
+
+const TABS = [
+  { id: 'tasks', label: 'Tasks' },
+  { id: 'themes', label: 'Themes' },
+  { id: 'epics', label: 'Epics' },
+  { id: 'commitments', label: 'Commitments' },
+  { id: 'people', label: 'People' },
+  { id: 'chat', label: 'Chat ✦' },
+];
+
+function badge(text, cls) { return `<span class="badge ${cls}">${text}</span>`; }
+
+function statusBadge(label) {
+  const map = { 'Done': 'b-green', 'In Progress': 'b-blue', 'Blocked': 'b-red', 'Not Started': 'b-gray', 'Outstanding': 'b-amber', 'Delivered': 'b-green', 'Renegotiated': 'b-purple' };
+  return label ? badge(label, map[label] || 'b-gray') : '—';
+}
+
+function priBadge(p) {
+  if (!p) return '—';
+  const m = { High: 'b-red', Medium: 'b-amber', Low: 'b-gray' };
+  return badge(p, m[p] || 'b-gray');
+}
+
+function dirBadge(d) {
+  return d === 'inbound' ? badge('inbound', 'b-blue') : badge('outbound', 'b-amber');
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = s.substring(0, 10);
+  const today = new Date().toISOString().substring(0, 10);
+  if (d < today) return `<span style="color:var(--red)">${d}</span>`;
+  return d;
+}
+
+function trunc(s, n = 65) {
+  if (!s) return '—';
+  return s.length > n ? s.slice(0, n) + '…' : s;
+}
+
+const TAB_DEF = {
+  tasks: {
+    endpoint: 'tasks?select=task_id,title,description,priority,promise_date,is_must_achieve,is_deep_work,status_id,theme_id,epic_id,owner_id,requested_by_id,created_at,last_updated_at,statuses(status_label),themes(title),roadmap_items(title),people!tasks_owner_id_fkey(full_name)&order=created_at.desc',
+    idKey: 'task_id',
+    cols: ['Title', 'Theme / Epic', 'Owner', 'Due', 'Priority', 'Status', ''],
+    row(r) {
+      return [
+        `<div><span class="cell-title" onclick="openEdit(${r.task_id})">${trunc(r.title, 55)}</span>${r.is_must_achieve ? badge('must achieve', 'b-must') : ''}${r.is_deep_work ? badge('deep work', 'b-deep') : ''}</div>`,
+        `<div style="font-size:11px;color:var(--text2)">${r.themes?.title || '—'}</div><div class="cell-sub">${r.roadmap_items?.title || ''}</div>`,
+        r.people?.full_name || '—',
+        fmtDate(r.promise_date),
+        priBadge(r.priority),
+        statusBadge(r.statuses?.status_label),
+        `<div class="row-actions"><button class="act-btn" onclick="openEdit(${r.task_id})">edit</button><button class="act-btn del" onclick="confirmDelete(${r.task_id})">delete</button></div>`,
+      ];
+    },
+    stats(d) {
+      const today = new Date().toISOString().substring(0, 10);
+      return [
+        { label: 'Active tasks', value: d.filter(r => r.statuses?.status_label !== 'Done').length, cls: '' },
+        { label: 'Must achieves', value: d.filter(r => r.is_must_achieve && r.statuses?.status_label !== 'Done').length, cls: 'accent' },
+        { label: 'In progress', value: d.filter(r => r.statuses?.status_label === 'In Progress').length, cls: 'blue' },
+        { label: 'Overdue', value: d.filter(r => r.promise_date && r.promise_date < today && r.statuses?.status_label !== 'Done').length, cls: 'red' },
+      ];
+    },
+    filter(r, f) {
+      if (f.status?.length && r.statuses?.status_label && !f.status.includes(r.statuses?.status_label)) return false;
+      if (f.theme && String(r.theme_id) !== f.theme) return false;
+      if (f.owner && String(r.owner_id) !== f.owner) return false;
+      if (f.must && !r.is_must_achieve) return false;
+      if (f.q && !r.title?.toLowerCase().includes(f.q) && !(r.description || '').toLowerCase().includes(f.q)) return false;
+      return true;
+    },
+    sidebarExtra: `
+      <div class="filter-group"><div class="filter-label">Owner</div><select id="f-owner" onchange="applyFilters()"><option value="">All owners</option></select></div>
+      <div class="filter-group"><div class="filter-label">Must achieve</div><select id="f-must" onchange="applyFilters()"><option value="">All tasks</option><option value="1">Must achieves only</option></select></div>
+    `,
+  },
+  themes: {
+    endpoint: 'themes?select=theme_id,title,description,domain,status_id,statuses(status_label),created_at&order=title.asc',
+    idKey: 'theme_id',
+    cols: ['Title', 'Domain', 'Status', 'Created', ''],
+    row(r) {
+      return [
+        `<span class="cell-title" onclick="openEdit(${r.theme_id})">${r.title}</span>`,
+        r.domain || '—',
+        statusBadge(r.statuses?.status_label),
+        (r.created_at || '').substring(0, 10),
+        `<div class="row-actions"><button class="act-btn" onclick="openEdit(${r.theme_id})">edit</button><button class="act-btn del" onclick="confirmDelete(${r.theme_id})">delete</button></div>`,
+      ];
+    },
+    stats(d) {
+      return [
+        { label: 'Total', value: d.length, cls: '' },
+        { label: 'In progress', value: d.filter(r => r.statuses?.status_label === 'In Progress').length, cls: 'blue' },
+        { label: 'Done', value: d.filter(r => r.statuses?.status_label === 'Done').length, cls: 'accent' },
+        { label: 'Blocked', value: d.filter(r => r.statuses?.status_label === 'Blocked').length, cls: 'red' },
+      ];
+    },
+    filter(r, f) {
+      if (f.status?.length && r.statuses?.status_label && !f.status.includes(r.statuses?.status_label)) return false;
+      if (f.q && !r.title?.toLowerCase().includes(f.q)) return false;
+      return true;
+    },
+    sidebarExtra: '',
+  },
+  epics: {
+    endpoint: 'roadmap_items?select=roadmap_item_id,title,description,domain,target_date,status_id,theme_id,owner_id,statuses(status_label),themes(title),people!roadmap_items_owner_id_fkey(full_name)&order=title.asc',
+    idKey: 'roadmap_item_id',
+    cols: ['Title', 'Theme', 'Owner', 'Domain', 'Target date', 'Status', ''],
+    row(r) {
+      return [
+        `<span class="cell-title" onclick="openEdit(${r.roadmap_item_id})">${r.title}</span>`,
+        r.themes?.title || '—',
+        r.people?.full_name || '—',
+        r.domain || '—',
+        fmtDate(r.target_date),
+        statusBadge(r.statuses?.status_label),
+        `<div class="row-actions"><button class="act-btn" onclick="openEdit(${r.roadmap_item_id})">edit</button><button class="act-btn del" onclick="confirmDelete(${r.roadmap_item_id})">delete</button></div>`,
+      ];
+    },
+    stats(d) {
+      const today = new Date().toISOString().substring(0, 10);
+      return [
+        { label: 'Total', value: d.length, cls: '' },
+        { label: 'In progress', value: d.filter(r => r.statuses?.status_label === 'In Progress').length, cls: 'blue' },
+        { label: 'Done', value: d.filter(r => r.statuses?.status_label === 'Done').length, cls: 'accent' },
+        { label: 'Overdue', value: d.filter(r => r.target_date && r.target_date < today && r.statuses?.status_label !== 'Done').length, cls: 'red' },
+      ];
+    },
+    filter(r, f) {
+      if (f.status?.length && r.statuses?.status_label && !f.status.includes(r.statuses?.status_label)) return false;
+      if (f.theme && String(r.theme_id) !== f.theme) return false;
+      if (f.q && !r.title?.toLowerCase().includes(f.q)) return false;
+      return true;
+    },
+    sidebarExtra: '',
+  },
+  people: {
+    endpoint: 'people?select=person_id,full_name,job_title,company,work_email,mobile,is_stakeholder,is_active,person_types(description)&order=full_name.asc',
+    idKey: 'person_id',
+    cols: ['Name', 'Title', 'Company', 'Email', 'Type', 'Stakeholder', ''],
+    row(r) {
+      return [
+        `<span class="cell-title" onclick="openEdit(${r.person_id})">${r.full_name}</span>`,
+        r.job_title || '—',
+        r.company || '—',
+        r.work_email ? `<span style="font-size:11px;color:var(--text2)">${r.work_email}</span>` : '—',
+        r.person_types?.description || '—',
+        r.is_stakeholder ? badge('stakeholder', 'b-blue') : '',
+        `<div class="row-actions"><button class="act-btn" onclick="openEdit(${r.person_id})">edit</button><button class="act-btn del" onclick="confirmDelete(${r.person_id})">delete</button></div>`,
+      ];
+    },
+    stats(d) {
+      return [
+        { label: 'Total', value: d.length, cls: '' },
+        { label: 'Stakeholders', value: d.filter(r => r.is_stakeholder).length, cls: 'blue' },
+        { label: 'Active', value: d.filter(r => r.is_active).length, cls: 'accent' },
+        { label: 'With company', value: d.filter(r => r.company).length, cls: '' },
+      ];
+    },
+    filter(r, f) {
+      if (f.q && !r.full_name?.toLowerCase().includes(f.q) && !(r.company||'').toLowerCase().includes(f.q) && !(r.job_title||'').toLowerCase().includes(f.q)) return false;
+      return true;
+    },
+    sidebarExtra: '',
+  },
+  commitments: {
+    endpoint: 'commitments?select=commitment_id,description,promised_date,status,direction,created_at,person_id,task_id,people(full_name),tasks(title)&order=promised_date.asc.nullslast',
+    idKey: 'commitment_id',
+    cols: ['Description', 'Person', 'Direction', 'Linked task', 'Due', 'Status', ''],
+    row(r) {
+      return [
+        `<span class="cell-title" onclick="openEdit(${r.commitment_id})">${trunc(r.description, 55)}</span>`,
+        r.people?.full_name || '—',
+        dirBadge(r.direction),
+        r.tasks?.title ? `<span style="font-size:11px;color:var(--text2)">${trunc(r.tasks.title, 38)}</span>` : '—',
+        fmtDate(r.promised_date),
+        statusBadge(r.status),
+        `<div class="row-actions"><button class="act-btn" onclick="openEdit(${r.commitment_id})">edit</button><button class="act-btn del" onclick="confirmDelete(${r.commitment_id})">delete</button></div>`,
+      ];
+    },
+    stats(d) {
+      const today = new Date().toISOString().substring(0, 10);
+      return [
+        { label: 'Total', value: d.length, cls: '' },
+        { label: 'Outstanding', value: d.filter(r => r.status === 'Outstanding').length, cls: 'amber' },
+        { label: 'Overdue', value: d.filter(r => r.promised_date && r.promised_date < today && r.status === 'Outstanding').length, cls: 'red' },
+        { label: 'Inbound', value: d.filter(r => r.direction === 'inbound').length, cls: 'blue' },
+      ];
+    },
+    filter(r, f) {
+      if (f.status?.length && !f.status.includes(r.status)) return false;
+      if (f.direction && r.direction !== f.direction) return false;
+      if (f.overdue) { const today = new Date().toISOString().substring(0, 10); if (!(r.promised_date && r.promised_date < today && r.status === 'Outstanding')) return false; }
+      if (f.q && !(r.description || '').toLowerCase().includes(f.q)) return false;
+      return true;
+    },
+    sidebarExtra: `
+      <div class="filter-group"><div class="filter-label">Direction</div><select id="f-direction" onchange="applyFilters()"><option value="">All</option><option value="outbound">Outbound</option><option value="inbound">Inbound</option></select></div>
+      <div class="filter-group"><div class="filter-label">Show</div><select id="f-overdue" onchange="applyFilters()"><option value="">All</option><option value="1">Overdue only</option></select></div>
+    `,
+  },
+};
+
+function renderNav() {
+  document.getElementById('nav').innerHTML = TABS.map(t =>
+    `<button class="nav-btn ${t.id === activeTab ? 'active' : ''}" onclick="switchTab('${t.id}')">${t.label}</button>`
+  ).join('');
+}
+
+function renderSidebar() {
+  const def = TAB_DEF[activeTab];
+  const showTheme = ['tasks', 'epics'].includes(activeTab);
+  const showStatus = activeTab !== 'people';
+  let html = `
+    <div class="filter-group">
+      <div class="filter-label">Search</div>
+      <div class="search-wrap">
+        <span class="search-icon">&#x2315;</span>
+        <input type="text" id="f-search" placeholder="Search…" oninput="applyFilters()">
+      </div>
+    </div>
+    ${showStatus ? `<div class="filter-group">
+      <div class="filter-label">Status</div>
+      <div id="f-status-checks" style="display:flex;flex-direction:column;gap:5px;margin-top:2px">
+        ${(activeTab === 'commitments'
+          ? ['Outstanding','Delivered','Renegotiated']
+          : ref.statuses.map(s => s.status_label)
+        ).map(s => `<label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" value="${s}" onchange="applyFilters()" style="width:13px;height:13px;accent-color:var(--accent);cursor:pointer">
+          ${s}</label>`).join('')}
+      </div>
+    </div>` : ''}
+    ${showTheme ? `<div class="filter-group"><div class="filter-label">Theme</div><select id="f-theme" onchange="applyFilters()"><option value="">All themes</option>${ref.themes.map(t => `<option value="${t.theme_id}">${t.title}</option>`).join('')}</select></div>` : ''}
+    ${def.sidebarExtra}
+  `;
+  document.getElementById('sidebar').innerHTML = html;
+  if (activeTab === 'tasks') {
+    const ownerSel = document.getElementById('f-owner');
+    if (ownerSel) ownerSel.innerHTML = '<option value="">All owners</option>' + ref.people.map(p => `<option value="${p.person_id}">${p.full_name}</option>`).join('');
+  }
+}
+
+function getFilters() {
+  const v = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  return {
+    q: v('f-search').toLowerCase(),
+    status: Array.from(document.querySelectorAll('#f-status-checks input:checked')).map(el => el.value),
+    theme: v('f-theme'),
+    owner: v('f-owner'),
+    must: v('f-must'),
+    direction: v('f-direction'),
+    overdue: v('f-overdue'),
+  };
+}
+
+function applyFilters() {
+  const f = getFilters();
+  const def = TAB_DEF[activeTab];
+  const filtered = allRows.filter(r => def.filter(r, f));
+  renderTable(filtered);
+}
+
+function renderStats(data) {
+  const stats = TAB_DEF[activeTab].stats(data);
+  document.getElementById('stat-cards').innerHTML = stats.map(s =>
+    `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value ${s.cls}">${s.value}</div></div>`
+  ).join('');
+  const showSpark = activeTab === 'tasks';
+  document.getElementById('spark-legend').style.display = showSpark ? '' : 'none';
+  document.getElementById('sparkline-wrap').style.display = showSpark ? '' : 'none';
+  if (showSpark) renderSparkline(data); // async — runs independently
+}
+
+async function renderSparkline(data) {
+  const _tn = new Date();
+  const today = new Date(_tn.getFullYear(), _tn.getMonth(), _tn.getDate(), 0, 0, 0, 0);
+
+  const isoDate = d => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dy = String(d.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + dy;
+  };
+
+  // 7 days back window
+  const windowStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6, 0, 0, 0, 0);
+
+  // Fetch task_updates for the window
+  // event_type_id 1 = Created (opened), event_type_id 2 = Status Change
+  // Done/Delivered = status_id 4 (Done). We fetch new_status_id to detect closes.
+  let updates = [];
+  try {
+    updates = await api('task_updates?select=task_id,event_type_id,new_status_id,prior_status_id,event_date&event_date=gte.' + windowStart.toISOString() + '&order=event_date.asc') || [];
+  } catch(e) {
+    console.warn('Sparkline: failed to load task_updates', e);
+  }
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    days.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - i, 0, 0, 0, 0));
+  }
+
+  // Done status IDs — status_id 4 = Done, also check for Delivered if applicable
+  // We treat any transition TO status_id 4 as "closed"
+  const DONE_STATUS_IDS = [4];
+
+  // Overdue: tasks whose promise_date = that day and still not done (from tasks data)
+  const DONE_STATUSES = ['Done', 'Delivered'];
+
+  const dayData = days.map(day => {
+    const dayStr = isoDate(day);
+
+    // Opened: event_type_id 1 (Created) on this day
+    const opened = updates.filter(u =>
+      u.event_type_id === 1 &&
+      (u.event_date || '').substring(0, 10) === dayStr
+    ).length;
+
+    // Closed: event_type_id 2 (Status Change) where new_status_id is Done on this day
+    const closed = updates.filter(u =>
+      u.event_type_id === 2 &&
+      DONE_STATUS_IDS.includes(u.new_status_id) &&
+      (u.event_date || '').substring(0, 10) === dayStr
+    ).length;
+
+    // Overdue: promise_date = this day and not done (from tasks data as before)
+    const overdue = data.filter(r =>
+      (r.promise_date || '') === dayStr &&
+      !DONE_STATUSES.includes(r.statuses?.status_label)
+    ).length;
+
+    return { day, dayStr, opened, closed, overdue };
+  });
+
+  const maxTotal = Math.max(1, ...dayData.map(d => d.opened + d.closed + d.overdue));
+  const BAR_MAX_PX = 36;
+
+  const wrap = document.getElementById('sparkline-wrap');
+  wrap.innerHTML = dayData.map(function(d) {
+    const hOpened  = Math.round((d.opened  / maxTotal) * BAR_MAX_PX);
+    const hClosed  = Math.round((d.closed  / maxTotal) * BAR_MAX_PX);
+    const hOverdue = Math.round((d.overdue / maxTotal) * BAR_MAX_PX);
+    const label = d.day.toLocaleDateString('en-GB', { weekday: 'narrow' });
+    const isToday = isoDate(d.day) === isoDate(today);
+    const dayLabel = isToday ? '<span style="color:var(--accent);font-size:8px">Today</span>' : label;
+    let html = '<div class="spark-col" title="' + d.dayStr + ': ' + d.opened + ' opened, ' + d.closed + ' closed, ' + d.overdue + ' overdue">';
+    if (hOverdue > 0) html += '<div class="spark-seg overdue" style="height:' + hOverdue + 'px"></div>';
+    if (hClosed  > 0) html += '<div class="spark-seg closed"  style="height:' + hClosed  + 'px"></div>';
+    if (hOpened  > 0) html += '<div class="spark-seg opened"  style="height:' + hOpened  + 'px"></div>';
+    html += '<div class="spark-day">' + dayLabel + '</div></div>';
+    return html;
+  }).join('');
+}
+
+function renderTable(data) {
+  const def = TAB_DEF[activeTab];
+  const masterCb = `<th class="cb-col"><input type="checkbox" id="master-cb" class="row-cb" onchange="toggleAll(this)"></th>`;
+  document.getElementById('thead-row').innerHTML = masterCb + def.cols.map(c => `<th>${c}</th>`).join('');
+  document.getElementById('loading-msg').style.display = 'none';
+  if (!data || data.length === 0) {
+    document.getElementById('tbody').innerHTML = '';
+    document.getElementById('empty-msg').style.display = 'block';
+    return;
+  }
+  document.getElementById('empty-msg').style.display = 'none';
+  const idKey = def.idKey;
+  document.getElementById('tbody').innerHTML = data.map(r => {
+    const id = r[idKey];
+    const checked = selectedIds.has(id);
+    const cells = def.row(r);
+    const cbCell = `<td class="cb-col"><input type="checkbox" class="row-cb" data-id="${id}" onchange="toggleRow(${id}, this)" ${checked ? 'checked' : ''}></td>`;
+    return `<tr class="${checked ? 'selected' : ''}">${cbCell}${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
+  }).join('');
+}
+
+async function loadTab() {
+  document.getElementById('loading-msg').style.display = 'block';
+  document.getElementById('tbody').innerHTML = '';
+  document.getElementById('empty-msg').style.display = 'none';
+  const def = TAB_DEF[activeTab];
+  allRows = await api(def.endpoint);
+  allRows = allRows || [];
+  renderStats(allRows);
+  applyFilters();
+}
+
+async function switchTab(tab) {
+  selectedIds.clear();
+  updateBulkBar();
+  activeTab = tab;
+  renderNav();
+
+  const isChat = tab === 'chat';
+  document.getElementById('table-section').style.display = isChat ? 'none' : '';
+  document.getElementById('chat-section').style.display = isChat ? 'flex' : 'none';
+  document.getElementById('sidebar').style.display = isChat ? 'none' : '';
+  document.getElementById('sidebar-toggle').style.display = isChat ? 'none' : '';
+  document.getElementById('stats-bar').style.display = isChat ? 'none' : '';
+  document.getElementById('bulk-bar').style.display = isChat ? 'none' : '';
+
+  if (isChat) {
+    if (chatMessages.length === 0) chatGreet();
+    document.getElementById('chat-input').focus();
+    checkPendingDebriefs();
+    return;
+  }
+
+  renderSidebar();
+  setDefaultStatusFilter();
+  await loadTab();
+}
+
+/* ---- Forms ---- */
+function sel(id, options, selected, placeholder = '— none —') {
+  return `<select id="${id}"><option value="">${placeholder}</option>${options.map(o =>
+    `<option value="${o.v}" ${String(o.v) === String(selected) ? 'selected' : ''}>${o.l}</option>`
+  ).join('')}</select>`;
+}
+
+function statusSel(id, selected) {
+  return sel(id, ref.statuses.map(s => ({ v: s.status_id, l: s.status_label })), selected);
+}
+function themeSel(id, selected) {
+  return sel(id, ref.themes.map(t => ({ v: t.theme_id, l: t.title })), selected);
+}
+function peopleSel(id, selected) {
+  return sel(id, ref.people.map(p => ({ v: p.person_id, l: p.full_name })), selected);
+}
+function epicSel(id, selected) {
+  return sel(id, ref.epics.map(e => ({ v: e.roadmap_item_id, l: e.title })), selected);
+}
+
+function buildForm(tab, r) {
+  if (tab === 'themes') return `
+    <div class="form-row"><label>Title *</label><input id="ff-title" value="${r?.title ? r.title.charAt(0).toUpperCase()+r.title.slice(1) : ''}" style="text-transform:capitalize-first"></div>
+    <div class="form-row"><label>Description</label><textarea id="ff-desc">${r?.description || ''}</textarea></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Domain</label><select id="ff-domain"><option value="">—</option><option ${r?.domain==='Business'?'selected':''}>Business</option><option ${r?.domain==='Personal'?'selected':''}>Personal</option></select></div>
+      <div class="form-row"><label>Status</label>${statusSel('ff-status', r?.status_id)}</div>
+    </div>`;
+
+  if (tab === 'epics') return `
+    <div class="form-row"><label>Title *</label><input id="ff-title" value="${r?.title ? r.title.charAt(0).toUpperCase()+r.title.slice(1) : ''}" style="text-transform:capitalize-first"></div>
+    <div class="form-row"><label>Description</label><textarea id="ff-desc">${r?.description || ''}</textarea></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Theme</label>${themeSel('ff-theme', r?.theme_id)}</div>
+      <div class="form-row"><label>Owner</label>${peopleSel('ff-owner', r?.owner_id)}</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Domain</label><select id="ff-domain"><option value="">—</option><option ${r?.domain==='Business'?'selected':''}>Business</option><option ${r?.domain==='Personal'?'selected':''}>Personal</option></select></div>
+      <div class="form-row"><label>Target date</label><input id="ff-target" type="date" value="${r?.target_date || ''}"></div>
+    </div>
+    <div class="form-row"><label>Status</label>${statusSel('ff-status', r?.status_id)}</div>`;
+
+  if (tab === 'tasks') return `
+    <div class="form-row"><label>Title *</label><input id="ff-title" value="${r?.title ? r.title.charAt(0).toUpperCase()+r.title.slice(1) : ''}" style="text-transform:capitalize-first"></div>
+    <div class="form-row"><label>Description</label><textarea id="ff-desc">${r?.description || ''}</textarea></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Theme</label>${themeSel('ff-theme', r?.theme_id)}</div>
+      <div class="form-row"><label>Epic</label>${epicSel('ff-epic', r?.epic_id)}</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Owner</label>${peopleSel('ff-owner', r?.owner_id)}</div>
+      <div class="form-row"><label>Requested by</label>${peopleSel('ff-reqby', r?.requested_by_id)}</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Priority</label><select id="ff-priority"><option value="">—</option><option ${r?.priority==='High'?'selected':''}>High</option><option ${r?.priority==='Medium'?'selected':''}>Medium</option><option ${r?.priority==='Low'?'selected':''}>Low</option></select></div>
+      <div class="form-row"><label>Due date</label><input id="ff-due" type="date" value="${r?.promise_date || ''}"></div>
+    </div>
+    <div class="form-row"><label>Status</label>${statusSel('ff-status', r?.status_id)}</div>
+    <div class="form-row"><div class="checkbox-row"><input type="checkbox" id="ff-must" ${r?.is_must_achieve?'checked':''}><label for="f-must">Mark as must achieve</label></div></div>
+    <div class="form-row"><div class="checkbox-row"><input type="checkbox" id="ff-deep" ${r?.is_deep_work?'checked':''}><label for="f-deep">Deep work required</label></div></div>`;
+
+  if (tab === 'people') return `
+    <div class="form-row"><label>Full name *</label><input id="ff-title" value="${r?.full_name || ''}"></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Job title</label><input id="ff-job-title" value="${r?.job_title || ''}"></div>
+      <div class="form-row"><label>Company</label><input id="ff-company" value="${r?.company || ''}"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Work email</label><input id="ff-work-email" value="${r?.work_email || ''}"></div>
+      <div class="form-row"><label>Mobile</label><input id="ff-mobile" value="${r?.mobile || ''}"></div>
+    </div>
+    <div class="form-row"><label>Relationship note</label><textarea id="ff-rel-note">${r?.relationship_note || ''}</textarea></div>
+    <div class="form-grid">
+      <div class="form-row"><div class="checkbox-row"><input type="checkbox" id="ff-stakeholder" ${r?.is_stakeholder?'checked':''}><label for="ff-stakeholder">Is stakeholder</label></div></div>
+      <div class="form-row"><div class="checkbox-row"><input type="checkbox" id="ff-active" ${r?.is_active!==false?'checked':''}><label for="ff-active">Is active</label></div></div>
+    </div>`;
+  if (tab === 'commitments') return `
+    <div class="form-row"><label>Description *</label><textarea id="ff-desc">${r?.description || ''}</textarea></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Person</label>${peopleSel('ff-person', r?.person_id)}</div>
+      <div class="form-row"><label>Direction</label><select id="ff-direction"><option value="outbound" ${r?.direction!=='inbound'?'selected':''}>Outbound (Nick owes)</option><option value="inbound" ${r?.direction==='inbound'?'selected':''}>Inbound (chase)</option></select></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Due date</label><input id="ff-due" type="date" value="${r?.promised_date || ''}"></div>
+      <div class="form-row"><label>Status</label><select id="ff-status-c"><option value="Outstanding" ${(r?.status||'Outstanding')==='Outstanding'?'selected':''}>Outstanding</option><option value="Delivered" ${r?.status==='Delivered'?'selected':''}>Delivered</option><option value="Renegotiated" ${r?.status==='Renegotiated'?'selected':''}>Renegotiated</option></select></div>
+    </div>`;
+}
+
+function openAdd() {
+  editingId = null;
+  const label = TABS.find(t => t.id === activeTab)?.label || activeTab;
+  showModal(`Add ${label.toLowerCase() === 'people' ? 'person' : label.toLowerCase().slice(0,-1)}`, buildForm(activeTab, null), false);
+}
+
+function openEdit(id) {
+  const def = TAB_DEF[activeTab];
+  const r = allRows.find(x => x[def.idKey] === id);
+  if (!r) return;
+  editingId = id;
+  console.log('Opening record:', JSON.stringify(r));
+  const label = TABS.find(t => t.id === activeTab)?.label || activeTab;
+  showModal(`Edit ${label.toLowerCase() === 'people' ? 'person' : label.toLowerCase().slice(0,-1)}`, buildForm(activeTab, r), true, r);
+}
+
+function showModal(title, formHtml, showDelete, record) {
+  document.getElementById('modal-root').innerHTML = `
+    <div class="overlay" onclick="closeModalIfOutside(event)">
+      <div class="modal">
+        <div class="modal-title">${title}</div>
+        ${formHtml}
+        <div id="form-error" class="error-msg" style="margin-top:8px"></div>
+        <div class="modal-footer">
+          <div>${showDelete ? `<button class="btn-delete-modal" onclick="confirmDelete(${editingId})">Delete</button>` : ''}</div>
+          <div class="modal-btns">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="saveRecord()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  // Set select values via JS after render — HTML selected attribute is unreliable
+  if (record) {
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = String(val); };
+    if (activeTab === 'tasks') {
+      setVal('ff-status', record.status_id);
+      setVal('ff-theme', record.theme_id);
+      setVal('ff-epic', record.epic_id);
+      setVal('ff-owner', record.owner_id);
+      setVal('ff-reqby', record.requested_by_id);
+      setVal('ff-priority', record.priority);
+    } else if (activeTab === 'themes') {
+      setVal('ff-status', record.status_id);
+      setVal('ff-domain', record.domain);
+    } else if (activeTab === 'epics') {
+      setVal('ff-status', record.status_id);
+      setVal('ff-theme', record.theme_id);
+      setVal('ff-owner', record.owner_id);
+      setVal('ff-domain', record.domain);
+    } else if (activeTab === 'commitments') {
+      setVal('ff-person', record.person_id);
+      setVal('ff-direction', record.direction);
+      setVal('ff-status-c', record.status);
+    } else if (activeTab === 'people') {
+      const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+      setChk('ff-stakeholder', record.is_stakeholder);
+      setChk('ff-active', record.is_active !== false);
+    }
+  }
+}
+
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; }
+function closeModalIfOutside(e) { if (e.target === e.currentTarget) closeModal(); }
+
+async function confirmDelete(id) {
+  if (!confirm('Delete this record? This cannot be undone.')) return;
+  const tables = { themes: 'themes', epics: 'roadmap_items', tasks: 'tasks', commitments: 'commitments', people: 'people' };
+  const idKeys = { themes: 'theme_id', epics: 'roadmap_item_id', tasks: 'task_id', commitments: 'commitment_id', people: 'person_id' };
+  await api(`${tables[activeTab]}?${idKeys[activeTab]}=eq.${id}`, { method: 'DELETE' });
+  closeModal();
+  loadTab();
+}
+
+async function saveRecord() {
+  const v = id => { const el = document.getElementById(id); return el ? (el.value || null) : null; };
+  const vb = id => { const el = document.getElementById(id); return el ? el.checked : false; };
+  const vi = id => { const val = v(id); return val ? parseInt(val) : null; };
+  let body = {};
+
+  console.log('saveRecord: editingId=', editingId, 'tab=', activeTab);
+  const capFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  if (activeTab === 'themes') {
+    if (!v('ff-title')) { document.getElementById('form-error').textContent = 'Title is required.'; return; }
+    body = { title: capFirst(v('ff-title')), description: v('ff-desc'), domain: v('ff-domain'), status_id: vi('ff-status') };
+  } else if (activeTab === 'epics') {
+    if (!v('ff-title')) { document.getElementById('form-error').textContent = 'Title is required.'; return; }
+    body = { title: capFirst(v('ff-title')), description: v('ff-desc'), theme_id: vi('ff-theme'), owner_id: vi('ff-owner'), domain: v('ff-domain'), target_date: v('ff-target'), status_id: vi('ff-status') };
+  } else if (activeTab === 'tasks') {
+    if (!v('ff-title')) { document.getElementById('form-error').textContent = 'Title is required.'; return; }
+    body = { title: capFirst(v('ff-title')), description: v('ff-desc'), theme_id: vi('ff-theme'), epic_id: vi('ff-epic'), owner_id: vi('ff-owner'), requested_by_id: vi('ff-reqby'), priority: v('ff-priority'), promise_date: v('ff-due'), status_id: vi('ff-status') || (editingId ? null : 1), is_must_achieve: vb('ff-must'), is_deep_work: vb('ff-deep') };
+  } else if (activeTab === 'commitments') {
+    if (!v('ff-desc')) { document.getElementById('form-error').textContent = 'Description is required.'; return; }
+    body = { description: v('ff-desc'), person_id: vi('ff-person'), direction: v('ff-direction'), promised_date: v('ff-due'), status: v('ff-status-c') };
+  } else if (activeTab === 'people') {
+    if (!v('ff-title')) { document.getElementById('form-error').textContent = 'Name is required.'; return; }
+    body = { full_name: capFirst(v('ff-title')), job_title: v('ff-job-title'), company: v('ff-company'), work_email: v('ff-work-email'), mobile: v('ff-mobile'), relationship_note: v('ff-rel-note'), is_stakeholder: vb('ff-stakeholder'), is_active: vb('ff-active') };
+  }
+
+  console.log('raw body:', JSON.stringify(body));
+  const tables = { themes: 'themes', epics: 'roadmap_items', tasks: 'tasks', commitments: 'commitments', people: 'people' };
+  const idKeys = { themes: 'theme_id', epics: 'roadmap_item_id', tasks: 'task_id', commitments: 'commitment_id', people: 'person_id' };
+  try {
+    if (editingId) {
+      // Strip nulls from optional relational fields only — never strip core editable fields
+      // Fields explicitly managed by dropdowns must always be included even if null (user cleared them)
+      // Always include non-nullable text/date fields; only include FK/status fields if they have a value
+      // This prevents saving a form from nulling out fields the user didn't touch
+      const ALWAYS_INCLUDE = {
+        themes: ['title','description','domain'],
+        epics: ['title','description','domain','target_date'],
+        tasks: ['title','description','priority','promise_date','is_must_achieve','is_deep_work'],
+        commitments: ['description','direction','promised_date','status'],
+        people: ['full_name','job_title','company','work_email','mobile','relationship_note','is_stakeholder','is_active'],
+      };
+      const keep = new Set(ALWAYS_INCLUDE[activeTab] || []);
+      const patchBody = Object.fromEntries(Object.entries(body).filter(([k, val]) => {
+        if (keep.has(k)) return true;        // always include core fields (even if null/empty string)
+        return val !== null && val !== undefined; // only include FK/status fields if they have a value
+      }));
+      if (activeTab === 'tasks') { patchBody.is_must_achieve = vb('ff-must'); patchBody.is_deep_work = vb('ff-deep'); }
+      console.log('patchBody keys:', Object.keys(patchBody), 'values:', JSON.stringify(patchBody));
+      await api(`${tables[activeTab]}?${idKeys[activeTab]}=eq.${editingId}`, { method: 'PATCH', body: patchBody, prefer: 'return=minimal' });
+    } else {
+      await api(tables[activeTab], { method: 'POST', body, prefer: 'return=minimal' });
+    }
+    closeModal();
+    loadTab();
+  } catch(e) {
+    document.getElementById('form-error').textContent = 'Save failed: ' + e.message;
+  }
+}
+
+function setDefaultStatusFilter() {
+  // Default: exclude Done (uncheck Done, leave all others checked)
+  // Check all status checkboxes except Done
+  const checks = document.querySelectorAll('#f-status-checks input[type=checkbox]');
+  checks.forEach(cb => {
+    cb.checked = cb.value !== 'Done';
+  });
+  // For commitments, default to Outstanding only
+  if (activeTab === 'commitments') {
+    checks.forEach(cb => { cb.checked = cb.value === 'Outstanding'; });
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '›' : '‹';
+  btn.style.left = collapsed ? '0' : '200px';
+}
+
+// ================================================================
+// CHAT TAB
+// ================================================================
+const ANTHROPIC_KEY = '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';
+let chatMessages = []; // { role, content }
+let chatPendingDebrief = null;
+let chatPollInterval = null;
+
+function chatGreet() {
+  addChatMsg('ai', `Hi Nick — I'm your AI Chief of Staff. I can help you:
+
+• Create tasks and log commitments
+• Capture meeting debriefs (structured: headline, decisions, commitments, actions)
+• Draft emails or messages
+• Query your calendar or tasks
+• Answer questions about your work
+
+What do you need?`);
+}
+
+function addChatMsg(role, text) {
+  chatMessages.push({ role: role === 'ai' ? 'assistant' : 'user', content: text });
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const initials = role === 'ai' ? 'AI' : 'NG';
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = `<div class="chat-avatar ${role}">${initials}</div><div class="chat-bubble ${role}">${escHtml(text)}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ai';
+  div.id = 'typing-indicator';
+  div.innerHTML = `<div class="chat-avatar ai">AI</div><div class="chat-bubble ai typing">Thinking...</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function chatKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function clearChat() {
+  chatMessages = [];
+  document.getElementById('chat-messages').innerHTML = '';
+  chatGreet();
+}
+
+function buildSystemPrompt() {
+  const today = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  return `You are Nick Garner's AI Chief of Staff and Executive Assistant. Today is ${today}.
+
+Nick is an executive (likely CTO/tech director) at a healthcare company. He is approachable but not naturally organised — the system is designed to surface what needs attention proactively.
+
+You have access to Nick's management system and can help with:
+- Creating tasks (extract: title, owner, theme, due date, priority)
+- Logging commitments (extract: description, person, direction outbound/inbound, due date)
+- Capturing meeting debriefs in four structured sections: (1) Headline outcome in one sentence, (2) Decisions made, (3) Commitments — yours or theirs, (4) Actions/follow-ups
+- Drafting emails, Teams messages, or Slack messages in Nick's voice (professional, direct, approachable)
+- Answering questions about tasks, calendar, commitments from context provided
+
+For debrief capture: always prompt for all four sections. Do not close a debrief until a headline summary is provided. Be direct and efficient — Nick is busy.
+
+When you have extracted structured data ready to save, end your message with a JSON block in this exact format:
+<action>{"type":"task_create"|"commitment_log"|"debrief_complete","data":{...}}</action>
+
+Keep responses concise. Nick prefers bullet points for multi-item responses. Use plain English, no excessive formality.`;
+}
+
+async function sendChat(prefill) {
+  const input = document.getElementById('chat-input');
+  const text = prefill || input.value.trim();
+  if (!text) return;
+
+  if (!prefill) {
+    input.value = '';
+    input.style.height = 'auto';
+  }
+
+  addChatMsg('user', text);
+  document.getElementById('chat-send').disabled = true;
+  addTyping();
+
+  // Build messages array for API
+  const messages = chatMessages.slice(-20).map(m => ({ role: m.role, content: m.content }));
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystemPrompt(),
+        messages: messages,
+      })
+    });
+
+    const data = await res.json();
+    removeTyping();
+
+    const reply = data.content?.[0]?.text || 'Sorry, no response received.';
+
+    // Strip action tags for display, handle action if present
+    const displayReply = reply.replace(/<action>[\s\S]*?<\/action>/g, '').trim();
+    addChatMsg('ai', displayReply);
+
+    // Check for action block
+    const actionMatch = reply.match(/<action>([\s\S]*?)<\/action>/);
+    if (actionMatch) {
+      try {
+        const action = JSON.parse(actionMatch[1]);
+        handleChatAction(action);
+      } catch(e) { console.warn('Action parse failed', e); }
+    }
+
+  } catch(e) {
+    removeTyping();
+    addChatMsg('ai', 'Error connecting to AI: ' + e.message);
+  }
+
+  document.getElementById('chat-send').disabled = false;
+  document.getElementById('chat-input').focus();
+}
+
+async function handleChatAction(action) {
+  if (action.type === 'task_create' && action.data) {
+    try {
+      await api('tasks', { method: 'POST', body: { ...action.data, creation_source: 'Dashboard Chat' }, prefer: 'return=minimal' });
+      addChatMsg('ai', '✓ Task created and saved to your system.');
+    } catch(e) { addChatMsg('ai', 'Failed to save task: ' + e.message); }
+  }
+  if (action.type === 'commitment_log' && action.data) {
+    try {
+      await api('commitments', { method: 'POST', body: action.data, prefer: 'return=minimal' });
+      addChatMsg('ai', '✓ Commitment logged.');
+    } catch(e) { addChatMsg('ai', 'Failed to save commitment: ' + e.message); }
+  }
+  if (action.type === 'debrief_complete' && action.data) {
+    try {
+      await api('meeting_records', { method: 'POST', body: action.data, prefer: 'return=minimal' });
+      if (chatPendingDebrief) {
+        await api('pending_debriefs?debrief_id=eq.' + chatPendingDebrief, {
+          method: 'PATCH', body: { responded_at: new Date().toISOString(), channel: 'dashboard' }, prefer: 'return=minimal'
+        });
+        chatPendingDebrief = null;
+        document.getElementById('debrief-banner').style.display = 'none';
+      }
+      addChatMsg('ai', '✓ Debrief captured and saved.');
+    } catch(e) { addChatMsg('ai', 'Failed to save debrief: ' + e.message); }
+  }
+}
+
+// Toolbar shortcuts
+function injectDebrief() {
+  sendChat('I want to capture a meeting debrief. Please guide me through it.');
+}
+function injectTaskCreate() {
+  sendChat('I need to create a new task.');
+}
+function injectCommitment() {
+  sendChat('I need to log a commitment.');
+}
+
+// Pending debrief polling
+async function checkPendingDebriefs() {
+  try {
+    const rows = await api('pending_debriefs?select=debrief_id,pre_filled,created_at&responded_at=is.null&order=created_at.desc&limit=1');
+    if (rows && rows.length > 0) {
+      const pd = rows[0];
+      chatPendingDebrief = pd.debrief_id;
+      const pf = pd.pre_filled || {};
+      const banner = document.getElementById('debrief-banner');
+      banner.style.display = 'flex';
+      banner.innerHTML = `<span>📋 Debrief needed: <strong>${pf.title || 'recent meeting'}</strong></span>
+        <span class="debrief-banner-dismiss" onclick="loadPendingDebrief(${pd.debrief_id})">Start →</span>`;
+    }
+  } catch(e) {
+    // Table may not exist yet — silent fail
+  }
+}
+
+async function loadPendingDebrief(id) {
+  try {
+    const rows = await api('pending_debriefs?debrief_id=eq.' + id + '&select=debrief_id,pre_filled');
+    if (!rows || rows.length === 0) return;
+    const pd = rows[0];
+    const pf = pd.pre_filled || {};
+    chatPendingDebrief = pd.debrief_id;
+    document.getElementById('debrief-banner').style.display = 'none';
+    const ctx = [
+      pf.title ? 'Meeting: ' + pf.title : null,
+      pf.date ? 'Date: ' + pf.date : null,
+      pf.attendees ? 'Attendees: ' + pf.attendees : null,
+      pf.theme ? 'Theme: ' + pf.theme : null,
+    ].filter(Boolean).join(' | ');
+    sendChat('Debrief needed for: ' + ctx + '. Please guide me through the four sections.');
+  } catch(e) { console.warn('Failed to load pending debrief', e); }
+}
+
+async function init() {
+  if (!checkAuth()) return;
+  // Set initial toggle position
+  document.getElementById('sidebar-toggle').style.left = '200px';
+  await loadRef();
+  renderNav();
+  renderSidebar();
+  setDefaultStatusFilter();
+  await loadTab();
+}
+
+init();
+</script>
+</body>
+</html>
