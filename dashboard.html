@@ -1123,7 +1123,7 @@ async function sendChat(prefill) {
   const messages = chatMessages.slice(-20).map(m => ({ role: m.role, content: m.content }));
 
   try {
-    const res = await fetch('https://nick-garner.app.n8n.cloud/webhook/dashboard-chat', {
+    const res = await fetch('https://ngarner.app.n8n.cloud/webhook/dashboard-chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
