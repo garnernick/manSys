@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morning Briefing — 26/04/2026</title>
+<title>Morning Briefing — 27/04/2026</title>
 <style>
   @page { size: A4; margin: 12mm 14mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,7 +13,7 @@
   .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
   .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
   .header-right { font-size: 8pt; color: #888; text-align: right; }
-  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; align-items: start; }
   .section { margin-bottom: 12px; }
   .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -23,16 +23,19 @@
   .duration { font-size: 7.5pt; color: #888; }
   .meeting-title { font-size: 9pt; font-weight: 500; }
   .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
   .meeting-brief { margin-top: 4px; }
   .brief-section { margin-top: 3px; }
   .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
   .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
   .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
   .must-table { width: 100%; border-collapse: collapse; }
   .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
-  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 52%; padding-right: 4px; }
   .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
-  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .must-note { font-size: 8pt; color: #555; width: 26%; line-height: 1.4; }
   .overdue-table { width: 100%; border-collapse: collapse; }
   .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
   .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
@@ -45,24 +48,19 @@
   .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
   .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
   .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
-
-  /* ── Day Timeline ── */
   .tl-wrap { margin-bottom: 10px; }
   .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
   .tl-outer { position: relative; width: 100%; }
-  .tl-hour-row { display: flex; padding-left: 0; margin-bottom: 2px; }
-  .tl-hour-label { font-size: 5.5pt; color: #ccc; font-family: monospace; flex: none; text-align: left; }
   .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
   .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
   .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
   .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
   .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
   .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
-  .tl-meeting  { background: #2563eb; color: #fff; }
-  .tl-deep     { background: #7c3aed; color: #fff; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
   .tl-personal { background: #0891b2; color: #fff; }
-  .tl-free     { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
-  .tl-allday   { background: #f1f5f9; color: #64748b; border: 0.5px solid #e2e8f0; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
   .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
   .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
   .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
@@ -90,174 +88,118 @@
 <div class="page">
   <div class="header">
     <div class="header-left">
-      <h1>Sunday 26 April 2026</h1>
-      <div class="greeting">Good morning Nick, I hope you're having a restful Sunday on this 26th of April.</div>
+      <h1>Monday 27 April 2026</h1>
+      <div class="greeting">Good morning Nick - Monday 27 April kicks off with a site visit to Frimley, your first proper imaging centre tour since joining InHealth four weeks ago.</div>
     </div>
-    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 07:46</div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 01:14</div>
   </div>
-  
-<div class="tl-wrap">
-  <div class="tl-section-title">Day at a Glance</div>
-  
-  <div class="tl-outer">
-    <div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div>
-    <div class="tl-lane">
-      <div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div>
-      <div class="tl-block tl-free" style="left:10.714%;width:67.857%;" title="Free time (9h 30m)"><span>Free 9h 30m</span></div>
-    </div>
-  </div>
-  <div class="tl-legend-row">
-    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div>
-    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div>
-    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div>
-    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div>
-  </div>
-  <div class="tl-summary-row">
-  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>0 meetings · 0m</div>
-  
-  
-  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h 30m</div>
-</div>
-</div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Frimley</span></div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:10.714%;width:10.714999999999998%;" title="Travel"><span>Travel</span></div><div class="tl-block tl-meeting" style="left:21.429%;width:14.285%;" title="Nick Garner - tour of Frimley Imaging Centre (meet Maxine Bremner and Vickie Ellerton at Reception at 10am)"><span>Nick Garner - tour of Frimley Imaging Centre (meet Maxine Bremner and Vickie Ellerton at Reception at 10am)</span></div><div class="tl-block tl-meeting" style="left:35.714%;width:7.143000000000001%;" title="Travel"><span>Travel</span></div><div class="tl-block tl-meeting" style="left:42.857%;width:3.5720000000000027%;" title="Introduction and catch up"><span>Introduction and catch up</span></div><div class="tl-block tl-meeting" style="left:50%;width:8.929000000000002%;" title="PET-CT Update."><span>PET-CT Update.</span></div><div class="tl-block tl-meeting" style="left:64.286%;width:5.356999999999999%;" title="Simone &lt;&gt; Nick"><span>Simone &lt;&gt; Nick</span></div><div class="tl-block tl-free" style="left:46.429%;width:3.570999999999998%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:58.929%;width:5.356999999999999%;" title="Free time (45m)"><span>Free 45m</span></div><div class="tl-block tl-free" style="left:69.643%;width:8.927999999999997%;" title="Free time (1h15m)"><span>Free 1h15m</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>6 meetings · 7h</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 2h30m</div></div></div>
   <div class="two-col">
     <div>
       <div class="section">
         <div class="section-title">Today's meetings</div>
-        <table><tr><td class="empty">No meetings today</td></tr></table>
+        <table><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Frimley</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">08:30</div>
+      <div class="duration">1h 30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Travel</div>
+      <div class="meeting-location">To Frimley</div>
+      
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">2h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick Garner - tour of Frimley Imaging Centre</div>
+      <div class="meeting-location">Frimley Park Hospital Portsmouth Road Frimley CAMBERLEY GU16 7UJ</div>
+      <div class="meeting-who">Meeting Maxine Bremner and Vickie Ellerton at reception - operational staff who know the site inside out</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Ask about digital pain points in daily operations - what slows down patient throughput or creates admin overhead</li><li>Understand current integration challenges between imaging systems and patient tracking</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear picture of operational digital challenges for your CDC Gold Build standardisation work</li><li>Specific examples of where digital could deliver quick wins</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Travel</div>
+      <div class="meeting-location">From Frimley</div>
+      
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Introduction and catch up</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>Who is this introduction with and what's the purpose?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:00</div>
+      <div class="duration">1h 15m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PET-CT Update</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Get clarity on digital discovery gaps for the £1.5bn NHS bid - you're currently behind on this</li><li>Understand what digital capabilities each of the 12 lots requires from a competitive perspective</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear action plan to catch up on PET-CT digital requirements</li><li>Connection with Richard Evans or Antony Keane if they're involved</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">16:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Simone &lt;&gt; Nick</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-who">Simone Jordan is one of your direct reports - early relationship building phase, role still being clarified</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Listen more than direct - understand her current remit, concerns, and view of team dynamics</li><li>Ask what she thinks the digital team's biggest challenges are and where she sees quick win opportunities</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear understanding of Simone's role and how she fits into your team structure</li><li>Her honest assessment of team dynamics and areas needing attention</li></ul></div>
+        
+      </div>
+    </td>
+  </tr></table>
       </div>
     </div>
     <div>
       <div class="section">
         <div class="section-title">Must achieves</div>
-        <table class="must-table"><tr><td class="task-title">Create a paper on ways of working and prioritisation</td><td class="task-due">2026-04-26</td><td class="task-note">Due today - prioritise completing this before Monday morning meetings.</td></tr><tr><td class="task-title">Finish bathroom for completion this week</td><td class="task-due">2026-04-22</td><td class="task-note">Already overdue by 4 days - needs immediate attention to complete this week.</td></tr><tr><td class="task-title">Call with HR</td><td class="task-due">2026-04-29</td><td class="task-note">Schedule for this week to discuss any outstanding people matters.</td></tr><tr><td class="task-title">Reporting Line - Chris Selleck</td><td class="task-due">2026-05-01</td><td class="task-note">Preparation needed for upcoming reporting line discussion with Geoff Searle.</td></tr></table>
+        <table class="must-table"><tr><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">26 Apr, '26</td><td class="must-note">This was due yesterday and directly supports your digital strategy clarity priority</td></tr><tr><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td><td class="must-note">Personal task overdue by 5 days</td></tr><tr><td class="must-title">Call with HR</td><td class="must-due">29 Apr, '26</td><td class="must-note">Due Tuesday - likely related to team structure discussions</td></tr><tr><td class="must-title">Reporting Line - Chris Selleck</td><td class="must-due">01 May, '26</td><td class="must-note">Decision needed for Geoff by Wednesday</td></tr></table>
       </div>
-      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr></table></div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">Commitment to Reem</td><td class="over-who">Dr. Reem Hasan</td><td class="over-due">18 Apr, '26</td></tr></table></div>
     </div>
   </div>
   <div class="section" style="margin-top:8px">
     <div class="section-title">Themes &amp; roadmap</div>
-    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Prep for Wednesday's Hello Session needs scheduling this week.</div></div><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Focus on understanding Preventicum roadmap and scheduling Gemma Frenchman meeting.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Critical bathroom completion overdue - prioritise alongside Richard Bernard meeting setup.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">4 open tasks</div><div class="theme-headline">Heavy people focus week with LeMarie meeting, HR call, and Chris Selleck reporting line prep.</div></div></div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Bathroom completion overdue and grass decision from March still pending</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">4 open tasks</div><div class="theme-headline">HR call and Chris Selleck reporting line decision both due this week</div></div><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Hello Session prep for Wednesday and monthly session with Gemma Frenchman due Wednesday</div></div><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Hello Session preparation due tomorrow</div></div></div>
   </div>
-  <div class="footer">
-    <span>Confidential — Nick Garner</span>
-  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
 </div>
-
-<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
-    <div>
-      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
-      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Sunday 26 April 2026</div>
-    </div>
-    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
-  </div>
-
-  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
-  
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.basingstokegazette.co.uk/news/26046049.hampshire-nhs-trust-taking-part-dementia-blood-test-trial/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Groundbreaking dementia trial underway at Hampshire NHS trust</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">basingstokegazette</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The blood test measures p-tau217, which indicates the presence of amyloid and tau proteins - hallmarks of Alzheimer's disease - in the brain. This represents a significant advancement in early dementia detection capabilities. The trial is being conducted at a Hampshire NHS trust, showing local NHS innovation in diagnostic testing.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://menafn.com/1111031329/AI-In-Medical-Imaging-Market-Set-To-Reach-1323-Billion-By-2030" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">AI In Medical Imaging Market Set To Reach $13.23 Billion By 2030</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">menafn</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The AI in medical imaging market is projected to surpass $13 billion by 2030, demonstrating massive growth potential in the sector. This growth is driven by increasing adoption of AI technologies in diagnostic imaging. The market represents significant opportunities for companies operating in healthcare AI and medical diagnostics.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://completeaitraining.com/news/nomad-health-shifts-from-staffing-agency-to-ai-software/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Nomad Health shifts from staffing agency to AI software platform for healthcare firms</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">completeaitraining</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Nomad Health is pivoting from healthcare staffing to selling its AI operating system to other staffing firms. The platform was developed through 15,000 recruiter-less placements and 11 million billed hours of internal operations. This strategic shift demonstrates how AI can transform traditional healthcare service models.</div>
-    </div>
-
-  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
-  
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://timesofindia.indiatimes.com/life-style/fashion/jewellery/italian-prime-minister-giorgia-meloni-goes-off-script-with-desi-jhumkas-and-the-internet-just-cant-look-away/articleshow/130513271.cms" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Italian Prime Minister Giorgia Meloni goes off-script with desi jhumkas, and the internet just can't look away</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">toi</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Italy's Prime Minister Giorgia Meloni has made headlines for wearing traditional Indian jhumka earrings, creating a viral moment online. Her fashion choice represents an interesting cultural crossover in international diplomacy. The internet has responded with widespread attention to this unexpected style statement.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.freepressjournal.in/indore/skill-development-now-surpasses-academic-degrees-ias-rahul-jain" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Skill Development Now Surpasses Academic Degrees: IAS Rahul Jain</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">freepressjournal</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">IAS officer Rahul Jain argues that practical skill development is now more valuable than traditional academic qualifications. He highlighted several government schemes including the Prime Minister's Internship Scheme and Chief Minister's Learn and Earn Scheme. The statement reflects changing perspectives on education and employment in the modern economy.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/accwirecq-2026-4-25-king-of-freights-national-growth-reflects-operational-foundation-built-under-michael-ricklefs" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">King of Freight's National Growth Reflects Operational Foundation Built Under Michael Ricklefs</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Michael Ricklefs has built a reputation as one of the freight industry's most disciplined operational leaders at King of Freight. He spent years refining systems and processes that transformed the Wichita-based company into a nationally recognized operation. The company's success demonstrates the importance of operational excellence in competitive industries with thin margins.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.greaterkashmir.com/politics/i-desire-for-50-of-what-cm-gives-to-his-constituency-mla-javid-baig-11766471" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">I desire for 50% of what CM gives to his constituency: MLA Javid Baig</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">greaterkashmir</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">MLA Javid Baig called for equal development attention to his Baramulla constituency, asking for half of what Chief Minister Omar Abdullah provides to his own area. He highlighted infrastructure gaps including the lack of a sewage treatment plant and inadequate educational facilities. The statement reflects ongoing political tensions over resource allocation in regional development.</div>
-    </div>
-    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
-      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.foxnews.com/sports/jazz-chisholm-jr-gives-blunt-self-assessment-embarrassingly-failed-abs-challenge" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Jazz Chisholm Jr. gives blunt self-assessment after embarrassingly failed ABS challenge</a></div>
-      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">foxnews</div>
-      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Jazz Chisholm Jr. joked about fining himself $1,000 after his latest failed ABS challenge, showing his frustration with the new system. He currently has only a 17% success rate on ABS challenges this season. The player's candid response highlights ongoing adaptation challenges with baseball's new automated ball-strike system.</div>
-    </div>
-
-  
-  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
-    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div>
-        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
-        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.salisburyjournal.co.uk/news/26038972.people-urged-book-covid-19-spring-booster-vaccination/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">NHS urges eligible residents to book spring Covid vaccination</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">salisburyjournal_uk</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://thjournal.com/articles/utah-ai-doctor-halt-regulatory-minefield" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Utah AI Doctor Halt Slashes Healthcare Startups 15%</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">thjournal</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://menafn.com/1111031326/Exocrine-Pancreatic-Insufficiency-EPI-Therapeutics-Diagnostics-Market-To-Hit-US-863B-By-2030" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Exocrine Pancreatic Insufficiency (EPI) Therapeutics &amp; Diagnostics Market To Hit US $8.63B By 2030</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">menafn</span></div>
-      </div>
-      <div>
-        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
-        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.openpr.com/news/4488926/chemical-distribution-tanks-market-analysis-by-application" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Chemical Distribution Tanks Market Analysis By Application, Type, Technology, and Geography - Global Industry Outlook and Forecast 2026-2033</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">openpr</span></div>
-      </div>
-    </div>
-  </div>
-  
-  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
-    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      
-        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
-          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">FA Cup</div>
-          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
-            <a href="https://www.nytimes.com/athletic/7222538/2026/04/25/manchester-city-2-southampton-1-fa-cup-briefing/" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Manchester City 2-1 Southampton</a>
-          </div>
-          <ul style="margin:5px 0 0 12px;padding:0;">
-            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Nico Gonzalez wonder strike saved Pep Guardiola from a shock FA Cup upset</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Manchester City advance to next FA Cup round despite Southampton's strong challenge</li>
-          </ul>
-        </div>
-        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
-          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
-          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
-            <a href="https://ca.sports.yahoo.com/news/jo-o-palhinha-keeps-spurs-162227717.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Wolves 0-1 Tottenham</a>
-          </div>
-          <ul style="margin:5px 0 0 12px;padding:0;">
-            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Palhinha's late winner gives Spurs vital Premier League lifeline in survival battle</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">First Tottenham win of 2026 provides crucial boost in relegation fight</li>
-          </ul>
-        </div>
-        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
-          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
-          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
-            <a href="https://www.101greatgoals.com/football/premier-league/liverpool-crystal-palace-report-result-goals-isak-salah/" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Liverpool 3-1 Crystal Palace</a>
-          </div>
-          <ul style="margin:5px 0 0 12px;padding:0;">
-            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Isak scores first Premier League goal for Liverpool at Anfield</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Potential 'sad end' to Mohamed Salah's career at Liverpool amid transfer speculation</li>
-          </ul>
-        </div>
-        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
-          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Championship</div>
-          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
-            <a href="https://ca.sports.yahoo.com/news/sunderland-0-5-nottingham-forest-115649026.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Sunderland 0-5 Nottingham Forest</a>
-          </div>
-          <ul style="margin:5px 0 0 12px;padding:0;">
-            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Comprehensive Forest victory damages Sunderland's Championship aspirations</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Dominant performance suggests Forest are strong contenders for promotion</li>
-          </ul>
-        </div>
-    </div>
-  </div>
-  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
-    <span>Confidential — Nick Garner</span>
-  </div>
-</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 27 April 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.theguardian.com/society/2026/apr/26/nhs-high-alert-healthcare-shortages-iran-war-petrochemicals" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">From syringes to stents: Iran war exposes NHS dependency on petrochemicals</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">theguardian</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">NHS chiefs fear rising costs and healthcare shortages due to the shipping standstill in the Gulf. Much of modern healthcare is dependent on petrochemicals now held up by the conflict - from active pharmaceutical ingredients to sterile single-use items like PPE, catheters and diagnostic device casings.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://completeaitraining.com/news/healthcare-ai-pilots-stall-at-scale-because-systems-lack/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Healthcare AI pilots stall at scale because systems lack operational context</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">completeaitraining</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Only 5% of healthcare AI pilots reach full production according to Bessemer Venture Partners data. Fragmented data systems and weak governance—not flawed algorithms—are the main reasons deployments stall at scale.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.mirror.co.uk/news/health/private-hospital-patients-nhs-emergency-37065747" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Private hospitals 'rush patients back to the NHS when something goes wrong'</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">mirroruk</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A record number of private patients are being blue-lighted back to NHS hospitals for emergency care. This comes amid calls for Health Secretary Wes Streeting to 'end the privatisation' and raises questions about private healthcare capacity and capability.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://thenextweb.com/news/musk-altman-openai-trial-credibility-nonprofit" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Brockman's diary called it a lie. Now a jury will hear it.</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thenextweb</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Jury selection begins in Oakland federal court for the trial determining whether OpenAI's conversion from nonprofit to one of the most valuable companies was a breach of charitable trust. Elon Musk, who co-founded OpenAI and donated at least $38 million, is suing Sam Altman over the transformation.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://santamariatimes.com/ap/business/the-latest-pakistan-says-us-iran-mediation-moving-ahead-after-trump-holds-back-envoys/article_55b1c7b3-4d57-52b2-b767-107de56b92a4.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The Latest: Pakistan says US-Iran mediation moving ahead after Trump holds back envoys</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">santamariatimes</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">President Trump told Fox News he instructed his top envoys not to travel to Pakistan to negotiate with Iran, saying 'they can call us any time they want.' Iran's President Pezeshkian said Saturday his country won't back down from the conflict.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://nypost.com/2026/04/26/us-news/fbi-raids-home-of-suspected-white-house-correspondents-dinner-shooter-cole-allen-outside-los-angeles/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">FBI raids home of suspected White House Correspondents' Dinner shooter Cole Allen</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">nypost</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Federal law enforcement swarmed a California home linked to Cole Allen, the disgraced 'teacher of the year' who allegedly opened fire at the White House Correspondents' Dinner late Saturday. The raid occurred outside Los Angeles as the investigation continues.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.openpr.com/news/4489355/nuclear-facility-decommissioning-market-analysis" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Nuclear Facility Decommissioning Market Analysis</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">openpr</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Nuclear Facility Decommissioning Market reached $11.92 billion in 2025 and is anticipated to expand at 11.44% CAGR from 2026-2033, reaching an estimated $28.36 billion. The growth reflects increasing nuclear plant retirements and regulatory requirements.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://thenewsmill.com/2026/04/arvind-kejriwal-calls-west-bengal-election-crucial-to-protect-democracy/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Arvind Kejriwal calls West Bengal election crucial to protect democracy</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">thenewsmill</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Arvind Kejriwal emphasizes the importance of the West Bengal elections, alleging 2.7 million voters have been removed from electoral rolls and criticizing PM Modi's leadership approach to democratic processes.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://us.headtopics.com/news/adhd-crisis-in-the-uk-soaring-demand-private-profits-and-82685263" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">ADHD Crisis in the UK: Soaring Demand, Private Profits, and NHS Strain</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">headtopics</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.tivysideadvertiser.co.uk/news/26051367.bronglais-nhs-team-raises-2-500-liver-support/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">NHS team conquer Three Peaks to raise £2,500 for liver support</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">tivysideadvertiser</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.egyptindependent.com/mobile-internet-consumption-in-egypt-rises-12-ntra/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Mobile internet consumption in Egypt rises 12%: NTRA</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">egyptindependent</span></div></div></div></div><div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;"><div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">FA Cup Semi-Final</div><div style="font-size:9.5pt;font-weight:600;line-height:1.3;"><a href="https://sports.yahoo.com/articles/man-city-survive-almighty-scare-191239637.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Manchester City City win Southampton</a></div><ul style="margin:5px 0 0 12px;padding:0;"><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">City's treble bid remains alive after surviving a major scare against Southampton</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Unlikely £50m hero emerges to keep City's historic quest for another treble on track</li></ul></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
 </body>
 </html>
