@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 02/05/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+
+  /* ── Day Timeline ── */
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-hour-row { display: flex; padding-left: 0; margin-bottom: 2px; }
+  .tl-hour-label { font-size: 5.5pt; color: #ccc; font-family: monospace; flex: none; text-align: left; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting  { background: #2563eb; color: #fff; }
+  .tl-deep     { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free     { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-allday   { background: #f1f5f9; color: #64748b; border: 0.5px solid #e2e8f0; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Saturday 02 May 2026</h1>
+      <div class="greeting">Good morning Nick, I hope you're having a pleasant Saturday, 2nd May 2026.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 07:46</div>
+  </div>
+  
+<div class="tl-wrap">
+  <div class="tl-section-title">Day at a Glance</div>
+  
+  <div class="tl-outer">
+    <div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div>
+    <div class="tl-lane">
+      <div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div>
+      <div class="tl-block tl-free" style="left:10.714%;width:67.857%;" title="Free time (9h 30m)"><span>Free 9h 30m</span></div>
+    </div>
+  </div>
+  <div class="tl-legend-row">
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div>
+  </div>
+  <div class="tl-summary-row">
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>0 meetings · 0m</div>
+  
+  
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h 30m</div>
+</div>
+</div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr><td class="empty">No meetings today</td></tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="task-title">Draft observations document for Geoff</td><td class="task-due">Today (2026-05-02)</td><td class="task-note">This is due today and needs immediate attention to avoid becoming overdue.</td></tr><tr><td class="task-title">Ask Lydia to get time in both Amelia and Maz's diaries next week</td><td class="task-due">Yesterday (2026-05-01)</td><td class="task-note">Already overdue by one day - reach out to Lydia first thing Monday preferably for in-person meetings.</td></tr><tr><td class="task-title">Finish bathroom for completion this week</td><td class="task-due">2026-04-22</td><td class="task-note">This personal project is significantly overdue and needs completion to clear the backlog.</td></tr><tr><td class="task-title">Create a paper on ways of working and prioritisation</td><td class="task-due">2026-04-26</td><td class="task-note">Nearly a week overdue - this foundational document is blocking other strategic work.</td></tr><tr><td class="task-title">Reporting Line - Chris Selleck</td><td class="task-due">Yesterday (2026-05-01)</td><td class="task-note">Overdue by one day - critical people management item that needs immediate resolution.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr><tr><td class="task-title">Roadmapping Software</td><td class="task-due">Simone Jordan</td><td class="task-note">Was due 2026-05-01</td></tr><tr><td class="task-title">Commitment to digital committee team</td><td class="task-due">Digital committee team</td><td class="task-note">Was due 2026-04-30</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Complete Geoff's observations document today to stay on track.</div></div><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Prioritise diary coordination with Lydia and catch up on Gemma's monthly session.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Focus on completing the bathroom project to clear this significant backlog.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">1 open task</div><div class="theme-headline">Wrike review scheduled for next week - no immediate action needed.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Resolve Chris Selleck's reporting line urgently and plan product owner hiring discussions.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Saturday 02 May 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.dailymail.com/health/article-15781839/Marthas-rule-save-500-lives-England-2024.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Relatives and healthcare workers using Martha's Rule may have helped save more than 500 lives in England since 2024</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">dailymailuk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Since being introduced in 2024, Martha's Rule has led to more than 500 patients receiving potentially life-saving care through the NHS second opinion system. Over 12,000 calls have been made, resulting in transfers to intensive care or specialist units.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.bioworld.com/articles/730766-hypervision-secures-17m-for-surgical-hyperspectral-imaging-platform" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Hypervision secures £17M for surgical hyperspectral imaging platform</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">bioworld</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Hypervision Surgical raised £17 million in Series A funding for its platform combining spectral sensing with cloud-enabled AI analytics. The technology gives surgeons real-time insights into tissue physiology during surgery that were previously impossible to see.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/bizwire-2026-5-1-e-scopics-announces-new-fda-clearance-for-hepatoscope-with-expanded-capabilities-in-managing-liver-disease-complications-advanced-elastography-imaging-features-and-improved-compatibility-to-be-presented-at-ddw-2026" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">E-Scopics Announces New FDA Clearance for Hepatoscope® With Expanded Capabilities</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">E-Scopics received FDA clearance for enhanced Hepatoscope platform capabilities for managing liver disease complications. The medtech innovator is advancing ultrasound access at point of care, with new features being presented at Digestive Disease Week 2026.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.racefans.net/2026/05/01/2026-miami-grand-prix-sprint-race-qualifying-day-in-pictures/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">2026 Miami Grand Prix sprint race qualifying day in pictures</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">racefans</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Pictures from qualifying for the sprint race and practice sessions at the 2026 Miami Grand Prix. The F1 weekend continues at Miami International Autodrome with sprint race action.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.durangoherald.com/articles/us-military-reaches-deals-with-7-tech-companies-to-use-their-ai-on-classified-systems/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">US military reaches deals with 7 tech companies to use their AI on classified systems</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">durangoherald</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Pentagon announced partnerships with seven tech companies to integrate their AI capabilities into classified military systems. This move allows the military to boost its technological capabilities while maintaining security protocols.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.alternet.org/maga-voters-trump/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Trump in trouble as 'Ohio is in play for the first time in a decade': CNN</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">alternet_org</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">CNN analysis suggests Ohio may be shifting away from Trump due to unfulfilled manufacturing promises and foreign policy concerns. Factory closures and job losses in areas that previously supported Trump are creating cracks in his coalition, with veterans and former supporters now considering voting Democrat.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://easternherald.com/2026/05/02/google-tv-gemini-ai-youtube-shorts-update-2026/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Google Turns TV Into an AI Hub as Gemini Powers YouTube Shorts, Photos, and Smart Screensavers</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">easternherald</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Google's latest TV update integrates Gemini AI deeper into the platform, adding YouTube Shorts to the home screen and enhanced Google Photos experiences. The update transforms Google TV from a passive streaming interface into an AI-powered entertainment hub focused on discovery and personalization.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://en.ara.cat/international/cocaine-and-jihadism-the-travelling-companions-that-have-shaken-mali_129_5724872.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Cocaine and jihadism: the travelling companions that have shaken Mali</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">ara</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Al-Qaeda affiliate JNIM has attacked several Malian cities and conquered Kidal, assassinating the Defense Minister. The jihadist group, allied with Tuareg separatists, finances operations through drug trafficking and kidnapping, with cocaine routes from Latin America to Europe passing through Mali, generating significant revenue.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.financialcontent.com/article/accwirecq-2026-5-1-high-dynamic-range-camera-portfolio-how-120-db-hdr-solves-outdoor-imaging-challenges" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">High Dynamic Range Camera Portfolio: How 120+ dB HDR Solves Outdoor Imaging Challenges</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">financialcontent</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.financialcontent.com/article/accwirecq-2026-5-1-vadzo-imaging-launches-mipi-camera-integration-service-with-driver-development-for-embedded-soc-platforms" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Vadzo Imaging Launches MIPI Camera Integration Service with Driver Development for Embedded SoC Platforms</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">financialcontent</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.upi.com/Top_News/US/2026/05/01/Pentagon-reaches-deals-with-eight-AI-companies/9501777660159/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Pentagon reaches deals with eight AI companies</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">upi</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.insidermonkey.com/blog/hedge-fund-and-insider-trading-news-bill-ackman-crispin-odey-scott-bessent-warren-buffett-ray-dalio-ken-griffin-balyasny-asset-management-rokos-capital-management-saba-capital-management-cor-1752323/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Hedge Fund and Insider Trading News: Bill Ackman, Crispin Odey, Scott Bessent, Warren Buffett, Ray Dalio, Ken Griffin</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">insidermonkey</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
