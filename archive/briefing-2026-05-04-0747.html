@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 04/05/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+
+  /* ── Day Timeline ── */
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-hour-row { display: flex; padding-left: 0; margin-bottom: 2px; }
+  .tl-hour-label { font-size: 5.5pt; color: #ccc; font-family: monospace; flex: none; text-align: left; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting  { background: #2563eb; color: #fff; }
+  .tl-deep     { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free     { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-allday   { background: #f1f5f9; color: #64748b; border: 0.5px solid #e2e8f0; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Monday 04 May 2026</h1>
+      <div class="greeting">Good morning Nick, welcome to Monday 4th May 2026 - hope you're ready to tackle those overdue commitments on this bank holiday.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 07:46</div>
+  </div>
+  
+<div class="tl-wrap">
+  <div class="tl-section-title">Day at a Glance</div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Bank holiday</span></div>
+  <div class="tl-outer">
+    <div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div>
+    <div class="tl-lane">
+      <div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div>
+      <div class="tl-block tl-free" style="left:10.714%;width:67.857%;" title="Free time (9h 30m)"><span>Free 9h 30m</span></div>
+    </div>
+  </div>
+  <div class="tl-legend-row">
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div>
+    <div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div>
+  </div>
+  <div class="tl-summary-row">
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>0 meetings · 0m</div>
+  
+  
+  <div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h 30m</div>
+</div>
+</div>
+  <div class="two-col">
+    <div>
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">All day</div>
+      <div class="duration">all day</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Bank holiday</div>
+      <div class="meeting-location">InHealthWork</div>
+      
+    </td>
+  </tr></table>
+      </div>
+    </div>
+    <div>
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="task-title">Draft observations document for Geoff</td><td class="task-due">2026-05-02</td><td class="task-note">Already overdue by 2 days - prioritise completing today to clear this admin task.</td></tr><tr><td class="task-title">Finish bathroom for completion this week</td><td class="task-due">2026-04-22</td><td class="task-note">Significantly overdue personal project - dedicate time today to complete remaining work.</td></tr><tr><td class="task-title">Ask Lydia to get time in both Amelia and Maz's diaries next week preferably in person</td><td class="task-due">2026-05-01</td><td class="task-note">Quick action needed - send this request to Lydia first thing to secure meetings.</td></tr><tr><td class="task-title">Create a paper on ways of working and prioritisation</td><td class="task-due">2026-04-26</td><td class="task-note">Overdue strategic document - outline structure today and schedule completion this week.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="task-title">Commitment to Reem</td><td class="task-due">Dr. Reem Hasan</td><td class="task-note">Was due 2026-04-18</td></tr><tr><td class="task-title">Roadmapping Software</td><td class="task-due">Simone Jordan</td><td class="task-note">Was due 2026-05-01</td></tr><tr><td class="task-title">Update me on her conversations with Ian</td><td class="task-due">Jannah Cooper</td><td class="task-note">Was due 2026-05-02</td></tr><tr><td class="task-title">Commitment to digital committee team</td><td class="task-due">digital committee team</td><td class="task-note">Was due 2026-04-30</td></tr></table></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Complete Geoff's observations document today to clear this overdue deliverable.</div></div><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Contact Lydia immediately about Amelia and Maz meetings, then focus on Preventicum roadmap understanding.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Use bank holiday to finish bathroom project and finally address the grass situation.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">1 open task</div><div class="theme-headline">Schedule Wrike review for later this week to stay on track.</div></div><div class="theme-card"><div class="theme-name">Team &amp; People</div><div class="theme-count">1 open task</div><div class="theme-headline">Product Owners hiring discussion is on schedule for mid-May.</div></div></div>
+  </div>
+  <div class="footer">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;">
+    <div>
+      <div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div>
+      <div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 04 May 2026</div>
+    </div>
+    <div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div>
+  </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://phys.org/news/2026-04-imaging-method-reversed-dna-replication.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">New imaging method maps reversed DNA replication forks in single cells</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">phys</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">University of Texas researchers developed RF-SIRF, a new imaging method that detects and maps reversed DNA replication forks with single-cell resolution. The technique reveals a unique epigenetic code for DNA replication stress that could advance understanding of genomic stability, aging and treatment response. This breakthrough could have significant applications in medical imaging and diagnostics.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://medcitynews.com/2026/05/the-ai-funding-divide-why-vcs-will-miss-the-next-healthcare-category-kings-and-where-ceos-should-look-instead/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The AI Funding Divide: Why VCs Will Miss the Next Healthcare Category Kings (And Where CEOs Should Look Instead)</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">medcitynews</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Analysis suggests that while AI makes venture capital faster, it doesn't necessarily make it wiser in healthcare investments. The piece argues that in healthcare, breakthrough innovations rarely resemble existing market solutions, making traditional VC pattern recognition less effective. Healthcare CEOs may need to look beyond traditional funding sources for truly innovative solutions.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.walesonline.co.uk/news/real-life/mum-left-numb-serious-nhs-33880797" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Brit mum left 'numb' at serious NHS diagnosis after symptoms on toilet</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">walesonline</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A British mother received a serious NHS diagnosis after her symptoms were initially misattributed to piles. The case highlights the importance of thorough investigation of colorectal symptoms and serves as a warning for others to seek proper medical attention. This underscores ongoing challenges in early diagnosis and symptom recognition within the NHS.</div>
+    </div>
+
+  <div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div>
+  
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPNmJyWjRmUlZ2UTdIdVhidEpMYmxkRXpjX1NqN1B5amlVZ3ctWkhFX2hGT29jSWlyUTViRDFXTk9BS1p0NGl4X0pNOEdkUEZtR3l6SkRoR01FOEFCdi1BNXAzQ09Wbng3NlpPWVU3RThtLWRvX1h1cC1rT0M5eFNPNWV1Y3FTZ202Nk10elhkSW1UY0E?oc=5" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">2026 F1 Miami Grand Prix: Full race results</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">google</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Kimi Antonelli secured his third consecutive pole position and won the Miami Grand Prix ahead of Lando Norris. The 19-year-old's victory marks a record-breaking achievement and strengthens his position in the 2026 title race. Antonelli remains focused despite early success, acknowledging the championship battle is far from over.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://wccftech.com/nvidia-fast-forwarded-co-packaged-optics-five-years-ahead-arriving-with-feynman-gpus/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NVIDIA Fast-Forwarded Co-Packaged Optics Five Years Ahead of Schedule, Arriving First With Its Feynman GPUs</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">wccftech</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">NVIDIA accelerated its Co-Packaged Optics timeline by five years, with the technology now arriving first on Feynman GPUs. CPO uses silicon photonics to replace copper with light-based signal transfer, offering improved interconnect latency and high-bandwidth connections. This advancement positions NVIDIA ahead in next-generation AI infrastructure development.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.ft.lk/opinion/Middle-East-war-to-spark-biggest-energy-price-surge-in-four-years/14-791362" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Middle East war to spark biggest energy price surge in four years</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">ft_lk</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Energy prices are projected to surge 24% this year to their highest level since Russia's 2022 Ukraine invasion. The ongoing Middle East conflict is sending severe shocks through global commodity markets. This represents the most significant energy price increase in four years, with widespread economic implications expected.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.planetf1.com/news/f1-results-2026-miami-grand-prix" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">2026 Miami Grand Prix – Official F1 results (Miami Gardens)</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">planetf1</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Complete results from what's described as a chaotic Miami Grand Prix that featured a history-making victory for Kimi Antonelli. The race appears to have included significant drama and notable developments in the championship standings. Antonelli's win continues his impressive 2026 season performance.</div>
+    </div>
+    <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;">
+      <div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.slashgear.com/2159448/are-michelin-pilot-super-sport-tires-good-what-drivers-say/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Are Michelin Pilot Super Sport Tires Any Good? Here's What Drivers Say</a></div>
+      <div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">slashgear</div>
+      <div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Analysis of Michelin Pilot Super Sport tires reveals they're popular among performance driving enthusiasts. Driver feedback highlights key considerations before purchasing these tires for specific vehicle applications. The review covers practical insights on performance characteristics and suitability for different driving needs.</div>
+    </div>
+
+  
+  <div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.mirror.co.uk/news/health/nhs-8pm-rule-people-waking-37105545" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">NHS '8pm' rule to people waking up tonight needing the toilet</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">mirroruk</span></div>
+      </div>
+      <div>
+        <div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div>
+        <div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.union-bulletin.com/news/national/disneyland-becomes-more-reliant-on-facial-recognition-despite-privacy-concerns/article_7f7e0c5c-d882-5874-b629-77ff1a32b97b.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Disneyland becomes more reliant on facial recognition despite privacy concerns</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">union_bulletin</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://thehillstimes.in/business/axis-bank-opens-first-digital-locker-focused-branch-in-new-delhi" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Axis Bank opens first digital locker-focused branch in New Delhi</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">thehillstimes</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:18px;border-top:1px solid #ddd;padding-top:14px;">
+    <div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Hated But Necessary — Last 24hrs Key Football Scores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      
+        <div style="border:0.5px solid #e0e0e0;border-radius:4px;padding:8px 10px;">
+          <div style="font-size:7pt;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Premier League</div>
+          <div style="font-size:9.5pt;font-weight:600;line-height:1.3;">
+            <a href="https://uk.sports.yahoo.com/news/mainoo-seals-thrilling-win-over-172700363.html" style="color:#1a1a1a;text-decoration:none;border-bottom:1px solid #bbb;">Manchester United Win for Man Utd Liverpool</a>
+          </div>
+          <ul style="margin:5px 0 0 12px;padding:0;">
+            <li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">Manchester United secured Champions League qualification with this crucial victory</li><li style="font-size:7.5pt;color:#444;line-height:1.5;margin-bottom:1px;">The result significantly impacts Liverpool's own European competition prospects for next season</li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;">
+    <span>Confidential — Nick Garner</span>
+  </div>
+</div>
+</body>
+</html>
