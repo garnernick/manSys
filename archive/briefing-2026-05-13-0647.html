@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 13/05/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { column-count: 2; column-gap: 8mm; column-fill: auto; }
+  .two-col .section { break-inside: avoid; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 52%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 26%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Wednesday 13 May 2026</h1>
+      <div class="greeting">Good morning, Nick — you're at the Digital Away Days in Birmingham today, perfect timing to tackle those overdue offsite deliverables.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:46</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Get to Genome [In-person]</span><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Hotel reservation - Radisson Blu Hotel Birmingham</span><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Placeholder - Digital Away Day(s)</span></div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:14.286%;width:46.428%;" title="Confirmed Booking for Digital Away Days - 13th &amp; 14th May"><span>Confirmed Booking for Digital Away Days - 13th &amp; 14th May</span></div><div class="tl-block tl-meeting" style="left:16.071%;width:5.357999999999997%;" title="Corporate Induction Session"><span>Corporate Induction Session</span></div><div class="tl-block tl-meeting" style="left:57.143%;width:7.143000000000001%;" title="AI Steering Group"><span>AI Steering Group</span></div><div class="tl-block tl-meeting" style="left:71.429%;width:3.570999999999998%;" title="Exec Team Weekly Update"><span>Exec Team Weekly Update</span></div><div class="tl-block tl-meeting" style="left:75%;width:14.286000000000001%;" title="Keep free"><span>Keep free</span></div><div class="tl-block tl-free" style="left:10.714%;width:3.571999999999999%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:64.286%;width:7.143000000000001%;" title="Free time (1h)"><span>Free 1h</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>5 meetings · 10h45m</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 1h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="must-title">Draft observations document for Geoff</td><td class="must-due">02 May, '26</td><td class="must-note">11 days overdue to your direct manager — this needs to close out today</td></tr><tr><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">26 Apr, '26</td><td class="must-note">Core to establishing structure with your team — use the away day context to finalize this</td></tr><tr><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td><td class="must-note">Personal commitment but overdue since late April</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">Draft agenda for the whole offsite</td><td class="over-who">Geoff Searle</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">High-level agenda and date for offsite</td><td class="over-who">Geoff Searle</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">Commitment to Reem</td><td class="over-who">Dr. Reem Hasan</td><td class="over-due">18 Apr, '26</td></tr><tr><td class="over-desc">Systems Landscape</td><td class="over-who">Enrico Gasparini</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">Roadmapping Software</td><td class="over-who">Simone Jordan</td><td class="over-due">01 May, '26</td></tr><tr><td class="over-desc">Update me on her conversations with Ian</td><td class="over-who">Jannah Cooper</td><td class="over-due">02 May, '26</td></tr><tr><td class="over-desc">Commitment to digital committee team</td><td class="over-who">Unknown</td><td class="over-due">30 Apr, '26</td></tr></table></div>
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day (ongoing)</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Get to Genome [In-person]</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day (ongoing)</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Hotel reservation - Radisson Blu Hotel Birmingham</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Placeholder - Digital Away Day(s)</div><div class="meeting-location">Birmingham - TBC</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:15</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Corporate Induction Session</div>
+      <div class="meeting-location">Birmingham</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What is the purpose of this induction?</li><li>How does this connect to your current priorities?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">AI Steering Group</div>
+      <div class="meeting-location">Microsoft Teams</div>
+      
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Frame AI strategy in terms of commercial impact and ROI for Geoff's visibility</li><li>Position AI as competitive enabler for PET-CT bid discovery</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear next steps on AI strategy definition</li><li>Understanding of current AI initiatives and resource needs</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">17:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Exec Team Weekly Update</div>
+      <div class="meeting-location">Microsoft Teams</div>
+      <div class="meeting-who">Key exec peers will be present — critical for relationship building and demonstrating progress</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Brief update on digital team discovery progress</li><li>Highlight any quick wins from the away days</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Positive signal to exec team that digital is progressing</li><li>No surprises flagged to wider leadership</li></ul></div>
+        
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">CEO Deliverables</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Multiple overdue commitments to Geoff — observations document and offsite agendas need closing out today</div></div><div class="theme-card"><div class="theme-name">Team Relationship Building</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Outstanding items with key direct reports Enrico, Simone, and Jannah blocking progress</div></div><div class="theme-card"><div class="theme-name">Digital Strategy Foundation</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Ways of working paper and roadmapping tools critical for establishing structure</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Wednesday 13 May 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.pharmacy.biz/uk-ambulance-stroke-test-upfront-diagnostics/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Upfront Diagnostics launches rapid stroke test in UK ambulances</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">pharmacy_biz</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Upfront Diagnostics has launched LVOne, a rapid blood test to identify stroke cases in ambulances. The test received UKCA marking for UK clinical use and is being deployed with London Ambulance Service across 280 vehicles. Results emerge within 10 minutes from a finger-prick sample, enabling paramedics to direct severe stroke patients straight to specialized centers.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.financialcontent.com/article/nnwire-2026-5-12-nhs-starts-offering-immunotherapy-injection-to-cancer-patients" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NHS Starts Offering Immunotherapy Injection to Cancer Patients</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">financialcontent</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS in England is rolling out a treatment upgrade where thousands of cancer patients will receive a one-minute injection of immunotherapy pembrolizumab instead of hours-long infusions. The change slashes administration time dramatically while maintaining the same therapeutic benefit.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.prnewswire.com/news-releases/hyro-reveals-healthcare-ai-agent-benchmarks-proving-deep-ehr-integrations-are-key-to-unlocking-over-1m-in-roi-302768998.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Hyro Reveals Healthcare AI Agent Benchmarks Proving Deep EHR Integrations are Key</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">cision</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">New data from almost 400 healthcare leaders reveals a measurable ROI gap between health systems using AI agents with advanced EHR integrations versus those relying on FHIR-based connections. The research demonstrates that deeper system integrations are critical for unlocking significant AI value in healthcare.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.theguardian.com/film/2026/may/12/film-world-must-not-resist-artificial-intelligence-demi-moore" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Film world must not resist rise of artificial intelligence, says Demi Moore</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">theguardian</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">US actor Demi Moore urged peers not to resist AI's rise, saying 'to fight it is a battle we will lose.' Speaking at Cannes film festival as a jury member, she was asked about AI's industry impact and whether more regulation was needed. Moore advocated for working with the technology rather than fighting it.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://variety.com/2026/tv/news/super-bowl-formula-1-mr-beast-univision-sports-upfront-1236745711/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Spanish-Language Super Bowl, Formula 1, Mr. Beast Partnership All Part of Univision Sports Schedule</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">variety</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">TelevisaUnivision aims to bolster its sports schedule with Spanish-language telecasts of Super Bowl LXI and the Formula 1 Las Vegas Grand Prix. The company announced Tuesday it plans to deliver broad swaths of harder-to-reach audiences to advertisers through these unique sports partnerships.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://krdo.com/news/2026/05/12/nasa-working-out-of-colorado-springs-to-bring-space-technology-to-earth/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NASA working out of Colorado Springs to bring space technology to Earth</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">krdo</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The U.S. Geological Survey and NASA are conducting high-altitude mineral surveys across the Western United States through the Geological Earth Mapping Experiment (GEMx). This collaborative effort aims to map critical mineral deposits to improve environmental mining processes, enhance national security and boost the economy.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.watchlistnews.com/best-artificial-intelligence-stocks-to-keep-an-eye-on-may-12th/11079139.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Best Artificial Intelligence Stocks To Keep An Eye On – May 12th</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">watchlistnews</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Fluence Energy, Hut 8, and Tempus AI are the three AI stocks to watch today according to MarketBeat's screener tool. The analysis covers publicly traded companies that develop, sell, or heavily use AI technologies in their businesses.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.independent.com.mt/articles/2026-05-12/local-news/PN-launches-list-of-candidates-for-the-2026-general-election-6736289644" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">PN launches list of candidates for 2026 general election</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">independent_mt</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Nationalist Party launched its candidate list through an address by leader Alex Borg. Borg said his team is 'full of energy, experience, and love for Malta and Gozo' and criticized the early election timing, suggesting it was called by PM Robert Abela to retain power rather than serve national interest.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.independent.co.uk/news/health/children-nhs-weight-loss-clinic-obesity-england-b2974962.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Children as young as four sent to NHS weight loss clinics</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">independentuk</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.glasgowtimes.co.uk/news/scottish-news/26100628.nhs-lanarkshire-patients-benefit-bloods-go-service/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">NHS Lanarkshire patients benefitting from 'simpler' appointment-free blood tests</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">glasgowtimes</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailysabah.com/business/tech/communications-directorate-secures-archive-with-blockchain-technology" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Communications Directorate secures archive with blockchain technology</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailysabah</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://qz.com/artificial-intelligence-platform-quietly-transforming-pltr-s-business" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Artificial Intelligence Platform Quietly Transforming PLTR's Business</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">quartz</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
