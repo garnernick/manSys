@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 19/05/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { column-count: 2; column-gap: 8mm; column-fill: auto; }
+  .two-col .section { break-inside: avoid; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .must-title { font-size: 8.5pt; font-weight: 500; width: 52%; padding-right: 4px; }
+  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
+  .must-note { font-size: 8pt; color: #555; width: 26%; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Tuesday 19 May 2026</h1>
+      <div class="greeting">Morning, Nick — Tuesday 19 May 2026, and your schedule looks like a game of Tetris designed by someone who doesn't like you.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:47</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:14.286%;width:3.5709999999999997%;" title="Mammo / AAA - Monthly Business Review"><span>Mammo / AAA - Monthly Business Review</span></div><div class="tl-block tl-meeting" style="left:17.857%;width:7.143000000000001%;" title="Patient Engagement - Monthly Business Review"><span>Patient Engagement - Monthly Business Review</span></div><div class="tl-block tl-meeting" style="left:28.571%;width:7.142999999999997%;" title="Nick /Steve M"><span>Nick /Steve M</span></div><div class="tl-block tl-meeting" style="left:35.714%;width:3.5720000000000027%;" title="Catch up"><span>Catch up</span></div><div class="tl-block tl-meeting" style="left:42.857%;width:7.143000000000001%;" title="Children with Cancer UK: Our Charity Partner 2026 information session"><span>Children with Cancer UK: Our Charity Partner 2026 information session</span></div><div class="tl-block tl-meeting" style="left:57.143%;width:2.975999999999999%;" title="FY27 Budget digital capex - digital asks from service lines"><span>FY27 Budget digital capex - digital asks from service lines</span></div><div class="tl-block tl-meeting" style="left:60.714%;width:3.5720000000000027%;" title="UOMRI - Monthly Business Review"><span>UOMRI - Monthly Business Review</span></div><div class="tl-block tl-meeting" style="left:64.286%;width:7.143000000000001%;" title="PET -CT - Monthly Business Review"><span>PET -CT - Monthly Business Review</span></div><div class="tl-block tl-free" style="left:10.714%;width:3.571999999999999%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:25%;width:3.5710000000000015%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:39.286%;width:3.570999999999998%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:50%;width:7.143000000000001%;" title="Free time (1h)"><span>Free 1h</span></div><div class="tl-block tl-free" style="left:71.429%;width:7.141999999999996%;" title="Free time (1h)"><span>Free 1h</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>8 meetings · 5h55m</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 3h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr><td class="must-title">Draft observations document for Geoff</td><td class="must-due">02 May, '26</td><td class="must-note">Over 2 weeks overdue to your CEO — this is not helping your credibility in week 7</td></tr><tr><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">26 Apr, '26</td><td class="must-note">Nearly a month overdue — core to establishing your operating rhythm with the team</td></tr><tr><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td><td class="must-note">Personal commitment nearly a month behind schedule</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">Commitment to Reem</td><td class="over-who">Dr. Reem Hasan</td><td class="over-due">18 Apr, '26</td></tr><tr><td class="over-desc">Systems Landscape</td><td class="over-who">Enrico Gasparini</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">Roadmapping Software</td><td class="over-who">Simone Jordan</td><td class="over-due">01 May, '26</td></tr></table></div>
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mammo / AAA - Monthly Business Review</div>
+      <div class="meeting-location">Microsoft Teams Meeting; Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What digital challenges are affecting mammography operations?</li><li>Any integration issues with AAA screening systems?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:30</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Patient Engagement - Monthly Business Review</div>
+      <div class="meeting-location">Microsoft Teams Meeting; Daffodil Room</div>
+      <div class="meeting-who">Adam Wallwork likely attending — your Chief Patient Engagement Officer peer who cares about patient experience outcomes.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Frame any digital initiatives in terms of patient experience and accessibility</li><li>Ask about digital front door priorities and patient feedback on current systems</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understand patient engagement digital priorities</li><li>Identify quick wins that improve patient experience</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Nick /Steve M</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-who">Steve Martin (MD Vista Health) — understand his business context before assuming digital needs, plus Nick Hall and Nick Worrall attending.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Listen more than you speak — understand Vista Health's specific digital pain points</li><li>Ask about capital project digital requirements from Nick Worrall's perspective</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Map Vista Health's digital landscape and priorities</li><li>Build relationship with Steve Martin as key exec peer</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Catch up</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>Who is this catch-up with?</li><li>What's the agenda?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Children with Cancer UK: Our Charity Partner 2026 information session</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      
+      
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:00</div>
+      <div class="duration">25m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">FY27 Budget digital capex - digital asks from service lines</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Lead with commercial framing and clear ROI for any requests</li><li>Avoid increasing Accenture dependency without exit narrative</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Understand service line digital investment needs</li><li>Position digital capex requests with clear business cases</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">UOMRI - Monthly Business Review</div>
+      <div class="meeting-location">Microsoft Teams Meeting; Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What is UOMRI and how does digital support their operations?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">16:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PET -CT - Monthly Business Review</div>
+      <div class="meeting-location">Microsoft Teams Meeting; Daffodil Room</div>
+      <div class="meeting-who">Critical meeting — Richard Evans (MD PET-CT) likely attending. You're behind on PET-CT bid discovery for the £1.5bn NHS opportunity.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Focus on understanding digital requirements for the 12-lot NHS bid</li><li>Ask about competitive digital capabilities needed to win</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Get up to speed on PET-CT digital discovery</li><li>Understand what digital capability the bid requires</li></ul></div>
+        
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">CEO observations document 17 days overdue — credibility issue in your 7th week</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">1 open task</div><div class="theme-headline">Wrike review needed to establish project management framework</div></div><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">1 open task</div><div class="theme-headline">Monthly session with Gemma Frenchman overdue — relationship maintenance needed</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Tuesday 19 May 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.theguardian.com/society/2026/may/18/nhs-urged-to-update-website-after-renaming-polycystic-ovary-syndrome-polyendocrine-metabolic-syndrome-pcos-pmos" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NHS urged to update website after renaming polycystic ovary syndrome</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Guardian</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">PCOS has been officially renamed to polyendocrine metabolic syndrome (PMOS) after a 14-year effort. A grassroots charity is urging the NHS to quickly update patient information to avoid confusion, as the condition affects about 1 in 8 women.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.prnewswire.com/news-releases/qualtrics-acquires-healthcare-experience-leader-press-ganey-forsta-for-6-75-billion-expands-experience-management-xm-category-leadership-creating-worlds-largest-ai-dataset-for-human-experiential-context-ever-assembled-302774876.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Qualtrics Acquires Healthcare Experience Leader Press Ganey Forsta For $6.75 Billion</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">PR Newswire</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Major healthcare experience management acquisition combining decades of proprietary healthcare data with AI platform. Creates the world's largest AI dataset for human experiential context, potentially relevant for patient engagement strategies.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.prnewswire.com/news-releases/vortex-imaging-inc-raises-12-million-and-expands-board-leadership-to-advance-computational-ultrasound-solutions-302774576.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Vortex Imaging Inc. Raises $12 Million and Expands Board Leadership to Advance Computational Ultrasound Solutions</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">PR Newswire</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Medical imaging startup secures significant funding to accelerate FDA clearance and commercialisation of novel computational ultrasound technology. Relevant for diagnostic imaging innovation trends in healthcare.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.bloomberg.com/news/articles/2026-05-18/gucci-in-talks-with-renault-f1-team-alpine-over-sponsorship-deal" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Gucci in Talks With Renault F1 Team Alpine Over Sponsorship Deal</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Bloomberg</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Luxury fashion brand Gucci is reportedly in discussions with the Renault-owned Alpine Formula 1 team about a potential sponsorship arrangement, marking another high-profile luxury brand entering F1.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.cnbc.com/2026/05/18/the-fed-will-have-to-raise-interest-rates-in-july-to-appease-bond-vigilantes-yardeni-says.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The Fed will have to raise interest rates in July to appease 'bond vigilantes,' Yardeni says</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">CNBC</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Market analyst predicts incoming Fed Chair Kevin Warsh may need to raise rates instead of cutting them to combat persistent inflation and appease bond markets, contradicting expectations for rate cuts.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.aa.com.tr/en/europe/uk-premier-says-he-plans-to-fight-next-general-election/3941283" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">UK premier says he plans to fight next general election</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Anadolu Agency</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Keir Starmer insists he won't walk away as Prime Minister despite increasing pressure, stating he's focused on his duty to the country and plans to lead Labour into the next general election.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.socialnews.xyz/2026/05/18/africa-finance-corporation-approves-us100-million-commitment-to-africa-focused-technology-fund-managers-to-accelerate-africas-digital-industrialisation/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Africa Finance Corporation Approves US$100 Million Commitment to Africa-Focused Technology Fund Managers</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Social News XYZ</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Continental infrastructure solutions provider AFC commits $100 million to invest in Africa-focused technology fund managers as part of accelerating Africa's digital industrialisation efforts.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.manilatimes.net/2026/05/19/tmt-newswire/globenewswire/xlaserlab-highlights-the-growing-role-of-mopa-laser-technology-in-smart-production/2346549" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Xlaserlab Highlights the Growing Role of MOPA Laser Technology in Smart Production</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Manila Times</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Industrial laser systems provider expands focus on MOPA laser technology for precision manufacturing. Technology offers flexible controls for automotive, electronics, and jewelry sectors, supporting smart manufacturing trends.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxPdmI3YUxobDZ0TU44U3YzaGJkem52Yzg0dG95ZUI0Ykd3TDlSQjdPY2VJaGE4MTRSY2hwWUExUmJlTC1wNVhSN19uZ3lxNG5OamRwaE1KaG1WOS1WYXhWUm5uVDliU0c2T2FSVFR3ZF9SMFJySV84Wm52bVd4bGd2M2lBanEwQjhsaTNHUmJXTmQzY1pjazd4SlR4a3lFMEVq?oc=5" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Exclusive: Streeting's NHS home-working revolution 'puts patients at risk'</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">The Telegraph</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.globenewswire.com/news-release/2026/05/18/3296812/0/en/Philips-highlights-advances-in-imaging-and-physiology-to-support-complex-PCI-at-EuroPCR-2026.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Philips highlights advances in imaging and physiology to support complex PCI at EuroPCR 2026</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">GlobeNewswire</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://finance.yahoo.com/markets/stocks/articles/3-beaten-down-stocks-could-172000762.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">3 Beaten-Down Stocks That Could Take Off if Interest Rates Come Down This Year</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Yahoo Finance</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.cnbc.com/video/2026/05/18/how-investors-can-manage-portfolios-as-interest-rates-rise.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">How investors can manage portfolios as interest rates rise</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">CNBC</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
