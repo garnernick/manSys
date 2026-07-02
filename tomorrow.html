@@ -30,10 +30,12 @@
   .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
   .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
   .must-table { width: 100%; border-collapse: collapse; }
-  .must-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #eee; }
-  .must-title { font-size: 8.5pt; font-weight: 500; width: 55%; padding-right: 4px; }
-  .must-due { font-size: 8pt; color: #888; width: 22%; white-space: nowrap; padding-right: 4px; }
-  .must-note { font-size: 8pt; color: #555; width: 23%; line-height: 1.4; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
   .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
   .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; }
   .tl-wrap { margin-bottom: 10px; }
@@ -64,9 +66,9 @@
     <div class="header-left">
       <div class="sub">Tomorrow's Briefing</div>
       <h1>Friday 03 July 2026</h1>
-      <div class="greeting">Tomorrow is a leave day with one work commitment slipping through — keep it light, handle the InHealth follow-up, then protect your afternoon block for the overdue items that keep rolling forward.</div>
+      <div class="greeting">Tomorrow is a leave day with one work commitment slipping through — keep the InHealth follow-up crisp, protect your afternoon block, and treat everything else as optional.</div>
     </div>
-    <div class="header-right">Nick Garner<br>Prepared 22:18</div>
+    <div class="header-right">Nick Garner<br>Prepared 22:44</div>
   </div>
   <div class="tl-wrap">
   <div class="tl-section-title">Day at a Glance</div>
@@ -98,7 +100,7 @@
     <td class="meeting-cell">
       <div class="meeting-title">Nick Garner on leave</div>
       <div class="meeting-location">Microsoft Teams Meeting</div>
-      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Genuine downtime preserved despite the two calendar intrusions</li></ul></div></div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Genuine downtime preserved despite the one scheduled call</li></ul></div></div>
     </td>
   </tr><tr class="meeting-row">
     <td class="time-cell">
@@ -108,7 +110,7 @@
     <td class="meeting-cell">
       <div class="meeting-title">InHealth - Contact Centre Follow up</div>
       <div class="meeting-location">Microsoft Teams Meeting</div>
-      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Confirm actions and owners agreed at the previous session</li><li>Clarify next milestone dates so this doesn't need another follow-up on leave</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear, owned next steps that close the loop without further diary time</li></ul></div></div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Confirm actions and owners agreed in the prior session and where each stands</li><li>Set a clear next checkpoint so this doesn't need chasing during future leave</li></ul></div><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Agreed next steps and a firm follow-up date, freeing the rest of your day</li></ul></div></div>
     </td>
   </tr><tr class="meeting-row">
     <td class="time-cell">
@@ -118,7 +120,7 @@
     <td class="meeting-cell">
       <div class="meeting-title">Keep Free</div>
       
-      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Uninterrupted block used to clear one overdue must-achieve or fully switched off</li></ul></div></div>
+      <div class="meeting-brief"><div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Time held clear — resist backfilling it with work</li></ul></div></div>
     </td>
   </tr></table>
       </div>
@@ -126,7 +128,11 @@
     <div>
       <div class="section">
         <div class="section-title">Must achieves</div>
-        <table class="must-table"><tr><td class="must-title">Monthly Team Agenda</td><td class="must-due">2026-07-01</td><td class="must-note">Now overdue — draft and circulate the agenda so the team meeting isn't delayed further.</td></tr><tr><td class="must-title">Draft observations document for Geoff</td><td class="must-due">2026-05-02</td><td class="must-note">Significantly overdue — commit to a rough first draft to Geoff even if incomplete, to unblock him.</td></tr><tr><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">2026-04-22</td><td class="must-note">Long overdue — chase the contractor for a firm completion date and close this out.</td></tr><tr><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">2026-04-26</td><td class="must-note">Overdue — use the afternoon block to outline the structure so it can be finished next week.</td></tr></table>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Monthly Team Agenda</td><td class="must-due">2026-07-01</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Now overdue — a 15-minute draft of headline items would clear it, but only if you choose to touch work tomorrow.</td></tr><tr class="must-head"><td class="must-title">Draft observations document for Geoff</td><td class="must-due">2026-05-02</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Significantly overdue; flag to Geoff with a realistic delivery date rather than letting it drift further.</td></tr><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">2026-04-22</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Leave day is the ideal window to close out any outstanding snags or contractor sign-off.</td></tr><tr class="must-head"><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">2026-04-26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Long overdue — block time next week to draft it and remove it from your standing list.</td></tr></table>
       </div>
     </div>
   </div>
