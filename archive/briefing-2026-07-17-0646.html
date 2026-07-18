@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 17/07/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Friday 17 July 2026</h1>
+      <div class="greeting">Morning, Nick — Friday 17 July, and someone has decided five back-to-back QBRs constitutes a reasonable use of your afternoon. Fuel up before 11:00.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:47</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;"><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Andy - Annual Leave</span><span style="font-size:6pt;padding:1px 6px;border-radius:8px;background:#f1f5f9;color:#64748b;border:0.5px solid #e2e8f0;">Annual Leave - Simone</span></div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:17.857%;width:3.571999999999999%;" title="Weekly catch up - Nick / Geoff"><span>Weekly catch up - Nick / Geoff</span></div><div class="tl-block tl-meeting" style="left:25%;width:3.5710000000000015%;" title="Lydia / Nick weekly catch up"><span>Lydia / Nick weekly catch up</span></div><div class="tl-block tl-meeting" style="left:28.571%;width:1.7859999999999978%;" title="Preventicum - Quarterly Business Review"><span>Preventicum - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:30.357%;width:5.356999999999999%;" title="Mobiles - Quarterly Business Review"><span>Mobiles - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:35.714%;width:3.5720000000000027%;" title="Cardiac - Quarterly Business Review"><span>Cardiac - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:42.857%;width:5.356999999999999%;" title="LCS - Quarterly Business Review"><span>LCS - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:48.214%;width:5.356999999999999%;" title="DESP &amp; CHIS - Quarterly Business Review"><span>DESP &amp; CHIS - Quarterly Business Review</span></div><div class="tl-block tl-meeting" style="left:53.571%;width:3.5720000000000027%;" title="PEC digital transformation – check in"><span>PEC digital transformation – check in</span></div><div class="tl-block tl-meeting" style="left:60.714%;width:17.857%;" title="Keep Free"><span>Keep Free</span></div><div class="tl-block tl-free" style="left:10.714%;width:7.142999999999999%;" title="Free time (1h)"><span>Free 1h</span></div><div class="tl-block tl-free" style="left:21.429%;width:3.5710000000000015%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:39.286%;width:3.570999999999998%;" title="Free time (30m)"><span>Free 30m</span></div><div class="tl-block tl-free" style="left:57.143%;width:3.570999999999998%;" title="Free time (30m)"><span>Free 30m</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>9 meetings · 7h</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 2h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Draft observations document for the Exec</td><td class="must-due">15 Jul, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Two days late and it lands with the whole exec — Geoff's pulse-check group. Use the 15:30 block and close it today.</td></tr><tr class="must-head"><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">26 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Nearly three months overdue and directly tied to priority #2 (strategy clarity). Acta non verba — this needs to move.</td></tr><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Personal, but long overdue — get it off the mental load.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">Systems Landscape — needed to understand the technical estate</td><td class="over-who">Enrico Gasparini</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">Roadmapping Software decision</td><td class="over-who">Simone Jordan</td><td class="over-due">01 May, '26</td></tr><tr><td class="over-desc">Black Swan Services with Richard E</td><td class="over-who">Nick Garner (self)</td><td class="over-due">22 May, '26</td></tr><tr><td class="over-desc">Jannah - Contractor Onboarding/Renewals</td><td class="over-who">Jannah Cooper</td><td class="over-due">22 May, '26</td></tr><tr><td class="over-desc">Sessions to organise PACS Strategy</td><td class="over-who">Nick Garner (self)</td><td class="over-due">05 Jun, '26</td></tr><tr><td class="over-desc">Team Charter OTU</td><td class="over-who">Simone Jordan</td><td class="over-due">30 Jun, '26</td></tr><tr><td class="over-desc">JIRA access blocked for HR (Jannah C) — someone can't work</td><td class="over-who">Hayley Cook</td><td class="over-due">01 Jul, '26</td></tr><tr><td class="over-desc">ToR IG SteerCo</td><td class="over-who">Michael Pennington</td><td class="over-due">07 Jul, '26</td></tr></table></div>
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day (ongoing)</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Andy - Annual Leave</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell"><div class="time" style="color:#888;">All day (ongoing)</div></td>
+    <td class="meeting-cell"><div class="meeting-title">Annual Leave - Simone</div><div class="meeting-location">Microsoft Teams Meeting</div></td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">09:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Weekly catch up - Nick / Geoff</div>
+      <div class="meeting-location">Daffodil Room / Teams</div>
+      <div class="meeting-who">Geoff Searle, your CEO — accountant, supportive but expects visible progress and ROI. He has exited two CTOs before, one for poor storytelling and relationships. He takes his pulse from the wider exec.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Be honest that the Exec observations doc is 2 days late — better to pre-empt than have him notice. Give him a firm completion time (today, 15:30 block).</li><li>If PET-CT comes up, be candid that digital discovery is behind and share your plan to get alongside Richard Evans and Antony Keane — don't oversell readiness.</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Geoff leaves with a clear sense of your near-term plan and no surprises on the observations doc</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Lydia / Nick weekly catch up</div>
+      <div class="meeting-location">Teams</div>
+      <div class="meeting-who">Lydia Cook, your EA. Use her to your advantage — she can protect that 15:30 block and help chase the eight overdue commitments.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Ask Lydia to ring-fence 15:30 for the Exec observations doc — no encroachment.</li><li>Delegate the mechanics of clearing the JIRA access block and IG SteerCo ToR chase to her where possible.</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>15:30 protected; a plan to unblock two overdue commitments today</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">15m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Preventicum QBR</div>
+      <div class="meeting-location">Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>Who owns this QBR and what is digital's role in it?</li><li>What decision or input is expected of me in only 15 minutes?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:15</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Mobiles QBR</div>
+      <div class="meeting-location">Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What are the digital dependencies for the Mobiles business unit?</li><li>Am I here to listen and learn, or to contribute a position?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">12:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Cardiac QBR</div>
+      <div class="meeting-location">Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>How does digital touch the Cardiac service line?</li><li>Any live issues I should be aware of before walking in?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:00</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">LCS QBR</div>
+      <div class="meeting-location">Daffodil Room</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What does LCS stand for in this context and who leads it?</li><li>What is digital expected to deliver against this business review?</li></ul></div>
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">13:45</div>
+      <div class="duration">45m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">DESP &amp; CHIS QBR</div>
+      <div class="meeting-location">Daffodil Room</div>
+      <div class="meeting-who">DESP (diabetic eye screening) and CHIS (child health information) sit in the screening domain — Antony Keane's world and relevant to your Spectra migration and screening digital picture.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Listen for how these screening programmes depend on Spectra — this connects directly to your cloud migration due October.</li><li>Note Chris Salek (Director of Screening - Digital) is your report here; use this to build your understanding of the screening digital landscape.</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Better grasp of screening programme digital dependencies ahead of Spectra migration</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:30</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">PEC digital transformation – check in</div>
+      <div class="meeting-location">Teams</div>
+      <div class="meeting-who">Patient Engagement / Adam Wallwork's territory — frame anything digital in terms of patient experience, accessibility and ease of use.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Understand where PEC's digital transformation currently sits and what's blocking it before offering views.</li><li>This is a relationship-building opportunity with the patient engagement agenda — listen more than you direct.</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Clear view of PEC digital transformation status and Adam's priorities</li></ul></div>
+        
+      </div>
+    </td>
+  </tr><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">15:30</div>
+      <div class="duration">2h 30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Keep Free — protect for Exec observations doc</div>
+      <div class="meeting-location">—</div>
+      <div class="meeting-who">This is your only real deep-work window today and the Exec observations doc is already 2 days late. Do not let it get eaten.</div>
+      <div class="meeting-brief">
+        
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Exec observations document drafted and off your plate</li></ul></div>
+        
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">1 open task</div><div class="theme-headline">The Exec observations doc is the visible signal of your first 90 days — it's late, so ship it today in the 15:30 block.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">1 open task</div><div class="theme-headline">Wrike review is over two months old — quick decision needed on tooling before it blocks roadmapping.</div></div><div class="theme-card"><div class="theme-name">Team &amp; Relationships</div><div class="theme-count">0 open tasks</div><div class="theme-headline">Three overdue items owe to Enrico and Simone (both away today) — clearing these is how you stop feeling like a nuisance and become additive.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Bathroom and the grass — small, but nagging; finish the bathroom this week.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Friday 17 July 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.healthcareitnews.com/news/headless-ai-aims-eliminate-healthcare-bottlenecks" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">'Headless AI' aims to eliminate healthcare bottlenecks</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Healthcare IT News</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Despite the surge in healthcare AI tools, much daily work still relies on people manually shuttling data between EHRs, portals and scheduling systems. 'Headless AI' targets exactly this integration-and-workflow bottleneck — directly relevant to your goal of removing digital from the critical path and your emerging AI strategy.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.news-medical.net/news/20260716/PET-imaging-reveals-widespread-brain-receptor-deficits-in-schizophrenia.aspx" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">PET imaging reveals widespread brain receptor deficits in schizophrenia</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">News-Medical</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A new PET study found significantly lower muscarinic M1 receptor availability across brain regions in schizophrenia patients. Worth a glance given the PET-CT bid — a reminder of the clinical value and expanding use cases behind that £1.5bn opportunity.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.pharmacy.biz/rcpharm-pharmacy-nhs-reform/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">RCPharm urges MPs to place pharmacy at heart of NHS reform</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Pharmacy Biz</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">As NHS England is abolished and functions shift to ICBs, the RCPharm is pushing for full access to the proposed Single Patient Record and stronger digital inclusion safeguards. The Single Patient Record direction matters for anyone integrating with NHS systems — keep it on your radar for integration strategy.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://news.google.com/rss/articles/CBMivwFBVV95cUxNZ21TdVZNODU3OFhWSGFoc0o0bHp1LTVGbHVSMEM0XzcwRjVyNDhhd2RiWHBiN2k0LVRrTmZYOW8tQTdfWHlQSXRRVmgtX2hpZGZ4SjB2akRnMTBWbXdobm8tcHlwQWFxNm1PbmFUSGxfZ08ydDBwWUZwVWdIMHFMZFVTS0Z2TFBsWHRUb25fLVE3Yl8zMkdCb1pEdFFTc3praUpVNkRkcGFLXzJYMERTU0NqbHlIRTFIYl9uRnV1MA?oc=5" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Piastri gives update amid Verstappen to McLaren reports</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Formula 1 / Google News</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Piastri has moved to shut down speculation of a Verstappen switch to McLaren, with Webber dismissing the rumours as 'fiction' and Max merely 'exploring options'. Silly-season paddock chatter, but the McLaren driver dynamic is one to watch.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://qz.com/dallas-fed-logan-higher-interest-rates-inflation-071626" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Dallas Fed's Lorie Logan calls for higher interest rates</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Quartz</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Logan argues inflation isn't headed back to 2% and that modest rate rises would better balance the Fed's mandate. A hawkish signal that runs against market expectations — relevant for anyone tracking the macro and investment climate.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.dawn.com/news/2015858/pakistan-becomes-founding-member-of-world-artificial-intelligence-cooperation-organisation" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Xi to outline China's AI governance vision as Huawei unveils Atlas 950 SuperPoD</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Dawn</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">China is launching the World AI Cooperation Organisation and debuting Huawei's largest AI computing cluster yet, built without Nvidia's top chips. A clear signal of the geopolitical race for AI governance and a domestic hardware stack independent of US tech.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://finance.yahoo.com/markets/stocks/articles/why-did-micron-technology-stock-173609610.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Why Did Micron Technology Stock Fall 8%?</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Yahoo Finance</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Micron dropped 8% after a strong prior session, a sharp reversal in a key memory-chip name. Worth noting for the semiconductor and broader tech-market temperature.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.thehawk.in/news/india/india-launches-white-rabbit-technology-to-secure-national-time-protocols" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">India launches White Rabbit Technology for a secure national time standard</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Hawk</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">India has launched a White Rabbit-based precision time distribution network to reduce reliance on GPS and protect financial, telecoms and power infrastructure from cyber risk. A neat example of nation-scale resilience engineering — and sovereignty over critical digital infrastructure.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.healthcaredive.com/news/digital-health-funding-first-half-2026-rock-health/825215/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Large funding rounds help boost digital health investment in H1</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Healthcare Dive</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://natlawreview.com/article/recent-class-actions-expose-data-privacy-risk-acquisitions-healthcare-and" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Recent Class Actions Expose Data Privacy Risk in Healthcare and Healthcare AI</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">National Law Review</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.stl.news/patient-confidentiality-age-of-digital-health-records/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Patient Confidentiality in the Age of Digital Health Records</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">STL News</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.pehub.com/serent-backed-raintree-acquires-vc-backed-healthcare-ai-firm-spike-technologies/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Serent-backed Raintree acquires healthcare AI firm Spike Technologies</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">PE Hub</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.digitaljournal.com/article/engineering-leadership-beyond-the-workplace-lessons-from-mentoring-startups-on-building-technology-that-scales/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Engineering leadership beyond the workplace: building technology that scales</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Digital Journal</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://tdpelmedia.com/archangels-boosts-scotlands-startup-ecosystem-with-17-9-million-in-h1-2026-investments-across-technology-and-life-sciences/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Archangels boosts Scotland's startup ecosystem with £17.9m in H1 2026</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">TDPel Media</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
