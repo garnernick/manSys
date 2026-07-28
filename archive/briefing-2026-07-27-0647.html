@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 27/07/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Monday 27 July 2026</h1>
+      <div class="greeting">Good morning, Nick — it's Monday 27 July, and the calendar has cleared its throat with a single four-hour budget meeting, which is either a gift or a warning depending on how well you prep.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:47</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:21.429%;width:28.571%;" title="FY27 Shared Services and PEC Budget Draft 1"><span>FY27 Shared Services and PEC Budget Draft 1</span></div><div class="tl-block tl-free" style="left:10.714%;width:10.714999999999998%;" title="Free time (1h30m)"><span>Free 1h30m</span></div><div class="tl-block tl-free" style="left:50%;width:28.570999999999998%;" title="Free time (4h)"><span>Free 4h</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>1 meetings · 4h</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 5h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Draft observations document for the Exec</td><td class="must-due">15 Jul, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">12 days overdue and the single most trust-eroding item on your list — this is your discovery narrative to the Exec. Protect 30 mins after the budget meeting and move it forward.</td></tr><tr class="must-head"><td class="must-title">Create a paper on ways of working and prioritisation</td><td class="must-due">26 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Three months overdue. This is exactly the 'storytelling and prioritisation' capability Geoff has exited a CTO over before — don't let it keep slipping.</td></tr><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Personal, but still open — close it out so it stops occupying mental space.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">Systems Landscape — you owe Enrico the picture he needs</td><td class="over-who">Enrico Gasparini</td><td class="over-due">06 May, '26</td></tr><tr><td class="over-desc">Roadmapping Software</td><td class="over-who">Simone Jordan</td><td class="over-due">01 May, '26</td></tr><tr><td class="over-desc">Team Charter OTU</td><td class="over-who">Simone Jordan</td><td class="over-due">30 Jun, '26</td></tr><tr><td class="over-desc">Black Swan Services with Richard E</td><td class="over-who">Nick Garner (self)</td><td class="over-due">22 May, '26</td></tr><tr><td class="over-desc">Sessions to organise PACS Strategy</td><td class="over-who">Nick Garner (self)</td><td class="over-due">05 Jun, '26</td></tr><tr><td class="over-desc">ToR IG SteerCo</td><td class="over-who">Michael Pennington</td><td class="over-due">07 Jul, '26</td></tr><tr><td class="over-desc">Jannah — Contractor Onboarding/Renewals</td><td class="over-who">Jannah Cooper</td><td class="over-due">22 May, '26</td></tr><tr><td class="over-desc">JIRA access for HR blocked (Jannah C)</td><td class="over-who">Hayley Cook</td><td class="over-due">01 Jul, '26</td></tr></table></div>
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">10:00</div>
+      <div class="duration">4h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">FY27 Shared Services and PEC Budget Draft 1</div>
+      <div class="meeting-location">Burnham Yard, Daffodil Room</div>
+      <div class="meeting-who">Budget setting — Steven Scott (CFO) and Geoff care about commercial rigour above all; this is where your ROI credibility is built or dented.</div>
+      <div class="meeting-brief">
+        <div class="brief-section"><span class="brief-label">Talking points</span><ul><li>Frame any digital line items against the priorities Geoff already cares about — Spectra cloud migration (Oct deadline) and CDC Gold Build — with clear ROI, not open-ended asks.</li><li>Where Accenture/Mastek spend appears, be ready to signal a direction of travel toward reduced dependency — Geoff watches this closely.</li></ul></div>
+        <div class="brief-section"><span class="brief-label">Key outcomes</span><ul><li>Leave the room with a clear view of what digital budget you're defending and the commercial story behind each ask.</li><li>No surprises for Steven or Geoff — surface any material digital spend now, not later.</li></ul></div>
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>Which digital investments in this draft are genuinely tied to a committed programme vs. discretionary?</li><li>What is the PET-CT bid's budget footprint and does it land in this draft or elsewhere?</li></ul></div>
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">On-Boarding Wins</div><div class="theme-count">1 open task</div><div class="theme-headline">The Exec observations doc is the on-boarding deliverable that matters most — it is overdue and directly shapes how Geoff reads your discovery phase.</div></div><div class="theme-card"><div class="theme-name">Direct Report Relationships</div><div class="theme-count">3 open tasks</div><div class="theme-headline">Two of your Tier 1 direct reports — Enrico and Simone — are each waiting on overdue items; a short acknowledging message to each today buys goodwill before you clear the work.</div></div><div class="theme-card"><div class="theme-name">Platform Modernisation</div><div class="theme-count">1 open task</div><div class="theme-headline">Wrike review is outstanding — relevant to the ways-of-working paper, so tackle them together rather than separately.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Bathroom and the grass decision are both long open — close them to clear mental overhead.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 27 July 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Healthcare &amp; Diagnostics</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://augustafreepress.com/news/uva-health-researcher-helps-lay-out-framework-for-use-of-ai-in-healthcare/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">UVA Health researcher helps lay out framework for use of AI in healthcare</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Augusta Free Press</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">An emergency medicine doctor and a Clemson colleague have published a framework for how hospitals should integrate AI into clinical work. Directly relevant to your AI strategy definition work — a ready reference for grounding safe, structured AI adoption.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxNREo2SnlsdzFTd1NwcG9UV05vaWdBWXRhWGFmSEY1VDgybndoNE05QUYwNDdMZFREQ3QzbnE5S1F5eDhWM1A3d185NjhxZzctYmY4TzJ6VWtGLXhQbzNtblhoUW9UOXAxTkh4d2U4VE04YzhZVEtxNXRQTFMyczFVUTFTRGRTTWVwRXpET3RWdWNwV01vUDVsbXJXVEQ?oc=5" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">NHS accused of suppressing investigation reports on poor care</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Times</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The NHS is facing accusations of withholding investigation reports on poor care. Transparency and information governance pressure like this is worth noting given your outstanding IG SteerCo ToR — the governance backdrop is tightening.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.independent.co.uk/news/uk/home-news/uterus-fibroids-womens-health-nhs-gynaecology-pmos-b3014789.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Woman with mango-sized fibroid felt forced to go private due to NHS waiting list</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Independent</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A 26-year-old describes going private after long NHS gynaecology waits. Waiting-list pressure is the demand story behind InHealth's diagnostic and screening business — useful colour for conversations with Amelia and Antony.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsportweek.com/2026/07/26/lando-norris-mclaren-best-f1-race-wins/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Lando Norris explains McLaren radio rant after 'one of my best' F1 races</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Motorsport Week</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Norris took his first win of the season at the Hungarian GP despite a mid-race radio complaint at McLaren. A strong title-fight signal heading into the back half of the season.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.motorsport.com/f1/news/how-the-hell-did-i-end-up-here-max-verstappen-shocked-by-second-place-in-damaged-red-bull-f1-car/10842195/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">&quot;How the hell did I end up here?&quot; – Max Verstappen shocked by second in damaged Red Bull</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Motorsport.com</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Verstappen salvaged second at the Hungarian GP despite unresolved Red Bull issues he'd flagged in qualifying. A reminder of how much the driver is carrying the car right now.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.autosport.com/f1/news/new-honda-f1-engine-to-debut-in-aston-martin-filming-day/10842222/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">New Honda F1 engine to debut in Aston Martin filming day ahead of Dutch GP</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Autosport</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Honda will run its updated F1 power unit at an Aston Martin filming day on Wednesday at the Hungaroring, fresh off the B-spec AMR26's pace gains. A meaningful development step for Aston Martin's competitiveness.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.freepressjournal.in/sports/formula-1-gulf-air-bahrain-grand-prix-to-return-at-malaysias-sepang-circuit-in-2026" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Malaysia to host Formula 1 Gulf Air Bahrain Grand Prix in 2026</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Free Press Journal</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">F1 and the FIA have confirmed the Bahrain GP will be held at Sepang, Malaysia, on 2–4 October after regional challenges. It marks F1's return to Malaysia for the first time in nine years.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://247wallst.com/investing/2026/07/26/the-u-s-economy-is-stronger-than-expected-that-could-keep-interest-rates-higher-for-longer/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The U.S. economy is stronger than expected — that could keep interest rates higher for longer</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">24/7 Wall St</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Fresh US data is pushing back Wall Street's expectations for Fed rate cuts. Higher-for-longer rates feed into cost-of-capital assumptions relevant to any investment case you build with Steven.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Healthcare &amp; Diagnostics</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.thetimes.com/uk/healthcare/article/women-risk-mixed-sex-nhs-ward-0k9hh02vp" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Women 'at risk' in mixed-sex NHS wards and private accommodation</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">The Times</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.inkl.com/news/mark-cuban-says-ceos-are-shocked-by-hidden-healthcare-costs-urges-companies-to-use-ai-to-find-where-they-are-being-ripped-off" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Mark Cuban says CEOs are 'shocked' by hidden healthcare costs, urges AI use</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">inkl</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.tenby-today.co.uk/news/health/digital-health-eu-funding-scheme-open-for-welsh-applications-929701" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Digital health EU funding scheme open for Welsh applications</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">Tenby Today</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.racefans.net/2026/07/26/disgraceful-wolff-criticises-teletubbies-at-rival-teams-over-blue-flags-delay/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">&quot;Disgraceful&quot;: Wolff criticises rival teams over blue flags delay</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">RaceFans</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.thelincolnianonline.com/2026/07/26/artificial-intelligence-stocks-worth-watching-july-26th.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Artificial Intelligence Stocks Worth Watching – July 26th</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">The Lincolnian Online</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
