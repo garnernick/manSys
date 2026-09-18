@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 17/09/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Thursday 17 September 2026</h1>
+      <div class="greeting">Good morning Nick — it's Thursday 17 September 2026, and the calendar is refreshingly light, though your bathroom appears to disagree.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:46</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-free" style="left:10.714%;width:67.857%;" title="Free time (9h30m)"><span>Free 9h30m</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>0 meetings · 0m</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">This due date is nearly five months in the past — either the bathroom or the deadline needs revisiting today.</td></tr></table>
+      </div>
+      
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr><td class="empty">No meetings today</td></tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">The updated blueprint doc review was due 13 Sept — four days overdue and worth clearing before it stalls anything downstream.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Both the bathroom completion and the grass next-steps decision are long past their due dates — pick one to close out this week.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Thursday 17 September 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Finance, AI &amp; Digital Transformation</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.business-standard.com/opinion/columns/geopolitics-is-a-boardroom-issue-126091601450_1.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Geopolitics is a boardroom issue</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">business-standard</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">US tariffs and sanctions are reshaping export economics and cutting companies off from long-held markets almost overnight. The piece argues geopolitical risk is now a core boardroom responsibility rather than an external concern.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://ca.finance.yahoo.com/news/fed-raises-interest-rates-by-a-quarter-point-in-unanimous-decision-marking-first-hike-in-3-years-171212149.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Fed raises interest rates by a quarter point in unanimous decision, marking first hike in 3 years</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">yahoo</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Federal Reserve raised interest rates by a quarter point in a unanimous decision, its first hike in more than three years. Wall Street had overwhelmingly expected the move as the Fed responds to rising prices.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.bnnbloomberg.ca/business/artificial-intelligence/2026/09/16/build-out-artificial-intelligence-here-or-rent-from-neighbours-ai-minister-says/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Build out artificial intelligence here or 'rent' from neighbours, AI minister says</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">bnnbloomberg_ca</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Digital sovereignty is dominating an AI conference, with leaders urging homegrown buildouts and trusted-ally collaboration. The warning: avoid dependence on unreliable states for critical AI infrastructure.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.abc.net.au/news/2026-09-17/sweden-election-result/107149110" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Sweden's left-wing bloc wins general election by slim margin</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">abc_net</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Sweden's centre-left coalition has secured a one-seat majority over the right-wing bloc that had governed since 2022. The razor-thin result signals a fragile mandate ahead.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.geo.tv/latest/682373-trump-picked-kevin-warsh-to-bring-interest-rates-down-months-later-he-raises-them" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Trump picked Kevin Warsh to bring interest rates down, months later he raises them</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">geo</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Trump appointed Kevin Warsh to lead the Fed expecting lower rates, but Warsh has instead raised them. The move highlights an emerging tension between the President and his own Fed pick.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.nzherald.co.nz/sport/motorsport/formula-1/f1-2027-calendar-record-10-sprint-races-confirmed-with-monaco-included/6F3T66BHYZCY7FSPFP6WIXR7B4/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">F1 2027 calendar: Record 10 sprint races confirmed, with Monaco included</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">nzherald</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Formula One's 2027 calendar features a record 10 sprint weekends, with Monaco included for the first time. Türkiye and Portugal also return to the 24-race schedule.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://bleacherreport.com/articles/25499985-max-verstappen-beats-100-go-kart-drivers-red-bull-f1-stars-max-vs-100-challenge" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Max Verstappen Beats 100 Go-Kart Drivers in Red Bull F1 Star's 'Max vs. 100' Challenge</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">bleacherreport</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Max Verstappen took on and beat 100 go-kart drivers in Red Bull's 'Max vs. 100' challenge. The stunt reaffirmed his all-round racing pedigree beyond Formula One.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://us.headtopics.com/news/tag-heuer-named-title-partner-of-2027-formula-1-british-87811490" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Tag Heuer Named Title Partner of 2027 Formula 1 British Grand Prix</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">headtopics</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Tag Heuer, already F1's official timekeeper under LVMH's 10-year deal, will become title partner of the 2027 British Grand Prix. It further deepens the luxury brand's motorsport footprint.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Finance, AI &amp; Digital Transformation</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://ca.finance.yahoo.com/news/us-central-bank-expected-raise-164317386.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">US central bank expected to raise interest rates for first time since 2023</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">yahoo</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.news247plus.com/news/world/google-engineer-joins-alerts-on-artificial-intelligence-59874" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Google Engineer Joins Alerts on Artificial Intelligence</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">news247plus</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailypolitical.com/2026/09/16/alpha-technology-group-nasdaqatgl-shares-down-4-3-heres-what-happened.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Alpha Technology Group (NASDAQ:ATGL) Shares Down 4.3%</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailypolitical</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.nzherald.co.nz/sport/motorsport/formula-1/f1-madring-why-overtaking-was-so-difficult-in-the-spanish-grand-prix/5MTFERB3TVGBXOCQMIQTG3O7TA/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">F1 Madring: Why overtaking was so difficult in the Spanish Grand Prix</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">nzherald</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.espn.in/f1/story/_/id/49955561/f1-2027-calendar-monaco-gp-sprint-race-turkiye-portugal-return-schedule" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">F1 calendar: Monaco gets '27 sprint, Türkiye back</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">espn_in</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.latestnigeriannews.com/p/403180/exchelsea-player-azpilicueta-graduates-with-merit-in-global-football-sport-direc.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Ex-Chelsea player Azpilicueta graduates with merit in global football sport directorship</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">latestnigeriannews</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
