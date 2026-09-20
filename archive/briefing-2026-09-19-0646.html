@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 19/09/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Saturday 19 September 2026</h1>
+      <div class="greeting">Good morning Nick — it's Saturday 19 September, the one day a week where the only board you need to worry about is a skirting board.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:46</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-free" style="left:10.714%;width:67.857%;" title="Free time (9h30m)"><span>Free 9h30m</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>0 meetings · 0m</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">The date has long passed — this one is either done or has become a running joke; either way it needs closing out.</td></tr><tr class="must-head"><td class="must-title">Decide on next steps for the grass</td><td class="must-due">29 Mar, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">A weekend-appropriate personal task that has been drifting since March — a good day to make the call.</td></tr></table>
+      </div>
+      
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr><td class="empty">No meetings today</td></tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Review the updated blueprint doc — it was due 13 Sept and is now the oldest live item on your desk.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Two long-standing home tasks (bathroom, grass) are still open — a quiet Saturday is the moment to clear them.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Saturday 19 September 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Finance, AI &amp; Digital Transformation</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://natlawreview.com/article/csbs-releases-artificial-intelligence-supervisory-framework-state-examiners" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">CSBS Releases Artificial Intelligence Supervisory Framework for State Examiners</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">natlawreview</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Conference of State Bank Supervisors has published an AI supervisory framework to guide state financial examiners. It signals a maturing regulatory posture on AI governance that will increasingly shape how organisations must document and control their AI systems.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://newsable.asianetnews.com/markets/microsoft-ai-chief-warns-giving-artificial-intelligence-sense-of-rights-could-make-it-harder-to-shut-down-articleshow-wmu5pcf" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Microsoft AI Chief Warns Giving AI a Sense of 'Rights' Could Make It Harder to Shut Down</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">newsable_asianetnews</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Mustafa Suleyman argued that AI must remain under human control and subordinate to human interests. The comments feed directly into the growing debate on AI safety and governance relevant to any organisation deploying AI at scale.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.telegraph.co.uk/business/2026/09/18/bond-sell-off-reignites-as-central-banks-raise-interest-rat/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Bond Sell-off Reignites as Central Banks Raise Interest Rates</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">telegraph</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Borrowing costs are surging as monetary authorities tighten to combat inflation. The shift toward a new hiking cycle has direct implications for financing costs and capital planning across large organisations.</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.berkshireeagle.com/business/columnist/markets-cheer-fed-rate-hike/article_7ce6204f-b526-46e5-b00f-73baa75a33b6.html" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The Fed Voted to Raise Interest Rates — and the Markets Cheered</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">berkshireeagle</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">The Federal Reserve raised rates for the first time in three years, and markets read it as the start of a new hiking cycle rather than a one-off. The move marks a notable turn in the macroeconomic backdrop after years of easing.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://qz.com/disney-first-cto-karandeep-anand-character-ai-091826" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Disney Names Former Character.AI Chief as Its First-Ever Technology Officer</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">quartz</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Karandeep Anand, who led AI chatbot startup Character.AI, joins Disney on Oct 2 in a newly created CTO role. It's a striking sign of how legacy media giants are embedding AI leadership at the top table.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://au.motorsport.com/f1/news/williams-shares-behind-the-scenes-look-at-alex-albons-life-away-from-f1/10856967/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Williams Shares Behind-the-Scenes Look at Alex Albon's Life Away From F1</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">motorsport_au</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Williams released a candid film of Alex Albon's off-track life in Monaco, filmed with his fiancée, golfer Lily Muni He. A rare human look at the reality of a driver's day off between race weekends.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.fool.com/coverage/better-buy/2026/09/18/credo-technology-group-vs-sandisk-which-technology-stock-is-a-better-buy-in-2026/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Credo Technology Group vs. Sandisk: Which Tech Stock Is a Better Buy in 2026?</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">fool</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A comparison of two semiconductor plays — one growing at a rare pace, the other reinvented as an AI infrastructure supplier with guaranteed revenue. A useful lens on where value is sitting in the AI hardware chain.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.marketwatch.com/story/whats-really-driving-inflation-and-rising-interest-rates-59a9cd51?mod=mw_rss_topstories" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">What's Really Driving Inflation and Rising Interest Rates</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">marketwatch</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A weekend read unpacking the underlying drivers of inflation and the rate environment, alongside housing and retirement angles. Good context for the shifting economic mood.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Finance, AI &amp; Digital Transformation</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.securities.io/systemic-banks-influence-interest-rates/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">How Systemic Banks Can Quietly Influence Interest Rates</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">securities_io</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.dailypolitical.com/2026/09/18/first-trust-nasdaq-artificial-intelligence-and-robotics-etf-nasdaqrobt-sees-significant-growth-in-short-interest.html" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">First Trust Nasdaq AI and Robotics ETF (ROBT) Sees Significant Growth in Short Interest</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">dailypolitical</span></div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://wegotthiscovered.com/politics/the-federal-reserve-increases-interest-rates-after-three-years-to-combat-inflation-and-leaves-trump-fuming-we-are-the-best-credit-in-the-world/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">The Federal Reserve Increases Interest Rates After Three Years to Combat Inflation, Leaving Trump Fuming</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">wegotthiscovered</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.finanznachrichten.de/nachrichten-2026-09/69620995-artmarket-com-artprice-news-a-world-book-becomes-a-mirror-for-artificial-intelligence-650.htm" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Artprice News: A World-Book Becomes a Mirror for Artificial Intelligence</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">finanznachrichten_de</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
