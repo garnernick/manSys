@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 19/10/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>Monday 19 October 2026</h1>
+      <div class="greeting">Good morning Nick — it's Monday 19 October 2026, and aside from a trip to Reading and a bathroom that's apparently been 'completing this week' since April, the diary is mercifully light.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:46</div>
+  </div>
+  <div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:50%;width:7.143000000000001%;" title="EXT F:F - Guy Pope (BGF) / Nick Garner (ODG Comms) "><span>EXT F:F - Guy Pope (BGF) / Nick Garner (ODG Comms) </span></div><div class="tl-block tl-free" style="left:10.714%;width:39.286%;" title="Free time (5h30m)"><span>Free 5h30m</span></div><div class="tl-block tl-free" style="left:57.143%;width:21.427999999999997%;" title="Free time (3h)"><span>Free 3h</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>1 meetings · 1h</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 8h30m</div></div></div>
+  <div class="two-col">
+    <div class="right-col">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">This deadline passed six months ago — either the completion date needs resetting or this task should be closed.</td></tr></table>
+      </div>
+      
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">14:00</div>
+      <div class="duration">1h</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">EXT F:F - Guy Pope (BGF) / Nick Garner (ODG Comms)</div>
+      <div class="meeting-location">BGF, The Brick Works, 35-43 Greyfriars Road, Reading, Berkshire RG1 1NP</div>
+      
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>What is the purpose of this meeting with Guy Pope at BGF, and what outcome do you want?</li><li>Is this an investment, advisory or relationship-building conversation — and should any ODG Comms materials go in advance?</li></ul></div>
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:8px">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Admin</div><div class="theme-count">1 open task</div><div class="theme-headline">Review the updated blueprint doc — now overdue since 13 Sept; worth clearing today given the quiet diary.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">2 open tasks</div><div class="theme-headline">Bathroom completion and the grass decision are both long overdue — a light meeting day is a good chance to close them out.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div style="page-break-before: always; padding: 32px 40px; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 180mm; margin: 0 auto; font-size: 9pt; color: #1a1a1a;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Monday 19 October 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Finance, AI &amp; Digital Transformation</div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://english.aawsat.com/node/5330933" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">McLaren to Sell Five F1 Cars, All Driven by Champions and One by Brad Pitt</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">aawsat</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">McLaren is selling five fully-functioning Formula One cars driven by champions including Lewis Hamilton and the late Ayrton Senna, with one tested by Brad Pitt. Sold through dealer Tom Hartley Jr., the collection is expected to raise tens of millions. Hartley previously handled Bernie Ecclestone's collection and Mansour Ojjeh's road cars.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.wionews.com/economy/the-future-of-technology-is-expanding-beyond-big-cities-can-enterprise-ai-emerge-from-a-small-city-1792344304035" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The future of technology is expanding beyond big cities: Can enterprise AI emerge from a small city?</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">wionews</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A new venture challenges the big-city model of enterprise software development by building AI capability outside traditional tech hubs. It raises questions about the future of innovation and skilled jobs. The piece explores whether smaller cities can become competitive centres for global tech businesses.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.wionews.com/economy/the-technology-behind-india-s-push-to-manufacture-more-defence-equipment-1792344095438" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The technology behind India's push to manufacture more defence equipment</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">wionews</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A new international partnership highlights the growing role of technology transfer in defence manufacturing. The agreement aims to boost local production capability. Questions remain over scale, implementation and the long-term impact on domestic manufacturing.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.bundle.app/en/sports/markus-krosche-resigns-as-eintracht-frankfurts-board-member-for-sport-with-immediate-effect-8D675006-01A4-5CD5-AEC1-DAB376D24016" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Markus Krösche resigns as Eintracht Frankfurt's board member for sport with immediate effect</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">bundle_app</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Eintracht Frankfurt's sporting board member Markus Krösche has resigned with immediate effect. The departure signals a significant shake-up in the club's sporting leadership. Succession and strategic direction now come into focus.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.bunburymail.com.au/story/9366929/chatgpt-beats-brother-customer-service-why-bots-fail-us/?src=rss" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">The debate is whether artificial intelligence will take over the world</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">bunburymail</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">A wry take on AI in customer service, arguing the real threat is 'artificial stupidity' rather than machine takeover. It compares chatbot performance against human service. A reminder that AI adoption still stumbles on basic execution.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Finance, AI &amp; Digital Transformation</div><div style="font-size:8pt;color:#aaa;font-style:italic;">None</div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.thestar.com.my/sport/motorsport/2026/10/19/motor-racing-mclaren-to-sell-five-f1-cars-all-driven-by-champions-and-one-by-brad-pitt" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Motor racing-McLaren to sell five F1 cars, all driven by champions and one by Brad Pitt</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">thestar_my</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://aap.com.au/aapreleases/cision20260918en51701/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">ARTPRICE NEWS: A world-book becomes a mirror for artificial intelligence</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">aap</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
