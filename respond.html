@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Update status</title>
+<style>
+  body { margin:0; background:#f3f4f6; font-family: Arial, Helvetica, sans-serif; color:#111827; }
+  .wrap { max-width:520px; margin:40px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  .head { background:#111827; color:#c8ff00; padding:14px 24px; font-size:13px; letter-spacing:1px; }
+  .body { padding:24px; }
+  .label { font-size:12px; color:#6b7280; text-transform:uppercase; letter-spacing:1px; }
+  .title { font-size:20px; font-weight:bold; margin:6px 0 16px; }
+  .meta { font-size:14px; color:#374151; margin-bottom:4px; }
+  .q { margin:20px 0 14px; font-size:15px; }
+  button { padding:12px 22px; border:0; border-radius:6px; font-size:14px; font-weight:bold; color:#fff; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .done { background:#16a34a; } .in_progress { background:#2563eb; } .blocked { background:#dc2626; }
+  .alt { margin-top:18px; font-size:13px; color:#6b7280; }
+  .alt a { color:#2563eb; margin-right:10px; }
+  .msg { padding:14px; border-radius:6px; font-size:14px; }
+  .ok { background:#ecfdf5; color:#065f46; } .err { background:#fef2f2; color:#991b1b; }
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+  <div class="head">&#9632; MANSYS</div>
+  <div class="body" id="body">Loading…</div>
+</div></div>
+
+<script>
+const SUPABASE_URL = 'https://dglotzmioswcmhfttcqx.supabase.co';
+// Public anon key (same one the dashboards already use)
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbG90em1pb3N3Y21oZnR0Y3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5OTE3MzgsImV4cCI6MjA4ODU2NzczOH0.lF_8yxfnP50UpiMKCW3aQxq8HukVZ5ibRqOp-RwFvpQ';
+
+const LABELS = { in_progress: 'In Progress', blocked: 'Blocked', done: 'Done' };
+const params = new URLSearchParams(location.search);
+const token = params.get('t');
+let status = params.get('s');
+const el = document.getElementById('body');
+
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmt = d => d ? new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' }) : '—';
+
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function show(msg, cls) { el.innerHTML = '<div class="msg ' + cls + '">' + msg + '</div>'; }
+
+async function init() {
+  if (!token || !/^[0-9a-f-]{36}$/i.test(token)) return show('This link is not valid.', 'err');
+  let item;
+  try { item = await rpc('item_for_token', { p_token: token }); }
+  catch (e) { return show('Could not load this item. Please try again later.', 'err'); }
+  if (item.error) return show('This link is no longer valid.', 'err');
+
+  const isTask = item.kind === 'task';
+  if (!isTask) status = 'done';                       // commitments only support Done
+  if (!LABELS[status]) status = 'done';
+
+  const alts = isTask
+    ? Object.keys(LABELS).filter(k => k !== status)
+        .map(k => '<a href="#" data-s="' + k + '">' + LABELS[k] + '</a>').join('')
+    : '';
+
+  el.innerHTML =
+    '<div class="label">' + (isTask ? 'Task' : 'Commitment') + '</div>' +
+    '<div class="title">' + esc(item.title) + '</div>' +
+    '<div class="meta">Current status: <strong>' + esc(item.status || '—') + '</strong></div>' +
+    '<div class="meta">Due: <strong>' + esc(fmt(item.due)) + '</strong></div>' +
+    '<div class="q">Mark as <strong>' + LABELS[status] + '</strong>?</div>' +
+    '<button id="go" class="' + status + '">Confirm: ' + LABELS[status] + '</button>' +
+    (alts ? '<div class="alt">Or choose: ' + alts + '</div>' : '');
+
+  document.querySelectorAll('.alt a').forEach(a => a.addEventListener('click', ev => {
+    ev.preventDefault(); status = a.dataset.s; history.replaceState(null, '', '?t=' + token + '&s=' + status); init();
+  }));
+
+  document.getElementById('go').addEventListener('click', async () => {
+    const btn = document.getElementById('go'); btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const r = await rpc('respond_to_item', { p_token: token, p_status: status });
+      if (r.error) return show('Sorry, that could not be saved (' + esc(r.error) + ').', 'err');
+      show('Thanks — <strong>' + esc(r.title) + '</strong> is now marked <strong>' + esc(r.status) + '</strong>.', 'ok');
+    } catch (e) { show('Sorry, that could not be saved. Please try again.', 'err'); }
+  });
+}
+init();
+</script>
+</body>
+</html>
