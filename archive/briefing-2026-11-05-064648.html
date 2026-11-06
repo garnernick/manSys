@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing — 05/11/2026</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #1a1a1a; background: #fff; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 0 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 12px; }
+  .header-left h1 { font-size: 16pt; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left .greeting { font-size: 9pt; color: #555; margin-top: 2px; }
+  .header-right { font-size: 8pt; color: #888; text-align: right; }
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 8mm; align-items: start; }
+  .two-col .section { break-inside: avoid; }
+  .left-col { grid-column: 1; grid-row: 1; }
+  .right-col { grid-column: 2; grid-row: 1; }
+  .section { margin-bottom: 12px; }
+  .section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .meeting-row td { vertical-align: top; padding: 5px 0; border-bottom: 0.5px solid #eee; }
+  .time-cell { width: 22mm; padding-right: 3mm; }
+  .time { font-size: 9pt; font-weight: 500; }
+  .duration { font-size: 7.5pt; color: #888; }
+  .meeting-title { font-size: 9pt; font-weight: 500; }
+  .meeting-location { font-size: 7.5pt; color: #666; margin-top: 1px; }
+  .meeting-who { font-size: 7.5pt; color: #444; margin-top: 2px; font-style: italic; line-height: 1.4; }
+  .meeting-brief { margin-top: 4px; }
+  .brief-section { margin-top: 3px; }
+  .brief-label { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brief-label-q { color: #b45309; }
+  .meeting-brief ul { margin-left: 10px; margin-top: 2px; }
+  .meeting-brief li { font-size: 8pt; color: #333; margin-bottom: 1px; line-height: 1.4; }
+  .open-q-list li { color: #92400e; }
+  .must-table { width: 100%; border-collapse: collapse; }
+  .must-table td { vertical-align: top; }
+  .must-head td { padding: 6px 0 1px 0; }
+  .must-title { font-size: 8.5pt; font-weight: 500; padding-right: 6px; }
+  .must-due { font-size: 8pt; color: #888; white-space: nowrap; text-align: right; }
+  .must-body td { padding: 0 0 6px 0; border-bottom: 1px solid #eee; }
+  .must-note { font-size: 8pt; color: #555; line-height: 1.4; }
+  .overdue-table { width: 100%; border-collapse: collapse; }
+  .overdue-table td { vertical-align: top; padding: 6px 0; border-bottom: 1px solid #f0d0d0; }
+  .over-desc { font-size: 8pt; font-weight: 500; color: #c0392b; width: 50%; padding-right: 4px; }
+  .over-who { font-size: 8pt; color: #c0392b; width: 25%; padding-right: 4px; }
+  .over-due { font-size: 8pt; color: #888; width: 25%; }
+  .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-card { border: 0.5px solid #ddd; border-radius: 4px; padding: 6px 8px; }
+  .theme-name { font-size: 8.5pt; font-weight: 600; }
+  .theme-count { font-size: 7.5pt; color: #888; margin-top: 1px; }
+  .theme-headline { font-size: 7.5pt; color: #444; margin-top: 3px; line-height: 1.4; }
+  .empty { font-size: 8pt; color: #aaa; font-style: italic; padding: 4px 0; }
+  .footer { border-top: 0.5px solid #ddd; margin-top: 12px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
+  .tl-wrap { margin-bottom: 10px; }
+  .tl-section-title { font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 5px; }
+  .tl-outer { position: relative; width: 100%; }
+  .tl-lane { position: relative; height: 22px; background: #f8f8f8; border-radius: 3px; overflow: visible; }
+  .tl-gridlines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; display: flex; pointer-events: none; }
+  .tl-gridline { flex: 1; border-right: 0.5px solid #ececec; }
+  .tl-gridline:nth-child(odd) { background: rgba(0,0,0,0.008); }
+  .tl-block { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; overflow: hidden; }
+  .tl-block span { font-size: 5.5pt; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+  .tl-meeting { background: #2563eb; color: #fff; }
+  .tl-deep { background: #7c3aed; color: #fff; }
+  .tl-personal { background: #0891b2; color: #fff; }
+  .tl-free { background: #d1fae5; color: #065f46; border: 0.5px solid #6ee7b7; }
+  .tl-legend-row { display: flex; gap: 12px; margin-top: 4px; }
+  .tl-legend-item { display: flex; align-items: center; gap: 3px; font-size: 6pt; color: #666; }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .tl-summary-row { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-summary-item { font-size: 6.5pt; color: #666; display: flex; align-items: center; gap: 3px; }
+  .tl-summary-dot { width: 7px; height: 7px; border-radius: 1px; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @media (max-width: 600px) {
+    .page { padding: 0 8px; }
+    .right-col { float: none; width: 100%; margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .left-col { grid-column: 1; grid-row: 1; }
+    .right-col { grid-column: 1; grid-row: 2; }
+    .header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .header-right { text-align: left; }
+    .header-left h1 { font-size: 20px; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .must-note { display: none; }
+    .must-head td { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+    .time-cell { width: 28mm; }
+    body { font-size: 12px; }
+    .section-title { font-size: 10px; }
+    .meeting-title, .must-title { font-size: 13px; }
+    .must-due, .over-who, .over-due { font-size: 11px; }
+  }
+
+:root{--ink:#0E2A2A;--green:#1FA463;--lime:#9BE15D;--paper:#F3F5EF;--slate:#55706B;--amber:#E3A33B;--mist:#dfe4da;--ml-sans:'DM Sans',-apple-system,'Helvetica Neue',Arial,sans-serif;--ml-disp:'Outfit','DM Sans',-apple-system,sans-serif;--ml-mono:'DM Mono',ui-monospace,Menlo,monospace;--va-tile:#1A2F52;--va-tilestroke:transparent;--va-v:#FBF8F2;--va-a:#DCEAF4;--va-dot:#C99B3C;--lf:#0E2A2A;--rf:#1FA463;--pf:#1FA463;--ring:#fff}
+body{font-family:var(--ml-sans);background:var(--paper);color:var(--ink)}
+.header{border-bottom:2px solid var(--ink)}
+.header-left h1{font-family:var(--ml-disp);font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.header-left .greeting,.header-right{color:var(--slate)}
+.header-left .greeting{display:none}
+.section-title,.tl-section-title{font-family:var(--ml-mono);font-weight:500;color:var(--slate);border-bottom-color:var(--mist)}
+.meeting-title,.must-title,.time{color:var(--ink)}
+.tl-lane{background:#e9eee4}.tl-meeting{background:var(--ink)}.tl-deep{background:var(--green)}.tl-personal{background:var(--amber);color:var(--ink)}
+.tl-free{background:#e6f6d6;color:#1c6b43;border-color:var(--lime)}
+.tl-legend-dot[style*="2563eb"],.tl-summary-dot[style*="2563eb"]{background:var(--ink) !important}
+.tl-legend-dot[style*="7c3aed"],.tl-summary-dot[style*="7c3aed"]{background:var(--green) !important}
+.tl-legend-dot[style*="0891b2"],.tl-summary-dot[style*="0891b2"]{background:var(--amber) !important}
+.ml-brand{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px}
+.ml-logo{display:inline-flex;align-items:center;gap:.16em;font-family:var(--ml-disp);font-weight:600;line-height:1;letter-spacing:-.025em;color:var(--ink);font-size:17pt}
+.ml-logo .mk{width:1.06em;height:auto;flex:none;display:block}
+.ml-logo .i{position:relative;display:inline-block}.ml-logo .i b{position:absolute;left:50%;top:-.035em;width:.2em;height:.2em;border-radius:50%;transform:translateX(-50%);background:var(--green)}
+.ml-tag{font-family:var(--ml-mono);font-size:7pt;letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
+.ml-va-tile{fill:var(--va-tile);stroke:var(--va-tilestroke);stroke-width:3}.ml-va-v{fill:var(--va-v)}.ml-va-a{fill:var(--va-a)}.ml-va-dot{fill:var(--va-dot)}
+.ml-svg{display:inline-block;vertical-align:middle}
+.two-col{grid-template-columns:1fr !important}.two-col .left-col{grid-column:1 !important}
+.ml-news{max-width:180mm;margin:0 auto;padding:12px 4px 0;font-size:9pt;color:var(--ink)}
+.ml-pep{border-left:3px solid var(--green);background:#fff;border-radius:0 10px 10px 0;padding:8px 12px;margin-bottom:10px}
+.ml-pep h2,.ml-top3 h2,.ml-sec h2{font-family:var(--ml-mono);font-size:7pt;font-weight:500;text-transform:uppercase;letter-spacing:.1em;margin:0 0 4px}
+.ml-pep h2{color:var(--green)}.ml-pep p{font-style:italic;font-size:9pt;line-height:1.45}.ml-sig{text-align:right;font-family:var(--ml-disp);font-weight:600;color:var(--green);font-size:9pt}
+.ml-top3{background:var(--ink);color:#EEF6F0;border-radius:10px;padding:9px 13px;margin-bottom:12px}
+.ml-top3 h2{color:var(--lime)}
+.ml-t3{display:flex;gap:10px;padding:5px 0;border-top:1px solid #24494a}.ml-t3:first-of-type{border-top:0}
+.ml-num{font-family:var(--ml-disp);font-weight:700;font-size:14pt;color:var(--lime);width:14px;flex:none;line-height:1.1}
+.ml-t3t{font-family:var(--ml-disp);font-weight:500;font-size:9.5pt}.ml-why{font-size:8pt;color:#bcd3cd;margin-top:1px}.ml-t3m{--va-tilestroke:var(--lime)}
+.ml-list{margin:6px 0 10px}.ml-sec{margin-top:9px}
+.ml-sec h2{color:var(--slate);border-bottom:.5px solid var(--mist);padding-bottom:3px;margin-bottom:3px}
+.ml-row{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:.5px solid var(--mist)}
+.ml-mk{width:22px;flex:none;display:flex;justify-content:center}.ml-main{flex:1}.ml-ti{font-size:8.5pt;font-weight:500}.ml-od{color:var(--ink);font-weight:600}
+.ml-sub{font-size:7.5pt;color:var(--slate)}.ml-due{font-family:var(--ml-mono);font-size:7pt;color:var(--slate);white-space:nowrap;text-align:right}
+.ml-late{background:#fbeccb;color:#6b4a0a;border-radius:8px;padding:0 6px;font-weight:500}
+.ml-pc{display:inline-flex;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--amber);color:var(--ink);font-family:var(--ml-disp);font-weight:600;font-size:8pt;align-items:center;justify-content:center}
+.ml-pill{font-family:var(--ml-mono);font-size:7pt;background:#e7ede2;border-radius:8px;padding:0 6px;color:var(--slate)}
+.ml-key{display:flex;gap:14px;flex-wrap:wrap;font-size:7pt;color:var(--slate);margin-top:8px;align-items:center}.ml-key>span{display:flex;gap:4px;align-items:center}
+@media (max-width:600px){.ml-news{padding:12px 8px 0}}
+@media print{
+  :root{--va-tile:transparent;--va-tilestroke:#0E2A2A;--va-v:#0E2A2A;--va-a:#0E2A2A;--va-dot:#C99B3C}
+  body{background:#fff}
+  .ml-pep{border-left:2px solid var(--ink)}.ml-pep h2,.ml-sig{color:var(--ink)}
+  .ml-top3{background:#fff;color:var(--ink);border-radius:0;border-left:3px solid var(--green);padding:2px 0 2px 10px}
+  .ml-top3 h2,.ml-num{color:var(--ink)}.ml-t3{border-color:#ccc}.ml-why{color:#444}.ml-t3m{--va-tilestroke:#0E2A2A}
+  .ml-late{background:#fff;color:#000;font-weight:700;text-decoration:underline;padding:0}.ml-od{color:#000}
+  .ml-pc{border-color:#444}.ml-pill{background:#fff;border:1px solid #999;color:#000}
+  .tl-lane{background:#fff;border:.5px solid #999}
+  .tl-meeting{background:#fff !important;color:var(--ink) !important;border:1px solid var(--ink)}
+  .tl-deep{background:#fff !important;color:#000 !important;border:1px solid #666}
+  .tl-personal{background:#fff !important;color:#000 !important;border:1px dashed #666}
+  .tl-free{background:#fff !important;border:.5px solid #bbb !important;color:#555 !important}
+  .tl-legend-dot,.tl-summary-dot{background:#fff !important;border:1px solid #666 !important}
+  .header{padding-bottom:3px;margin-bottom:6px}.ml-brand{margin-bottom:3px}.tl-wrap{margin-bottom:5px}
+  .ml-sec{margin-top:5px}.ml-row{padding:2px 0}.ml-t3{padding:3px 0}.ml-pep{padding:3px 10px;margin-bottom:5px}.ml-top3{margin-bottom:5px}
+  .ml-main{display:flex;gap:8px;align-items:baseline}.ml-sub{flex:1;min-width:0}
+  .footer{margin-top:3px;padding-top:2px}.section{margin-bottom:5px}.meeting-row td{padding:2px 0}
+  .tl-summary-row{display:none}.meeting-brief{margin-top:1px}.ml-sec h2{margin-bottom:1px}
+  .ml-list{margin:4px 0 6px}.meeting-row td{padding:3px 0}.ml-key{margin-top:2px}
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"></head>
+<body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ml-pip" viewBox="0 0 48 44"><path d="M22.5 37 C13 32 7 22 9 9 C19 13 24.5 24 22.5 37Z" style="fill:var(--lf)"/><path d="M25.5 37 C26.5 22 32 9 44 3 C47 19 39.5 31.5 25.5 37Z" style="fill:var(--rf)"/><circle cx="24" cy="35.4" r="4.4" style="fill:var(--pf);stroke:var(--ring)" stroke-width="1.8" paint-order="stroke"/></symbol>
+<symbol id="ml-va" viewBox="0 0 64 64"><rect x="1.5" y="1.5" width="61" height="61" rx="14" class="ml-va-tile"/><path class="ml-va-v" d="M20.576 46.504 10.46 23.428Q9.92 22.204 9.02 21.682Q8.12 21.16 7.292 21.16H7.004V20.8H15.104V21.16H14.78Q14.096 21.16 13.574 21.736Q13.052 22.312 13.448 23.392H13.412L20.972 42.256L28.892 23.14Q29.144 22.24 28.676 21.736Q28.136 21.16 27.452 21.16H27.128V20.8H34.364V21.16H34.04Q33.248 21.16 32.348 21.682Q31.448 22.204 30.872 23.428L22.232 42.796L22.052 43.228Q21.836 43.696 21.566 44.344Q21.296 44.992 21.098 45.604Q20.9 46.216 20.9 46.504Z"/><path class="ml-va-a" d="M43.928 20.296 53.576 43.372Q54.116 44.596 55.016 45.118Q55.916 45.64 56.744 45.64H57.032V46H48.932V45.64H49.256Q49.94 45.64 50.48 45.028Q50.984 44.524 50.696 43.588L48.32 37.252H38.6L36.116 43.552Q35.972 44.164 36.116 44.596Q36.296 45.1 36.71 45.37Q37.124 45.64 37.556 45.64H37.88V46H30.644V45.64H30.968Q31.796 45.64 32.696 45.1Q33.452 44.632 34.028 43.624L42.272 24.004L42.488 23.536Q42.668 23.104 42.938 22.456Q43.208 21.808 43.406 21.196Q43.604 20.584 43.604 20.296ZM39.032 36.172H47.888L43.532 24.616Z"/><circle class="ml-va-dot" cx="50" cy="14" r="4"/></symbol></defs></svg>
+<div class="page">
+  <div class="ml-brand"><span class="ml-logo"><svg class="mk" viewBox="0 0 48 44" width="20" height="18" aria-hidden="true"><use href="#ml-pip"/></svg><span class="word">p<span class="i">&#x131;<b></b></span>pmore</span></span><span class="ml-tag">Morning briefing</span></div><div class="header">
+    <div class="header-left">
+      <h1>Thursday 05 November 2026</h1>
+      <div class="greeting">Good morning Nick — it's Thursday 05 November 2026, and with your 11:00 Ellie catch-up now cancelled, you've got a rare clear runway to actually clear some of this VoleAlti backlog.</div>
+    </div>
+    <div class="header-right">Nick Garner — Morning Briefing<br>Generated 06:46</div>
+  </div>
+  <div class="ml-pep"><h2>A word from Dani</h2><p>Right Nick, the Ellie meeting's off so the universe just handed you half an hour back — use it. You've got two PRDs and an EA Portal all sitting three to six days overdue, and they're the ones unblocking everything else in VoleAlti. Pick the Empty Leg PRD first since Aadesh is waiting on it, then knock out its partner. Momentum today, not a tidy list for tomorrow.</p><div class="ml-sig">Dani</div></div><div class="ml-top3"><h2>Top 3 today</h2><div class="ml-t3"><div class="ml-num">1</div><div class="ml-t3b"><div class="ml-t3t">Empty Leg PRD <span class="ml-t3m"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></span></div><div class="ml-why">Empty Leg PRD is overdue, a must-achieve, and Aadesh is actively waiting on it (c2).</div></div></div><div class="ml-t3"><div class="ml-num">2</div><div class="ml-t3b"><div class="ml-t3t">PRD EA Portal &amp; PoC <span class="ml-t3m"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></span></div><div class="ml-why">PRD EA Portal &amp; PoC is its High-priority partner and overdue — do both together.</div></div></div><div class="ml-t3"><div class="ml-num">3</div><div class="ml-t3b"><div class="ml-t3t">Therapy <span class="ml-t3m"><span class="ml-pc" title="Personal">P</span></span></div><div class="ml-why">Therapy is six days overdue and High priority — stop letting it slip.</div></div></div></div><div class="tl-wrap"><div class="tl-section-title">Day at a Glance</div><div class="tl-outer"><div style="position:relative;height:14px;margin-bottom:2px;"><div style="position:absolute;left:0.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">07:00</div><div style="position:absolute;left:7.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">08:00</div><div style="position:absolute;left:14.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">09:00</div><div style="position:absolute;left:21.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">10:00</div><div style="position:absolute;left:28.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">11:00</div><div style="position:absolute;left:35.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">12:00</div><div style="position:absolute;left:42.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">13:00</div><div style="position:absolute;left:50.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">14:00</div><div style="position:absolute;left:57.143%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">15:00</div><div style="position:absolute;left:64.286%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">16:00</div><div style="position:absolute;left:71.429%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">17:00</div><div style="position:absolute;left:78.571%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">18:00</div><div style="position:absolute;left:85.714%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">19:00</div><div style="position:absolute;left:92.857%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">20:00</div><div style="position:absolute;left:100.000%;transform:translateX(-50%);font-size:5.5pt;color:#ccc;font-family:monospace;top:0;">21:00</div></div><div class="tl-lane"><div class="tl-gridlines"><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div><div class="tl-gridline"></div></div><div class="tl-block tl-meeting" style="left:28.571%;width:3.571999999999999%;" title="Canceled: Ellie and Nick On-Call System Catch Up (05.11.2026 at 1100) via Teams "><span>Canceled: Ellie and Nick On-Call System Catch Up (05.11.2026 at 1100) via Teams </span></div><div class="tl-block tl-free" style="left:10.714%;width:17.857%;" title="Free time (2h30m)"><span>Free 2h30m</span></div><div class="tl-block tl-free" style="left:32.143%;width:46.428%;" title="Free time (6h30m)"><span>Free 6h30m</span></div></div></div><div class="tl-legend-row"><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#2563eb"></div>Meeting</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#7c3aed"></div>Deep Work</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#0891b2"></div>Personal</div><div class="tl-legend-item"><div class="tl-legend-dot" style="background:#d1fae5;border:0.5px solid #6ee7b7"></div>Free Time</div></div><div class="tl-summary-row"><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#2563eb"></div>1 meetings · 30m</div><div class="tl-summary-item"><div class="tl-summary-dot" style="background:#6ee7b7;border:0.5px solid #6ee7b7"></div>Free · 9h</div></div></div>
+  <div class="two-col">
+    <div class="right-col" style="display:none">
+      <div class="section">
+        <div class="section-title">Must achieves</div>
+        <table class="must-table"><tr class="must-head"><td class="must-title">PRD EA Portal &amp; PoC</td><td class="must-due">02 Nov, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Three days overdue and High priority — core to the VoleAlti Foundations epic.</td></tr><tr class="must-head"><td class="must-title">Empty Leg PRD</td><td class="must-due">02 Nov, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Three days overdue and tied to your commitment to Aadesh — needs to land today.</td></tr><tr class="must-head"><td class="must-title">EA Portal</td><td class="must-due">30 Oct, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Six days overdue, High priority — login screen and flight search still need refining.</td></tr><tr class="must-head"><td class="must-title">Consultree - DNS and Content</td><td class="must-due">29 Oct, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Seven days overdue and promised to Aadesh — oldest open must-achieve.</td></tr><tr class="must-head"><td class="must-title">Therapy</td><td class="must-due">30 Oct, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Six days overdue and High priority — don't let this keep slipping.</td></tr><tr class="must-head"><td class="must-title">Finish bathroom for completion this week</td><td class="must-due">22 Apr, '26</td></tr>
+<tr class="must-body"><td class="must-note" colspan="2">Blocked and badly overdue — decide if it needs escalation or writing off this week.</td></tr></table>
+      </div>
+      <div class="section" style="margin-top:8px"><div class="section-title" style="color:#c0392b;border-bottom-color:#f5c6cb">Overdue commitments</div><table class="overdue-table"><tr><td class="over-desc">PRD Empty Legs</td><td class="over-who">Aadesh Batra</td><td class="over-due">04 Nov, '26</td></tr><tr><td class="over-desc">Nick and Adi to discuss marketing plan</td><td class="over-who">Nick Garner</td><td class="over-due">29 Oct, '26</td></tr><tr><td class="over-desc">Ellie to share dates and person</td><td class="over-who">Ellie</td><td class="over-due">04 Nov, '26</td></tr></table></div>
+    </div>
+    <div class="left-col">
+      <div class="section">
+        <div class="section-title">Today's meetings</div>
+        <table><tr class="meeting-row">
+    <td class="time-cell">
+      <div class="time">11:00</div>
+      <div class="duration">30m</div>
+    </td>
+    <td class="meeting-cell">
+      <div class="meeting-title">Canceled: Ellie and Nick On-Call System Catch Up</div>
+      <div class="meeting-location">Microsoft Teams Meeting</div>
+      <div class="meeting-who">This has been cancelled — note Ellie still owes you dates and a person (overdue since 04 Nov), so a nudge is worth sending.</div>
+      <div class="meeting-brief">
+        
+        
+        <div class="brief-section"><span class="brief-label brief-label-q">Prep questions</span><ul class="open-q-list"><li>Should you chase Ellie for the dates and person she committed to share before rebooking?</li></ul></div>
+      </div>
+    </td>
+  </tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="ml-list"><div class="ml-sec"><h2>Overdue &amp; must-achieve</h2><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Empty Leg PRD</div><div class="ml-sub">Setup VoleAlti — Draft and send Empty Leg PRD to Aadesh</div></div><div class="ml-due ml-late">02 Nov, '26 · 3d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">PRD EA Portal &amp; PoC</div><div class="ml-sub">Setup VoleAlti — Write EA Portal PRD and PoC scope</div></div><div class="ml-due ml-late">02 Nov, '26 · 3d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">EA Portal</div><div class="ml-sub">Setup VoleAlti — Refine EA Portal login and flight search</div></div><div class="ml-due ml-late">30 Oct, '26 · 6d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Consultree - DNS and Content </div><div class="ml-sub">Setup VoleAlti · In Progress — Finish Consultree DNS and content</div></div><div class="ml-due ml-late">29 Oct, '26 · 7d late</div></div><div class="ml-row"><div class="ml-mk"><span class="ml-pc" title="Personal">P</span></div><div class="ml-main"><div class="ml-ti">Therapy</div><div class="ml-sub">Personal — Book and attend therapy</div></div><div class="ml-due ml-late">30 Oct, '26 · 6d late</div></div><div class="ml-row"><div class="ml-mk"><span class="ml-pc" title="Personal">P</span></div><div class="ml-main"><div class="ml-ti">Finish bathroom for completion this week</div><div class="ml-sub">Personal · Blocked — Decide how to unblock the bathroom</div></div><div class="ml-due ml-late">22 Apr, '26 · 197d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Contact Imperial Events</div><div class="ml-sub">Setup VoleAlti — Intro email to Imperial Events on partnering</div></div><div class="ml-due ml-late">02 Nov, '26 · 3d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Hype Motorsport -Track Days</div><div class="ml-sub">Setup VoleAlti — Contact Hype Motorsport via Nikki Emmerson</div></div><div class="ml-due ml-late">02 Nov, '26 · 3d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">RMA -Track Days</div><div class="ml-sub">Setup VoleAlti — Contact John re RMA track days</div></div><div class="ml-due ml-late">03 Nov, '26 · 2d late</div></div><div class="ml-row"><div class="ml-mk"><span class="ml-pc" title="Personal">P</span></div><div class="ml-main"><div class="ml-ti">Budget review</div><div class="ml-sub">Personal — Complete budget review</div></div><div class="ml-due ml-late">01 Nov, '26 · 4d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg ml-leaf" width="22" height="20" role="img" aria-label="Pipmore"><use href="#ml-pip"/></svg></div><div class="ml-main"><div class="ml-ti">Pipmore Value proposition</div><div class="ml-sub">Pipmore — Finish Pipmore value proposition</div></div><div class="ml-due ml-late">04 Nov, '26 · 1d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Timing of Lloyd meeting</div><div class="ml-sub">Setup VoleAlti — Confirm timing of Lloyd meeting</div></div><div class="ml-due ml-late">03 Nov, '26 · 2d late</div></div></div><div class="ml-sec"><h2>Overdue commitments</h2><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti ml-od">PRD Empty Legs</div><div class="ml-sub">To Aadesh Batra</div></div><div class="ml-due ml-late">04 Nov, '26 · 1d late</div></div><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti ml-od">Nick and Adi to discuss marketing plan</div><div class="ml-sub">To Nick Garner</div></div><div class="ml-due ml-late">29 Oct, '26 · 7d late</div></div><div class="ml-row"><div class="ml-mk"></div><div class="ml-main"><div class="ml-ti ml-od">Ellie to share dates and person</div></div><div class="ml-due ml-late">04 Nov, '26 · 1d late</div></div></div><div class="ml-sec"><h2>Due today</h2><div class="ml-row"><div class="ml-mk"></div><div class="ml-main"><div class="ml-ti">Inbox review (overdue)</div><div class="ml-sub">No status — Clear @ready-for-nick inbox backlog</div></div><div class="ml-due">Today</div></div></div><div class="ml-sec"><h2>Coming up</h2><div class="ml-row"><div class="ml-mk"><svg class="ml-svg" width="22" height="22" role="img" aria-label="VoleAlti"><use href="#ml-va"/></svg></div><div class="ml-main"><div class="ml-ti">Finalise Branding</div><div class="ml-sub">Setup VoleAlti — Book branding session with Aanya</div></div><div class="ml-due">06 Nov, '26</div></div></div><div class="ml-sec"><div class="ml-row"><div class="ml-main"><div class="ml-ti">Three identical overdue inbox-review tasks collapsed into one action — clear the backlog once. <span class="ml-pill">×2</span></div></div></div></div><div class="ml-key"><span><span class="ml-pc">P</span> Personal, dated</span><span><svg class="ml-svg ml-leaf" width="22" height="20"><use href="#ml-pip"/></svg> Pipmore</span><span><svg class="ml-svg" width="22" height="22"><use href="#ml-va"/></svg> VoleAlti</span></div></div><div class="section" style="display:none">
+    <div class="section-title">Themes &amp; roadmap</div>
+    <div class="themes-grid"><div class="theme-card"><div class="theme-name">Setup VoleAlti</div><div class="theme-count">14 open tasks</div><div class="theme-headline">Two PRDs and the EA Portal are all overdue — clear these to unblock the Foundations epic.</div></div><div class="theme-card"><div class="theme-name">Personal</div><div class="theme-count">4 open tasks</div><div class="theme-headline">Therapy and budget review are overdue; bathroom remains blocked and needs a decision.</div></div><div class="theme-card"><div class="theme-name">Pipmore</div><div class="theme-count">1 open task</div><div class="theme-headline">Value proposition slipped one day overdue — short task, close it out.</div></div></div>
+  </div>
+  <div class="footer"><span>Confidential — Nick Garner</span></div>
+</div>
+<div class="ml-news" style="page-break-before: always;"><div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; margin-bottom: 18px;"><div><div style="font-size: 16pt; font-weight: 600; letter-spacing: -0.3px;">News Digest</div><div style="font-size: 9pt; color: #555; margin-top: 2px;">Thursday 05 November 2026</div></div><div style="font-size: 8pt; color: #888; text-align: right;">Nick Garner — Morning Briefing<br>Page 2 of 2</div></div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin-bottom: 12px;">Finance, AI &amp; Digital Transformation</div><div style="font-size: 7pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 0.5px solid #ddd; padding-bottom: 3px; margin: 18px 0 12px 0;">Wider World</div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.nytimes.com/athletic/7753516/2026/11/04/liverpool-red-sox-owners-formula-1-cadillac-team/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Liverpool and Boston Red Sox owners looking to purchase stake in Cadillac Formula 1 Team</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">The Athletic</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">TWG Global, owners of Liverpool and the Boston Red Sox, are exploring a stake in the new Cadillac F1 team, which joined the grid this season backed by General Motors. It signals deepening US sports-investment interest in Formula 1's expansion.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.formula1.com/en/latest/article/our-early-bet-builder-selections-for-the-sao-paulo-grand-prix.2muJoFsivUdZaVn0ujetRf" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">2026 Formula 1 Bet Builder odds and selections ahead of the Sao Paulo Grand Prix</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Formula1.com</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">F1's betting writers preview the Sao Paulo Grand Prix at Interlagos with podium and points-potential selections. A useful marker for the state of the title run-in heading into Brazil.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.essentiallysports.com/nfl-active-news-bengals-wish-pours-in-from-joe-burrows-gf-olivia-ponton-as-f-one-star-charles-leclerc-announces-personal-news/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Charles Leclerc announces personal news as Ferrari driver welcomes baby girl</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">EssentiallySports</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Ferrari's Charles Leclerc and wife Alexandra announced the birth of their daughter Bianca on Instagram. Messages of congratulations poured in from across the sporting world.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://dailynewsegypt.com/2026/11/04/egypts-gafi-oracle-discuss-technology-localisation-and-plan-to-train-150000-egyptians/" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Egypt's GAFI and Oracle discuss technology localisation and plan to train 150,000 Egyptians</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Daily News Egypt</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Egypt's investment authority and Oracle agreed to deliver cloud-computing training to entrepreneurs and officials as part of a 150,000-person upskilling drive. A notable example of big-tech partnerships driving national digital capacity.</div></div><div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 0.5px solid #eee;"><div style="font-size: 9pt; font-weight: 600; line-height: 1.3;"><a href="https://www.ft.com/content/ea7be631-444d-4437-adc8-4c7b02263e62" style="color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #bbb;">Trump Media &amp; Technology Group share price hits record low</a></div><div style="font-size: 7.5pt; color: #888; margin: 2px 0 4px 0;">Financial Times</div><div style="font-size: 8.5pt; color: #333; line-height: 1.55;">Shares in Trump Media &amp; Technology Group fell to a record low. The move adds to pressure on a company whose valuation has long been driven by sentiment more than fundamentals.</div></div><div style="margin-top:22px;border-top:1px solid #ddd;padding-top:14px;"><div style="font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:10px;">Further Reading</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Finance, AI &amp; Digital Transformation</div><div style="font-size:8pt;color:#aaa;font-style:italic;">None</div></div><div><div style="font-size:7pt;font-weight:600;color:#aaa;margin-bottom:6px;">Wider World</div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.essentiallysports.com/nascar-news-he-isnt-bigger-than-the-sport-nascar-veteran-details-long-term-career-benefit-of-carson-hocevars-benching/" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">NASCAR Veteran Details Long-Term Career Benefit of Carson Hocevar's Benching</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">EssentiallySports</span></div><div style="font-size:8pt;margin-bottom:5px;line-height:1.4;"><a href="https://www.theguardian.com/commentisfree/2026/nov/04/donald-trump-midterms-atlantic-hope-voters-democratic" style="color:#333;text-decoration:none;border-bottom:1px solid #ccc;">Both sides of the Atlantic sense more hope: voters drawn to the 'politics of love'</a><span style="font-size:7pt;color:#aaa;margin-left:5px;">The Guardian</span></div></div></div></div><div style="border-top: 0.5px solid #ddd; margin-top: 18px; padding-top: 5px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between;"><span>Confidential — Nick Garner</span></div></div>
+</body>
+</html>
