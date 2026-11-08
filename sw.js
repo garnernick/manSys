@@ -43,6 +43,9 @@ self.addEventListener('notificationclick', (event) => {
   const raw = (event.notification.data && event.notification.data.url) || DEFAULT_PAGE;
   const target = new URL(raw, self.registration.scope);
   event.waitUntil((async () => {
+    // Leave a note the page can pick up when it comes to the front. Messaging an app that iOS has suspended in the
+    // background is unreliable, a note in Cache Storage (shared by the worker and the page) is not.
+    try { const c = await caches.open('mansys-nav'); await c.put('pending-nav', new Response(JSON.stringify({ url: target.href, t: Date.now() }))); } catch (_) { /* ignore */ }
     const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     // Reuse a window only if it is the same page (a dashboard window must not receive a personal-page link, or the reverse).
     const same = wins.find((w) => {
