@@ -633,11 +633,12 @@ async function openUpdate(id) {
     (r.body ? '<div class="u-body">' + esc(r.body) + '</div>' : '') +
     (r.link && /^https?:\/\//i.test(r.link) ? '<div style="margin-top:14px"><a href="' + esc(r.link) + '" target="_blank" rel="noopener" style="color:var(--ink);font-weight:600">Open link ›</a></div>' : '');
   document.getElementById('sheet-footer').innerHTML =
-    '<button class="btn-cancel" onclick="setRead(' + id + ', false); closeSheet()">Mark unread</button><button class="btn-cancel" style="color:#D92D20" onclick="deleteUpdate(' + id + ', true)">Delete</button><button class="btn-save" onclick="closeSheet()">Close</button>';
+    '<button class="btn-cancel" onclick="setRead(' + id + ', false); closeSheet()">Mark unread</button><button class="btn-cancel" style="color:#D92D20;display:flex;align-items:center;justify-content:center" onclick="deleteUpdate(' + id + ', true)" aria-label="Delete update">'+BIN_SVG+'</button><button class="btn-save" onclick="closeSheet()">Close</button>';
   openSheet();
   if (!r.read_at) setRead(id, true, true);
 }
 // ---- swipe left on an update to reveal Delete; tap Delete to remove it permanently ----
+const BIN_SVG = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6h17"/><path d="M9 6V4.2c0-.66.54-1.2 1.2-1.2h3.6c.66 0 1.2.54 1.2 1.2V6"/><path d="M5.5 6l.9 13.2c.06.98.88 1.8 1.86 1.8h7.48c.98 0 1.8-.82 1.86-1.8L18.5 6"/><path d="M10 10.5v6"/><path d="M14 10.5v6"/></svg>';
 const SW_W = 92;
 let _swOpen = null, _sw = null, _swSuppressClick = 0;
 function swClose(el, animate) {
@@ -804,7 +805,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-16 swipe-delete';
+const BUILD = 'navy-17 bin-icon';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
@@ -948,7 +949,7 @@ function renderList(data) {
     const unread = activeTab === 'updates' && !r.read_at;
     const cardHtml = '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
     if (activeTab !== 'updates') return cardHtml;
-    return '<div class="swipe" data-id="' + id + '"><button class="sw-del" onclick="deleteUpdate(' + id + ')" aria-label="Delete update">Delete</button>' + cardHtml + '</div>';
+    return '<div class="swipe" data-id="' + id + '"><button class="sw-del" onclick="deleteUpdate(' + id + ')" aria-label="Delete update"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6h17"/><path d="M9 6V4.2c0-.66.54-1.2 1.2-1.2h3.6c.66 0 1.2.54 1.2 1.2V6"/><path d="M5.5 6l.9 13.2c.06.98.88 1.8 1.86 1.8h7.48c.98 0 1.8-.82 1.86-1.8L18.5 6"/><path d="M10 10.5v6"/><path d="M14 10.5v6"/></svg></button>' + cardHtml + '</div>';
   }).join('');
 }
 
