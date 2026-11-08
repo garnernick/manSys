@@ -601,7 +601,7 @@ function priBadge(p) {
 // UPDATES  (table `updates`, read through RPCs; see Blueprint "Notifications / Updates")
 // ================================================================
 let _unread = 0, updFilter = 'unread';
-const KIND_LABELS = { briefing: 'Briefing', context: 'Context', scan: 'Scans', system: 'System' };
+const KIND_LABELS = { briefing: 'Briefing', context: 'Context', scan: 'Scans', system: 'System', jobreview: 'Job Review' };
 function kindLabel(k) { return KIND_LABELS[k] || (k ? k.charAt(0).toUpperCase() + k.slice(1) : 'Update'); }
 function whenText(iso) {
   const d = new Date(iso); if (isNaN(d)) return '';
@@ -805,7 +805,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-17 bin-icon';
+const BUILD = 'navy-18 job-review';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
