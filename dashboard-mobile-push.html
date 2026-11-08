@@ -667,6 +667,30 @@ function dropDeepLinkParams() {
   try { const q = new URL(location.href); ['task', 'u', 'tab'].forEach(k => q.searchParams.delete(k)); history.replaceState(null, '', q.pathname + q.search + q.hash); } catch (e) { /* ignore */ }
 }
 
+// Notification tap while the app is in the background: sw.js leaves a note in Cache Storage ('mansys-nav'); pick it up when the app comes to the front.
+let _navLog = [];
+async function _readPending(del) {
+  try {
+    if (!('caches' in window)) return null;
+    const c = await caches.open('mansys-nav'); const r = await c.match('pending-nav'); if (!r) return null;
+    if (del) await c.delete('pending-nav');
+    return await r.json();
+  } catch (e) { return null; }
+}
+async function checkPendingNav(src) {
+  const p = await _readPending(true);
+  if (!p) return;
+  const age = Date.now() - (p.t || 0);
+  _navLog.push((src || '?') + ' ' + (age < 120000 ? 'use' : 'stale') + ' ' + age + 'ms');
+  if (age > 120000 || !ref.statuses.length) return;
+  let sp = new URLSearchParams(); try { sp = new URL(p.url, location.href).searchParams; } catch (e) { /* ignore */ }
+  closeSheet(); await handleDeepLink(sp);
+}
+function checkPendingSoon(src) { [0, 500, 1500, 3000].forEach(ms => setTimeout(() => { if (document.visibilityState === 'visible') checkPendingNav(src + '+' + ms); }, ms)); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkPendingSoon('vis'); });
+window.addEventListener('focus', () => checkPendingSoon('focus'));
+window.addEventListener('pageshow', () => checkPendingSoon('show'));
+
 function renderTabBar() {
   const moreOn = TABS.find(t => t.id === activeTab)?.more;
   document.getElementById('tabbar').innerHTML = NAV.map(id => {
@@ -717,7 +741,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-13 tap-fallback';
+const BUILD = 'navy-14 tap-pending';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
@@ -730,7 +754,7 @@ function dbgShow() {
   const lines = ['build ' + BUILD, 'standalone ' + window.navigator.standalone + ' / dm ' + (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches),
     'screen ' + screen.width + 'x' + screen.height, 'inner ' + innerWidth + 'x' + innerHeight, 'clientH ' + document.documentElement.clientHeight, 'visualVP ' + vv,
     'safe-bottom ' + safeB, '--gap ' + getComputedStyle(document.documentElement).getPropertyValue('--gap'),
-    'app bottom ' + r('app'), 'tabbar bottom ' + r('tabbar')];
+    'app bottom ' + r('app'), 'tabbar bottom ' + r('tabbar'), 'nav: ' + (_navLog.slice(-4).join(' | ') || 'none')];
   el = document.createElement('pre'); el.id = 'dbg'; el.onclick = dbgShow;
   el.style.cssText = 'position:fixed;left:8px;top:90px;z-index:999;background:#000c;color:#0f0;font:11px/1.4 monospace;padding:8px;border-radius:8px;white-space:pre';
   el.textContent = lines.join('\n'); document.body.appendChild(el);
@@ -1448,6 +1472,7 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('mess
   if (e.data.type === 'mansys-refresh') { refreshNow(false); }
   else if (e.data.type === 'mansys-open') {
     try { if (e.ports && e.ports[0]) e.ports[0].postMessage('ok'); } catch (err) { /* ignore */ }   // confirm to sw.js, otherwise it navigates this window to the link
+    _navLog.push('msg'); _readPending(true);   // handled here, drop the note
     if (!ref.statuses.length) return;   // still starting up: the URL path handles it
     let sp = new URLSearchParams(); try { sp = new URL(e.data.url, location.href).searchParams; } catch (err) { /* ignore */ }
     closeSheet(); handleDeepLink(sp);
