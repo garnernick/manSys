@@ -717,7 +717,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-11 push+updates';
+const BUILD = 'navy-12 updates-chips';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
@@ -872,7 +872,7 @@ async function loadTab(quiet) {
 function defaultStatusFilter() {
   // Default to all statuses except terminal ones
   const exclude = ['Done', 'Delivered'];
-  if (activeTab === 'commitments') {
+  if (activeTab === 'commitments' || activeTab === 'updates') {
     activeFilters.status = [];
   } else {
     activeFilters.status = ref.statuses
