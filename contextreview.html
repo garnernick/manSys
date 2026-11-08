@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Context Review</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#12203A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#080E1B" media="(prefers-color-scheme: dark)">
+<style>
+:root { color-scheme: light dark;
+  --bg:#F2F1ED; --card:#FFFFFF; --line:#E0DDD3; --ink:#12203A; --muted:#565F73; --top:#12203A; --top-ink:#D9DFEC; --brand:#FFC24B; --on-brand:#12203A;
+  --ok-bg:#E3F5E9; --ok-ink:#1B6B3A; --warn-bg:#FFF1D6; --warn-ink:#7A4B00; --bad-bg:#FDE8E6; --bad-ink:#8A1C12; --field:#FBFAF7;
+  --font:-apple-system,system-ui,'Helvetica Neue',Arial,sans-serif; }
+@media (prefers-color-scheme: dark) { :root {
+  --bg:#0C1424; --card:#15203A; --line:#26345A; --ink:#EAEEF7; --muted:#A6B0C6; --top:#080E1B; --top-ink:#A6B0C6; --field:#0F1930;
+  --ok-bg:#12341F; --ok-ink:#8FE0AC; --warn-bg:#3A2D0E; --warn-ink:#FFD98A; --bad-bg:#3A1714; --bad-ink:#F4A59B; } }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--ink); font-family:var(--font); font-size:15px; line-height:1.45; -webkit-text-size-adjust:100%; }
+.top { background:var(--top); color:var(--top-ink); padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px; display:flex; justify-content:space-between; align-items:center; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+.top b { color:var(--brand); letter-spacing:.14em; }
+main { max-width:760px; margin:0 auto; padding:16px 16px 120px; }
+h1 { font-size:24px; letter-spacing:-.01em; }
+.sub { color:var(--muted); font-size:13px; margin-top:2px; }
+.nav { display:flex; gap:8px; margin:12px 0 4px; flex-wrap:wrap; }
+.nav a { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:6px 12px; font-size:13px; text-decoration:none; }
+.nav a.off { opacity:.35; pointer-events:none; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+.chip { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--warn-bg); color:var(--warn-ink); margin-left:6px; vertical-align:middle; }
+.chip.done { background:var(--ok-bg); color:var(--ok-ink); }
+.card h3 { font-size:16px; }
+.reason { color:var(--muted); font-size:13px; margin:2px 0 8px; }
+.review { white-space:pre-wrap; font-size:14px; }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:22px 0 4px; }
+textarea { width:100%; min-height:160px; border:1px solid var(--line); border-radius:10px; background:var(--field); color:var(--ink); font:inherit; font-size:15px; padding:10px; resize:vertical; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; }
+label.use { display:flex; gap:8px; align-items:center; font-size:14px; font-weight:600; }
+label.use input { width:20px; height:20px; }
+button { font:inherit; font-size:14px; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:7px 12px; cursor:pointer; }
+button.link { border:0; background:none; text-decoration:underline; color:var(--muted); padding:7px 4px; }
+details { margin-top:8px; } details summary { cursor:pointer; font-size:13px; color:var(--muted); }
+details pre { white-space:pre-wrap; font:inherit; font-size:13px; color:var(--muted); background:var(--field); border-radius:10px; padding:10px; margin-top:6px; max-height:280px; overflow:auto; }
+.bar { position:fixed; left:0; right:0; bottom:0; background:var(--card); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
+.bar .in { max-width:760px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+.bar .msg { flex:1; font-size:13px; color:var(--muted); }
+button.go { background:var(--top); color:var(--brand); border-color:var(--top); font-weight:700; padding:10px 18px; }
+button.go[disabled] { opacity:.45; }
+.msg.ok { color:var(--ok-ink); font-weight:600; } .msg.err { color:var(--bad-ink); font-weight:600; }
+.gate { max-width:360px; margin:60px auto; text-align:center; }
+.gate input { width:100%; font-size:18px; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--field); color:var(--ink); text-align:center; margin:12px 0; }
+.empty { color:var(--muted); text-align:center; padding:40px 0; }
+.err-box { background:var(--bad-bg); color:var(--bad-ink); border-radius:12px; padding:10px 14px; margin:12px 0; font-size:14px; }
+@media print { .bar,.nav,.top { display:none; } body { background:#fff; color:#000; } }
+</style>
+</head>
+<body>
+<div class="top"><b>MANSYS</b><span>Context Review</span></div>
+<main id="root"></main>
+<div class="bar" id="bar" hidden><div class="in"><span class="msg" id="msg"></span><button class="go" id="go">Submit to database</button></div></div>
+<script>
+const FN_URL = 'https://dglotzmioswcmhfttcqx.supabase.co/functions/v1/contextreview';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+const fmtDate = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone:'UTC' });
+let STATE = null, dirty = false;
+
+async function call(body) {
+  const r = await fetch(FN_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) { const err = new Error(j.error || ('HTTP ' + r.status)); err.code = j.error; err.status = r.status; err.detail = j; throw err; }
+  return j;
+}
+function gate(msg) {
+  $('bar').hidden = true;
+  $('root').innerHTML = '<div class="gate"><h1>Context Review</h1><div class="sub">Enter your PIN</div>' + (msg ? '<div class="err-box">' + esc(msg) + '</div>' : '') +
+    '<input id="pin" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"><button class="go" id="pinGo">Open</button></div>';
+  const go = () => { const v = $('pin').value.trim(); if (v) { store.set('mansys_review_pin', v); start(); } };
+  $('pinGo').onclick = go; $('pin').onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+async function start() {
+  const pin = store.get('mansys_review_pin');
+  if (!pin) return gate('');
+  $('root').innerHTML = '<div class="empty">Loading…</div>';
+  const w = new URLSearchParams(location.search).get('w');
+  try {
+    STATE = await call({ pin, action:'get', week_start: /^\d{4}-\d{2}-\d{2}$/.test(w || '') ? w : undefined });
+    render();
+  } catch (e) {
+    if (e.code === 'bad_pin') { store.del('mansys_review_pin'); return gate('That PIN is not right.'); }
+    if (e.code === 'locked') return gate('Too many wrong attempts. Try again in 15 minutes.');
+    $('root').innerHTML = '<div class="empty">Could not load the review. Try again shortly.</div>';
+  }
+}
+function fit(t) { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 4, 700) + 'px'; }
+function render() {
+  const rv = STATE.review, docs = STATE.documents || [];
+  if (!rv) { $('root').innerHTML = '<div class="empty">No context review found yet.</div>'; $('bar').hidden = true; return; }
+  const byId = {}; docs.forEach(d => byId[d.context_doc_id] = d);
+  const props = rv.proposals || [];
+  const proposedIds = new Set(props.filter(p => p.context_doc_id != null && !p.weekly).map(p => p.context_doc_id));
+  const weeklyFirst = props.slice().sort((a, b) => (b.weekly ? 1 : 0) - (a.weekly ? 1 : 0));
+  const weeks = STATE.weeks || [], i = weeks.indexOf(rv.week_start);
+  const later = i > 0 ? weeks[i - 1] : null, earlier = i >= 0 && i < weeks.length - 1 ? weeks[i + 1] : null;
+  let h = '<h1>Context Review <span class="chip ' + (rv.status === 'submitted' ? 'done' : '') + '">' + (rv.status === 'submitted' ? 'Submitted' : 'Pending') + '</span></h1>' +
+    '<div class="sub">Week commencing ' + esc(fmtDate(rv.week_start)) + '</div>' +
+    '<div class="nav"><a class="' + (earlier ? '' : 'off') + '" href="?w=' + esc(earlier || '') + '">‹ Earlier</a><a class="' + (later ? '' : 'off') + '" href="?w=' + esc(later || '') + '">Later ›</a></div>';
+  if (rv.review_text) h += '<h2>Claude’s review</h2><div class="card review">' + esc(rv.review_text) + '</div>';
+  h += '<h2>Suggested updates</h2>';
+  weeklyFirst.forEach((p, n) => {
+    const cur = p.context_doc_id != null ? byId[p.context_doc_id] : null;
+    h += '<div class="card" data-kind="prop" data-n="' + n + '"><h3>' + esc(p.title) + '</h3><div class="reason">' + esc(p.action === 'create' ? 'New document. ' : '') + esc(p.reason || '') + '</div>' +
+      '<textarea data-ta="p' + n + '"></textarea>' +
+      '<div class="row"><label class="use"><input type="checkbox" data-use="p' + n + '" checked> Apply this</label><button class="link" data-reset="p' + n + '">Reset to suggestion</button></div>' +
+      (cur ? '<details><summary>Show current text</summary><pre>' + esc(cur.content || '') + '</pre></details>' : '') + '</div>';
+  });
+  if (!props.length) h += '<div class="card">No suggestions this week.</div>';
+  const others = docs.filter(d => !proposedIds.has(d.context_doc_id) && d.category !== 'Weekly Context');
+  if (others.length) {
+    h += '<h2>No change suggested</h2><div class="card" style="padding:4px 14px">' + others.map((d, k) => '<details data-kind="doc" data-k="' + k + '"><summary>' + esc(d.title) + '</summary><textarea data-ta="d' + k + '"></textarea><div class="sub">Only saved if you change the text.</div></details>').join('') + '</div>';
+  }
+  $('root').innerHTML = h;
+  weeklyFirst.forEach((p, n) => { const t = document.querySelector('[data-ta="p' + n + '"]'); t.value = p.proposed_content || ''; fit(t); t.addEventListener('input', () => { fit(t); setDirty(); }); });
+  others.forEach((d, k) => { const t = document.querySelector('[data-ta="d' + k + '"]'); t.value = d.content || ''; t.addEventListener('input', () => { fit(t); setDirty(); }); });
+  document.querySelectorAll('details[data-kind="doc"]').forEach(dt => dt.addEventListener('toggle', () => { const t = dt.querySelector('textarea'); if (dt.open) fit(t); }));
+  document.querySelectorAll('[data-reset]').forEach(b => b.onclick = () => { const n = +b.dataset.reset.slice(1), t = document.querySelector('[data-ta="p' + n + '"]'); t.value = weeklyFirst[n].proposed_content || ''; fit(t); setDirty(); });
+  document.querySelectorAll('[data-use]').forEach(c => c.onchange = setDirty);
+  $('bar').hidden = false; $('msg').className = 'msg'; $('msg').textContent = rv.status === 'submitted' ? 'Already submitted. You can submit again.' : 'Review, amend, then submit.';
+  $('go').disabled = false;
+  $('go').onclick = () => submit(weeklyFirst, others, byId);
+}
+function setDirty() { dirty = true; $('msg').className = 'msg'; $('msg').textContent = 'Unsaved edits.'; }
+async function submit(props, others, byId) {
+  const changes = [];
+  props.forEach((p, n) => {
+    if (!document.querySelector('[data-use="p' + n + '"]').checked) return;
+    const content = document.querySelector('[data-ta="p' + n + '"]').value;
+    const cur = p.context_doc_id != null ? byId[p.context_doc_id] : null;
+    changes.push({ context_doc_id: p.context_doc_id, weekly: !!p.weekly, title: p.title, category: p.category, domain: p.domain, content, base_updated_at: cur ? cur.last_updated_at : undefined });
+  });
+  others.forEach((d, k) => {
+    const content = document.querySelector('[data-ta="d' + k + '"]').value;
+    if (content.trim() !== (d.content || '').trim()) changes.push({ context_doc_id: d.context_doc_id, title: d.title, category: d.category, domain: d.domain, content, base_updated_at: d.last_updated_at });
+  });
+  if (!changes.length) { $('msg').className = 'msg err'; $('msg').textContent = 'Nothing selected to apply.'; return; }
+  if (!confirm('Save ' + changes.length + ' change' + (changes.length === 1 ? '' : 's') + ' to your context documents?')) return;
+  $('go').disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Saving…';
+  try {
+    await call({ pin: store.get('mansys_review_pin'), action:'submit', week_start: STATE.review.week_start, changes });
+    dirty = false; $('msg').className = 'msg ok'; $('msg').textContent = 'Saved ' + changes.length + ' change' + (changes.length === 1 ? '' : 's') + '.';
+    setTimeout(start, 1200);
+  } catch (e) {
+    $('go').disabled = false; $('msg').className = 'msg err';
+    $('msg').textContent = e.code === 'changed_since_loaded' ? 'A document changed since this page loaded. Reload and review again. Nothing was saved.' : e.code === 'bad_pin' ? 'PIN no longer accepted.' : 'Could not save (' + (e.code || e.status) + ').';
+  }
+}
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+start();
+</script>
+</body>
+</html>
