@@ -234,6 +234,11 @@ body { background:var(--nav); }
 /* ---- Updates tab ---- */
 .card.unread { border-left:4px solid var(--on-accent); box-shadow:inset 0 0 0 1px var(--accent); }
 .card.unread .card-title { font-weight:700; }
+.swipe { position:relative; margin-bottom:8px; border-radius:14px; overflow:hidden; touch-action:pan-y; }
+.swipe .card { margin-bottom:0; position:relative; z-index:1; transition:transform .18s ease; will-change:transform; }
+.swipe.drag .card { transition:none; }
+.swipe .sw-del { position:absolute; top:0; right:0; bottom:0; width:92px; background:#D92D20; color:#fff; border:0; font:700 15px system-ui,-apple-system,sans-serif; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.swipe.gone { transition:max-height .2s ease, opacity .2s ease, margin .2s ease; max-height:0 !important; opacity:0; margin-bottom:0; }
 .udot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#E5484D; margin-right:7px; vertical-align:1px; }
 .ucount { position:absolute; top:2px; left:calc(50% + 6px); min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#E5484D; color:#fff; font:700 10px/16px var(--font); text-align:center; }
 .tab-item { position:relative; }
@@ -628,9 +633,67 @@ async function openUpdate(id) {
     (r.body ? '<div class="u-body">' + esc(r.body) + '</div>' : '') +
     (r.link && /^https?:\/\//i.test(r.link) ? '<div style="margin-top:14px"><a href="' + esc(r.link) + '" target="_blank" rel="noopener" style="color:var(--ink);font-weight:600">Open link ›</a></div>' : '');
   document.getElementById('sheet-footer').innerHTML =
-    '<button class="btn-cancel" onclick="setRead(' + id + ', false); closeSheet()">Mark unread</button><button class="btn-save" onclick="closeSheet()">Close</button>';
+    '<button class="btn-cancel" onclick="setRead(' + id + ', false); closeSheet()">Mark unread</button><button class="btn-cancel" style="color:#D92D20" onclick="deleteUpdate(' + id + ', true)">Delete</button><button class="btn-save" onclick="closeSheet()">Close</button>';
   openSheet();
   if (!r.read_at) setRead(id, true, true);
+}
+// ---- swipe left on an update to reveal Delete; tap Delete to remove it permanently ----
+const SW_W = 92;
+let _swOpen = null, _sw = null, _swSuppressClick = 0;
+function swClose(el, animate) {
+  if (!el) return;
+  const c = el.querySelector('.card'); if (c) c.style.transform = '';
+  el.classList.remove('open');
+  if (_swOpen === el) _swOpen = null;
+}
+(function initSwipe() {
+  const wrap = document.getElementById('list-wrap'); if (!wrap) return;
+  wrap.addEventListener('touchstart', e => {
+    const el = e.target.closest && e.target.closest('.swipe');
+    if (_swOpen && _swOpen !== el) swClose(_swOpen);
+    if (!el || e.target.closest('.sw-del') || e.touches.length !== 1) { _sw = null; return; }
+    const t0 = e.touches[0];
+    _sw = { el, card: el.querySelector('.card'), x: t0.clientX, y: t0.clientY, base: el.classList.contains('open') ? -SW_W : 0, dx: 0, lock: null };
+  }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    if (!_sw) return;
+    const t0 = e.touches[0], dx = t0.clientX - _sw.x, dy = t0.clientY - _sw.y;
+    if (_sw.lock === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) _sw.lock = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'h' : 'v';
+    if (_sw.lock !== 'h') return;
+    _sw.el.classList.add('drag');
+    _sw.dx = Math.max(-SW_W * 1.4, Math.min(0, _sw.base + dx));
+    _sw.card.style.transform = 'translateX(' + _sw.dx + 'px)';
+  }, { passive: true });
+  const end = () => {
+    if (!_sw) return;
+    const s = _sw; _sw = null;
+    s.el.classList.remove('drag');
+    if (s.lock !== 'h') return;
+    _swSuppressClick = Date.now();
+    if (s.dx < -SW_W / 2) { s.card.style.transform = 'translateX(-' + SW_W + 'px)'; s.el.classList.add('open'); _swOpen = s.el; }
+    else swClose(s.el);
+  };
+  wrap.addEventListener('touchend', end, { passive: true });
+  wrap.addEventListener('touchcancel', end, { passive: true });
+  // a swipe must not also count as a tap on the card; a tap on an open card just closes it
+  wrap.addEventListener('click', e => {
+    if (Date.now() - _swSuppressClick < 350) { e.stopPropagation(); e.preventDefault(); return; }
+    const el = e.target.closest && e.target.closest('.swipe');
+    if (el && el.classList.contains('open') && !e.target.closest('.sw-del')) { e.stopPropagation(); e.preventDefault(); swClose(el); }
+  }, true);
+})();
+async function deleteUpdate(id, fromSheet) {
+  const el = document.querySelector('.swipe[data-id="' + id + '"]');
+  try {
+    await api('rpc/updates_delete', { method: 'POST', body: { p_ids: [id], p_person_id: MY_ID } });
+  } catch (e) { swClose(el); alert('Could not delete this update. Try again.'); return; }
+  const done = () => {
+    allRows = allRows.filter(x => x.update_id !== id);
+    renderStats(allRows); applyFilters(); refreshUnread();
+  };
+  if (fromSheet) closeSheet();
+  if (el && !fromSheet) { el.style.maxHeight = el.offsetHeight + 'px'; void el.offsetHeight; el.classList.add('gone'); setTimeout(done, 210); }
+  else done();
 }
 async function setRead(id, read, keepList) {
   const r = allRows.find(x => x.update_id === id); if (!r) return;
@@ -741,7 +804,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-15 tap-diag';
+const BUILD = 'navy-16 swipe-delete';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
@@ -883,7 +946,9 @@ function renderList(data) {
     const id = r[def.idKey];
     const theirs = activeTab === 'tasks' && r.owner_id != null && r.owner_id !== 1;
     const unread = activeTab === 'updates' && !r.read_at;
-    return '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
+    const cardHtml = '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
+    if (activeTab !== 'updates') return cardHtml;
+    return '<div class="swipe" data-id="' + id + '"><button class="sw-del" onclick="deleteUpdate(' + id + ')" aria-label="Delete update">Delete</button>' + cardHtml + '</div>';
   }).join('');
 }
 
