@@ -34,6 +34,7 @@ h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(-
 .pill { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; margin-right:4px; background:var(--c-bg); color:var(--c-ink); }
 .pill.A { background:var(--a-bg); color:var(--a-ink); } .pill.B { background:var(--b-bg); color:var(--b-ink); } .pill.X { background:var(--x-bg); color:var(--x-ink); }
 .role .t { font-weight:650; font-size:16px; }
+.role a.tl { color:inherit; text-decoration:none; border-bottom:1px solid var(--line); }
 .role .co { color:var(--muted); font-size:13px; margin-top:1px; }
 .role .row { margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
 .role .why { font-size:13.5px; margin-top:8px; }
@@ -68,18 +69,19 @@ async function load(d) {
   return r.json();
 }
 function role(r) {
+  const ok = r.source_url && /^https?:\/\//i.test(r.source_url);
   const who = [r.company, r.agency && (r.company ? 'via ' + r.agency : r.agency)].filter(Boolean).join(' ');
   const chips = [FAMILY[r.role_family], cap(r.engagement), cap(r.work_pattern), r.location].filter(Boolean).map(x => '<span class="pill">' + esc(x) + '</span>').join('');
   const pay = r.pay_text ? '<span class="pill">' + esc(r.pay_text) + '</span>' : '';
   const fte = r.fte_gbp_low ? '<span class="pill">FTE ≈ £' + Math.round(r.fte_gbp_low / 1000) + 'k' + (r.fte_gbp_high && r.fte_gbp_high !== r.fte_gbp_low ? '–£' + Math.round(r.fte_gbp_high / 1000) + 'k' : '') + '</span>' : '';
-  return '<div class="card role"><div class="t">' + esc(r.title) + '</div>' +
+  return '<div class="card role"><div class="t">' + (ok ? '<a class="tl" href="' + esc(r.source_url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a>' : esc(r.title)) + '</div>' +
     (who ? '<div class="co">' + esc(who) + '</div>' : '') +
     '<div class="row"><span class="pill ' + esc(r.fit_band) + '">Band ' + esc(r.fit_band || '?') + '</span>' + chips + pay + fte +
     (r.fit_score != null ? '<span class="score">Fit ' + esc(r.fit_score) + '</span>' : '') + '</div>' +
     (r.fit_reasons ? '<div class="why"><b>Why it fits</b>' + esc(r.fit_reasons) + '</div>' : '') +
     (r.fit_gaps ? '<div class="why"><b>Gaps / risks</b>' + esc(r.fit_gaps) + '</div>' : '') +
     (r.cv_version ? '<div class="row" style="margin-top:8px"><span class="pill">CV: ' + esc(r.cv_version) + '</span>' + (r.closing_date ? '<span class="pill">Closes ' + esc(r.closing_date) + '</span>' : '') + '</div>' : '') +
-    (r.source_url && /^https?:\/\//i.test(r.source_url) ? '<a class="open" href="' + esc(r.source_url) + '" target="_blank" rel="noopener">Open posting ›</a>' : '') + '</div>';
+    (ok ? '<a class="open" href="' + esc(r.source_url) + '" target="_blank" rel="noopener">Open posting ›</a>' : '') + '</div>';
 }
 function render(res) {
   const root = document.getElementById('root');
