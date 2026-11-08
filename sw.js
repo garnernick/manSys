@@ -10,6 +10,17 @@
 //  - app not open      -> open a window at the url
 
 const DEFAULT_PAGE = 'dashboard-mobile-push.html';
+const SW_VERSION = 'sw-5 diag';
+
+// Tiny event log kept in Cache Storage so the dashboard's debug panel (tap MANSYS 3x) can show what the worker did on a tap.
+async function swlog(msg) {
+  try {
+    const c = await caches.open('mansys-nav');
+    const r = await c.match('sw-log'); let a = []; if (r) { try { a = await r.json(); } catch (_) { a = []; } }
+    a.push(new Date().toISOString().slice(11, 19) + ' ' + msg); if (a.length > 12) a = a.slice(-12);
+    await c.put('sw-log', new Response(JSON.stringify(a)));
+  } catch (_) { /* ignore */ }
+}
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
@@ -35,6 +46,7 @@ self.addEventListener('push', (event) => {
     } catch (_) { /* ignore */ }
 
     await self.registration.showNotification(title, options);
+    await swlog(SW_VERSION + ' push shown tag=' + (d && d.tag || '-'));
   })());
 });
 
@@ -43,10 +55,12 @@ self.addEventListener('notificationclick', (event) => {
   const raw = (event.notification.data && event.notification.data.url) || DEFAULT_PAGE;
   const target = new URL(raw, self.registration.scope);
   event.waitUntil((async () => {
+    await swlog(SW_VERSION + ' click ' + target.search.replace(/token=[^&]+&?/, ''));
     // Leave a note the page can pick up when it comes to the front. Messaging an app that iOS has suspended in the
     // background is unreliable, a note in Cache Storage (shared by the worker and the page) is not.
     try { const c = await caches.open('mansys-nav'); await c.put('pending-nav', new Response(JSON.stringify({ url: target.href, t: Date.now() }))); } catch (_) { /* ignore */ }
     const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    await swlog('windows=' + wins.length + (wins.length ? ' ' + wins.map((w) => { try { return new URL(w.url).pathname.split('/').pop() + ':' + w.visibilityState; } catch (_) { return '?'; } }).join(',') : ''));
     // Reuse a window only if it is the same page (a dashboard window must not receive a personal-page link, or the reverse).
     const same = wins.find((w) => {
       try { return new URL(w.url).pathname === target.pathname && 'focus' in w; } catch (_) { return false; }
@@ -64,11 +78,13 @@ self.addEventListener('notificationclick', (event) => {
         } catch (_) { finish(false); }
         setTimeout(() => finish(false), 1500);
       });
+      await swlog('acked=' + acked);
       if (acked) return;
-      try { if ('navigate' in same) { await same.navigate(target.href); return; } } catch (_) { /* fall through */ }
+      try { if ('navigate' in same) { await same.navigate(target.href); await swlog('navigate ok'); return; } } catch (e) { await swlog('navigate failed ' + (e && e.name)); }
       if (self.clients.openWindow) await self.clients.openWindow(target.href);
       return;
     }
+    await swlog('no same-page window, openWindow');
     if (self.clients.openWindow) await self.clients.openWindow(target.href);
   })());
 });
