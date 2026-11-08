@@ -34,6 +34,8 @@ h1{margin:0;font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.02e
 .sec h2{margin:0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sec h2.red{color:var(--red)}
 .card{background:#fff;border-radius:18px;padding:14px 14px 14px 12px;display:flex;gap:12px;box-shadow:0 1px 2px rgba(14,21,37,.06)}
+.card.flash{animation:cardflash 2.4s ease-out 1}
+@keyframes cardflash{0%,60%{box-shadow:0 0 0 3px #FFC24B,0 1px 2px rgba(14,21,37,.06)}100%{box-shadow:0 1px 2px rgba(14,21,37,.06)}}
 .card.done{opacity:.45;transition:opacity .4s}
 .tick{all:unset;box-sizing:border-box;width:44px;height:44px;margin:-8px 0 0 -8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 .tick i{width:22px;height:22px;border-radius:11px;border:2px solid #98A2B5;display:block}
@@ -605,13 +607,32 @@ window.addEventListener('pageshow', refreshIfStale);
   }, { passive: true });
   document.addEventListener('touchend', () => { if (y0 !== null && dy > 80) refreshNow(true); else if (!_refreshing) pill.classList.remove('on'); y0 = null; dy = 0; }, { passive: true });
 })();
-if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', (e) => { if (e.data && e.data.type === 'mansys-refresh') refreshNow(false); });
+// ---- notification tap: ?task=<id> shows that task (switch to Tasks, reload so a brand-new task is there, scroll to it, flash it) ----
+async function focusTask(id) {
+  if (!id || !D) return;
+  try { tab = 'tasks'; await reload(); } catch (e) { return; }
+  const el = document.querySelector('[data-task="' + String(id).replace(/[^0-9]/g, '') + '"]');
+  if (!el) { toast('That task is no longer on your list.'); return; }
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+}
+function dropDeepLinkParams() {
+  try { const u = new URL(location.href); u.searchParams.delete('task'); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) { /* ignore */ }
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', (e) => {
+  if (!e.data) return;
+  if (e.data.type === 'mansys-refresh') refreshNow(false);
+  else if (e.data.type === 'mansys-open') {
+    let id = null; try { id = new URL(e.data.url, location.href).searchParams.get('task'); } catch (err) { /* ignore */ }
+    if (id) focusTask(id); else refreshNow(false);
+  }
+});
 
 // ---- start ----
 (async function init() {
   const bad = m => { $('app').innerHTML = '<div class="msg err">' + m + '</div>'; };
   if (!token || !/^[0-9a-f-]{36}$/i.test(token)) return bad('This link is not valid.');
-  try { await reload(); pushBoot(); }
+  try { await reload(); pushBoot(); const tid = new URLSearchParams(location.search).get('task'); if (tid) { await focusTask(tid); dropDeepLinkParams(); } }
   catch (e) { bad(String(e.message) === 'not_found' ? 'This link is no longer valid. Please ask for a new one.' : 'Could not load your page. Please try again later.'); }
 })();
 </script>
