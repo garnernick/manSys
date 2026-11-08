@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Job Review</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#12203A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#080E1B" media="(prefers-color-scheme: dark)">
+<style>
+:root { color-scheme: light dark;
+  --bg:#F2F1ED; --card:#FFFFFF; --line:#E0DDD3; --ink:#12203A; --muted:#565F73; --top:#12203A; --top-ink:#D9DFEC; --brand:#FFC24B;
+  --a-bg:#E3F5E9; --a-ink:#1B6B3A; --b-bg:#E3E9F7; --b-ink:#2A4FA8; --c-bg:#EFEDE6; --c-ink:#565F73; --x-bg:#FDE8E6; --x-ink:#8A1C12; --warn-bg:#FFF1D6; --warn-ink:#7A4B00;
+  --font:-apple-system,system-ui,'Helvetica Neue',Arial,sans-serif; }
+@media (prefers-color-scheme: dark) { :root {
+  --bg:#0C1424; --card:#15203A; --line:#26345A; --ink:#EAEEF7; --muted:#A6B0C6; --top:#080E1B; --top-ink:#A6B0C6;
+  --a-bg:#12341F; --a-ink:#8FE0AC; --b-bg:#172A52; --b-ink:#9DB8F5; --c-bg:#1E2B48; --c-ink:#A6B0C6; --x-bg:#3A1714; --x-ink:#F4A59B; --warn-bg:#3A2D0E; --warn-ink:#FFD98A; } }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--ink); font-family:var(--font); font-size:15px; line-height:1.45; -webkit-text-size-adjust:100%; }
+.top { background:var(--top); color:var(--top-ink); padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px; display:flex; justify-content:space-between; align-items:center; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+.top b { color:var(--brand); letter-spacing:.14em; }
+main { max-width:720px; margin:0 auto; padding:16px; }
+h1 { font-size:24px; letter-spacing:-.01em; }
+.sub { color:var(--muted); font-size:13px; margin-top:2px; }
+.nav { display:flex; gap:8px; margin:12px 0 4px; }
+.nav a { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:6px 12px; font-size:13px; text-decoration:none; }
+.nav a.off { opacity:.35; pointer-events:none; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:10px 0; }
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0 4px; }
+.stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 6px; text-align:center; }
+.stat b { display:block; font-size:22px; }
+.stat span { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:22px 0 6px; display:flex; align-items:center; gap:8px; }
+.pill { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; margin-right:4px; background:var(--c-bg); color:var(--c-ink); }
+.pill.A { background:var(--a-bg); color:var(--a-ink); } .pill.B { background:var(--b-bg); color:var(--b-ink); } .pill.X { background:var(--x-bg); color:var(--x-ink); }
+.role .t { font-weight:650; font-size:16px; }
+.role .co { color:var(--muted); font-size:13px; margin-top:1px; }
+.role .row { margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
+.role .why { font-size:13.5px; margin-top:8px; }
+.role .why b { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); display:block; margin-bottom:1px; }
+.role a.open { display:inline-block; margin-top:8px; font-weight:600; color:var(--ink); font-size:14px; }
+.score { margin-left:auto; font-size:12px; color:var(--muted); }
+.warn { background:var(--warn-bg); color:var(--warn-ink); border-radius:12px; padding:10px 14px; font-size:13px; margin:10px 0; }
+.warn ul { margin:4px 0 0 18px; }
+details summary { cursor:pointer; font-weight:600; font-size:14px; }
+.empty,.msg { color:var(--muted); text-align:center; padding:40px 0; }
+.foot { color:var(--muted); font-size:11px; text-align:center; margin:26px 0 12px; }
+@media print { body { background:#fff; color:#000; } .top,.nav { display:none; } .card { break-inside:avoid; } .pill.A,.pill.B,.pill.X { border:1px solid #888; background:#fff; color:#000; } }
+</style>
+</head>
+<body>
+<div class="top"><b>MANSYS</b><span>Job Review</span></div>
+<main id="root"><div class="msg">Loading…</div></main>
+<script>
+const SUPABASE_URL = 'https://dglotzmioswcmhfttcqx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbG90em1pb3N3Y21oZnR0Y3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5OTE3MzgsImV4cCI6MjA4ODU2NzczOH0.lF_8yxfnP50UpiMKCW3aQxq8HukVZ5ibRqOp-RwFvpQ';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const FAMILY = { fd_cfo:'FD / CFO', finance_transformation:'Finance transformation', digital_cio_ai:'Digital / AI', fractional_advisory:'Fractional / advisory', other:'Other' };
+const cap = s => s && s !== 'unknown' ? s.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase()) : '';
+const fmtDate = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone:'UTC' });
+const fmtDT = s => { try { return new Date(s).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); } catch (e) { return ''; } };
+
+async function load(d) {
+  const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/jobreview_get', {
+    method:'POST', headers:{ apikey:SUPABASE_KEY, Authorization:'Bearer ' + SUPABASE_KEY, 'Content-Type':'application/json' },
+    body: JSON.stringify({ p_date: d || null }) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+function role(r) {
+  const who = [r.company, r.agency && (r.company ? 'via ' + r.agency : r.agency)].filter(Boolean).join(' ');
+  const chips = [FAMILY[r.role_family], cap(r.engagement), cap(r.work_pattern), r.location].filter(Boolean).map(x => '<span class="pill">' + esc(x) + '</span>').join('');
+  const pay = r.pay_text ? '<span class="pill">' + esc(r.pay_text) + '</span>' : '';
+  const fte = r.fte_gbp_low ? '<span class="pill">FTE ≈ £' + Math.round(r.fte_gbp_low / 1000) + 'k' + (r.fte_gbp_high && r.fte_gbp_high !== r.fte_gbp_low ? '–£' + Math.round(r.fte_gbp_high / 1000) + 'k' : '') + '</span>' : '';
+  return '<div class="card role"><div class="t">' + esc(r.title) + '</div>' +
+    (who ? '<div class="co">' + esc(who) + '</div>' : '') +
+    '<div class="row"><span class="pill ' + esc(r.fit_band) + '">Band ' + esc(r.fit_band || '?') + '</span>' + chips + pay + fte +
+    (r.fit_score != null ? '<span class="score">Fit ' + esc(r.fit_score) + '</span>' : '') + '</div>' +
+    (r.fit_reasons ? '<div class="why"><b>Why it fits</b>' + esc(r.fit_reasons) + '</div>' : '') +
+    (r.fit_gaps ? '<div class="why"><b>Gaps / risks</b>' + esc(r.fit_gaps) + '</div>' : '') +
+    (r.cv_version ? '<div class="row" style="margin-top:8px"><span class="pill">CV: ' + esc(r.cv_version) + '</span>' + (r.closing_date ? '<span class="pill">Closes ' + esc(r.closing_date) + '</span>' : '') + '</div>' : '') +
+    (r.source_url && /^https?:\/\//i.test(r.source_url) ? '<a class="open" href="' + esc(r.source_url) + '" target="_blank" rel="noopener">Open posting ›</a>' : '') + '</div>';
+}
+function render(res) {
+  const root = document.getElementById('root');
+  if (!res) { root.innerHTML = '<div class="empty">No job review found for that date.</div>'; return; }
+  const p = res.payload || {}, rs = p.run_summary || {}, roles = (p.roles || []).slice().sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0));
+  const by = b => roles.filter(r => (r.fit_band || 'C') === b);
+  const nav = '<div class="nav"><a class="' + (res.prev ? '' : 'off') + '" href="?d=' + esc(res.prev || '') + '">‹ Earlier</a><a class="' + (res.next ? '' : 'off') + '" href="?d=' + esc(res.next || '') + '">Later ›</a></div>';
+  let h = '<h1>Job Review</h1><div class="sub">' + esc(fmtDate(res.review_date)) + '</div>' + nav;
+  h += '<div class="stats"><div class="stat"><b>' + esc(rs.new_roles != null ? rs.new_roles : roles.length) + '</b><span>New</span></div><div class="stat"><b>' + esc(rs.band_a || 0) + '</b><span>Band A</span></div><div class="stat"><b>' + esc(rs.band_b || 0) + '</b><span>Band B</span></div><div class="stat"><b>' + esc(rs.follow_ups_due || 0) + '</b><span>Follow-ups</span></div></div>';
+  if (rs.summary) h += '<div class="card">' + esc(rs.summary) + '</div>';
+  [['A', 'Band A · strong fit'], ['B', 'Band B · good fit, one gap'], ['C', 'Band C · lower fit'], ['X', 'Band X · not a fit']].forEach(([b, label]) => {
+    const list = by(b); if (!list.length) return;
+    if (b === 'C' || b === 'X') h += '<details><summary style="margin:22px 0 6px">' + esc(label) + ' (' + list.length + ')</summary>' + list.map(role).join('') + '</details>';
+    else h += '<h2>' + esc(label) + ' <span class="pill ' + b + '">' + list.length + '</span></h2>' + list.map(role).join('');
+  });
+  const fu = (p.follow_ups || []);
+  if (fu.length) h += '<h2>Follow-ups due</h2>' + fu.map(f => '<div class="card"><div class="t" style="font-weight:650">' + esc(f.name || 'Recruiter') + (f.firm ? ' · ' + esc(f.firm) : '') + '</div><div class="co" style="color:var(--muted);font-size:13px">' + esc(f.summary || '') + '</div></div>').join('');
+  const ct = (p.contacts || []);
+  if (ct.length) h += '<details style="margin-top:18px"><summary>Recruiter contacts (' + ct.length + ')</summary>' + ct.map(c => '<div class="card"><b>' + esc(c.name) + '</b>' + (c.firm ? ' · ' + esc(c.firm) : '') + (c.role_title ? '<div class="sub">' + esc(c.role_title) + '</div>' : '') + '<div class="sub">In: ' + esc(c.last_inbound_at ? fmtDT(c.last_inbound_at) : '–') + ' · Out: ' + esc(c.last_outbound_at ? fmtDT(c.last_outbound_at) : '–') + '</div></div>').join('') + '</details>';
+  if ((rs.warnings || []).length) h += '<details style="margin-top:18px"><summary>Sweep notes (' + rs.warnings.length + ')</summary><div class="warn"><ul>' + rs.warnings.map(w => '<li>' + esc(w) + '</li>').join('') + '</ul></div></details>';
+  if (p.seen_again_count) h += '<div class="sub" style="margin-top:14px">' + esc(p.seen_again_count) + ' roles seen again from earlier days (not repeated).</div>';
+  h += '<div class="foot">Generated ' + esc(rs.generated_at ? new Date(rs.generated_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' }) : '') + ' · Confidential — Nick Garner</div>';
+  root.innerHTML = h;
+  document.title = 'Job Review ' + res.review_date;
+}
+(async () => {
+  const d = new URLSearchParams(location.search).get('d');
+  try { render(await load(d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null)); }
+  catch (e) { document.getElementById('root').innerHTML = '<div class="empty">Could not load the job review. Try again shortly.</div>'; }
+})();
+</script>
+</body>
+</html>
