@@ -96,12 +96,12 @@ function render(res) {
     else h += '<h2>' + esc(label) + ' <span class="pill ' + b + '">' + list.length + '</span></h2>' + list.map(role).join('');
   });
   const fu = (p.follow_ups || []);
-  if (fu.length) h += '<h2>Follow-ups due</h2>' + fu.map(f => '<div class="card"><div class="t" style="font-weight:650">' + esc(f.name || 'Recruiter') + (f.firm ? ' · ' + esc(f.firm) : '') + '</div><div class="co" style="color:var(--muted);font-size:13px">' + esc(f.summary || '') + '</div></div>').join('');
+  if (fu.length) h += '<h2>Follow-ups due</h2>' + fu.map(f => '<div class="card">' + esc(f.summary || '') + '</div>').join('');
   const ct = (p.contacts || []);
   if (ct.length) h += '<details style="margin-top:18px"><summary>Recruiter contacts (' + ct.length + ')</summary>' + ct.map(c => '<div class="card"><b>' + esc(c.name) + '</b>' + (c.firm ? ' · ' + esc(c.firm) : '') + (c.role_title ? '<div class="sub">' + esc(c.role_title) + '</div>' : '') + '<div class="sub">In: ' + esc(c.last_inbound_at ? fmtDT(c.last_inbound_at) : '–') + ' · Out: ' + esc(c.last_outbound_at ? fmtDT(c.last_outbound_at) : '–') + '</div></div>').join('') + '</details>';
   if ((rs.warnings || []).length) h += '<details style="margin-top:18px"><summary>Sweep notes (' + rs.warnings.length + ')</summary><div class="warn"><ul>' + rs.warnings.map(w => '<li>' + esc(w) + '</li>').join('') + '</ul></div></details>';
   if (p.seen_again_count) h += '<div class="sub" style="margin-top:14px">' + esc(p.seen_again_count) + ' roles seen again from earlier days (not repeated).</div>';
-  h += '<div class="foot">Generated ' + esc(rs.generated_at ? new Date(rs.generated_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' }) : '') + ' · Confidential — Nick Garner</div>';
+  h += '<div class="foot">Generated ' + esc((p.generated_at || rs.generated_at) ? new Date(p.generated_at || rs.generated_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' }) : '') + ' · Confidential — Nick Garner</div>';
   root.innerHTML = h;
   document.title = 'Job Review ' + res.review_date;
 }
