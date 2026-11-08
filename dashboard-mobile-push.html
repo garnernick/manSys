@@ -717,7 +717,7 @@ function fixGap() {
   }
   document.documentElement.style.setProperty('--gap', gap + 'px');
 }
-const BUILD = 'navy-12 updates-chips';
+const BUILD = 'navy-13 tap-fallback';
 // Diagnostics: tap the MANSYS label 3 times to show/hide measurements (for screenshots).
 let _dbgTaps = 0, _dbgT;
 function dbgShow() {
@@ -1447,6 +1447,7 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('mess
   if (!e.data) return;
   if (e.data.type === 'mansys-refresh') { refreshNow(false); }
   else if (e.data.type === 'mansys-open') {
+    try { if (e.ports && e.ports[0]) e.ports[0].postMessage('ok'); } catch (err) { /* ignore */ }   // confirm to sw.js, otherwise it navigates this window to the link
     if (!ref.statuses.length) return;   // still starting up: the URL path handles it
     let sp = new URLSearchParams(); try { sp = new URL(e.data.url, location.href).searchParams; } catch (err) { /* ignore */ }
     closeSheet(); handleDeepLink(sp);

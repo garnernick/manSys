@@ -5,7 +5,8 @@
 // So this handler ALWAYS calls showNotification — even when the payload is missing/corrupt and even if the app is open.
 //
 // Notification tap: the payload's `url` carries everything the page needs (token, ?task=<id>, ?tab=updates&u=<id>).
-//  - app already open  -> focus it and hand it the url in a 'mansys-open' message (the page opens the task / update itself)
+//  - app already open  -> focus it and hand it the url in a 'mansys-open' message (the page opens the task / update itself and
+//                         confirms on the message port); no confirmation within 1.5 s -> navigate the window to the url
 //  - app not open      -> open a window at the url
 
 const DEFAULT_PAGE = 'dashboard-mobile-push.html';
@@ -49,7 +50,20 @@ self.addEventListener('notificationclick', (event) => {
     });
     if (same) {
       try { await same.focus(); } catch (_) { /* ignore */ }
-      try { same.postMessage({ type: 'mansys-open', url: target.href }); } catch (_) { /* ignore */ }
+      // Hand the link to the open page and wait for it to confirm. A page that is older than this
+      // service worker (or frozen) never answers, so after 1.5 s the window is navigated to the link instead.
+      const acked = await new Promise((resolve) => {
+        let done = false; const finish = (v) => { if (!done) { done = true; resolve(v); } };
+        try {
+          const ch = new MessageChannel();
+          ch.port1.onmessage = () => finish(true);
+          same.postMessage({ type: 'mansys-open', url: target.href }, [ch.port2]);
+        } catch (_) { finish(false); }
+        setTimeout(() => finish(false), 1500);
+      });
+      if (acked) return;
+      try { if ('navigate' in same) { await same.navigate(target.href); return; } } catch (_) { /* fall through */ }
+      if (self.clients.openWindow) await self.clients.openWindow(target.href);
       return;
     }
     if (self.clients.openWindow) await self.clients.openWindow(target.href);

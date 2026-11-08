@@ -623,6 +623,7 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('mess
   if (!e.data) return;
   if (e.data.type === 'mansys-refresh') refreshNow(false);
   else if (e.data.type === 'mansys-open') {
+    try { if (e.ports && e.ports[0]) e.ports[0].postMessage('ok'); } catch (err) { /* ignore */ }   // confirm to sw.js
     let id = null; try { id = new URL(e.data.url, location.href).searchParams.get('task'); } catch (err) { /* ignore */ }
     if (id) focusTask(id); else refreshNow(false);
   }
