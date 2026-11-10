@@ -365,7 +365,7 @@ async function loadRef() {
     api('statuses?select=status_id,status_label&order=status_id.asc'),
     api('themes?select=theme_id,title&order=title.asc'),
     api('people?select=person_id,full_name,job_title,is_active&order=full_name.asc'),
-    api('roadmap_items?select=roadmap_item_id,title&order=title.asc'),
+    api('roadmap_items?select=roadmap_item_id,title,theme_id&order=title.asc'),
     api('person_types?select=person_type_id,description&order=description.asc'),
   ]);
   ref.statuses = s || []; ref.themes = t || []; ref.epics = e || []; ref.personTypes = pt || [];
@@ -1027,11 +1027,26 @@ function peopleOptsFor(selected) {
   return '<option value=""></option>' + selOpts(list.map(p => ({ v: p.person_id, l: p.full_name + (p.is_active === false ? ' (inactive)' : '') })), selected);
 }
 
+// Epics belong to a theme: only offer the selected theme's epics (plus any epic with no theme).
+// With no theme chosen, every epic is offered.
+function epicOptsFor(themeId, selected) {
+  const tid = themeId ? Number(themeId) : null;
+  const list = ref.epics.filter(e => !tid || e.theme_id == null || e.theme_id === tid);
+  return '<option value=""></option>' + selOpts(list.map(e => ({v: e.roadmap_item_id, l: e.title})), selected);
+}
+function filterEpics() {
+  const th = document.getElementById('ff-theme'), ep = document.getElementById('ff-epic');
+  if (!th || !ep) return;
+  const keep = ep.value;
+  ep.innerHTML = epicOptsFor(th.value, keep);
+  if (![...ep.options].some(o => o.value === keep)) ep.value = '';   // drop an epic that belongs to another theme
+}
+
 function buildForm(tab, r) {
   const statusOpts = '<option value=""></option>' + selOpts(ref.statuses.map(s => ({v: s.status_id, l: s.status_label})), r?.status_id);
   const themeOpts  = '<option value=""></option>' + selOpts(ref.themes.map(t => ({v: t.theme_id, l: t.title})), r?.theme_id);
   const peopleOpts = peopleOptsFor(r?.person_id);
-  const epicOpts   = '<option value=""></option>' + selOpts(ref.epics.map(e => ({v: e.roadmap_item_id, l: e.title})), r?.epic_id);
+  const epicOpts   = epicOptsFor(r?.theme_id, r?.epic_id);
 
   if (tab === 'tasks') return `
     <div class="form-row"><label>Title *</label><input id="ff-title" value="${esc(r?.title ? capFirst(r.title) : '')}"></div>
@@ -1040,7 +1055,7 @@ function buildForm(tab, r) {
       <div class="form-row"><label>Status</label><div class="select-arrow"><select id="ff-status">${statusOpts}</select></div></div>
       <div class="form-row"><label>Priority</label><div class="select-arrow"><select id="ff-priority"><option value=""></option><option ${r?.priority==='High'?'selected':''}>High</option><option ${r?.priority==='Medium'?'selected':''}>Medium</option><option ${r?.priority==='Low'?'selected':''}>Low</option></select></div></div>
     </div>
-    <div class="form-row"><label>Theme</label><div class="select-arrow"><select id="ff-theme">${themeOpts}</select></div></div>
+    <div class="form-row"><label>Theme</label><div class="select-arrow"><select id="ff-theme" onchange="filterEpics()">${themeOpts}</select></div></div>
     <div class="form-row"><label>Epic</label><div class="select-arrow"><select id="ff-epic">${epicOpts}</select></div></div>
     <div class="form-row"><label>Owner</label><div class="select-arrow"><select id="ff-owner">${peopleOptsFor(r?.owner_id)}</select></div></div>
     <div class="form-row"><label>Due date</label><input id="ff-due" type="date" value="${r?.promise_date || ''}"></div>
@@ -1122,7 +1137,7 @@ function setFormVals(r) {
   const sv = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = String(val); };
   const sc = (id, val) => { setToggle(id, !!val); };
   if (activeTab === 'tasks') {
-    sv('ff-status', r.status_id); sv('ff-theme', r.theme_id); sv('ff-epic', r.epic_id);
+    sv('ff-status', r.status_id); sv('ff-theme', r.theme_id); filterEpics(); sv('ff-epic', r.epic_id);
     sv('ff-owner', r.owner_id); sv('ff-priority', r.priority);
     sc('ff-must', r.is_must_achieve); sc('ff-deep', r.is_deep_work);
   } else if (activeTab === 'themes') {
