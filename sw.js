@@ -10,7 +10,9 @@
 //  - app not open      -> open a window at the url
 
 const DEFAULT_PAGE = 'dashboard-mobile-push.html';
-const SW_VERSION = 'sw-5 diag';
+const SW_VERSION = 'sw-6 receipt';
+const SB_URL = 'https://dglotzmioswcmhfttcqx.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbG90em1pb3N3Y21oZnR0Y3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5OTE3MzgsImV4cCI6MjA4ODU2NzczOH0.lF_8yxfnP50UpiMKCW3aQxq8HukVZ5ibRqOp-RwFvpQ'; // anon key, already public in the page; the RPC only records a receipt for a known endpoint
 
 // Tiny event log kept in Cache Storage so the dashboard's debug panel (tap MANSYS 3x) can show what the worker did on a tap.
 async function swlog(msg) {
@@ -47,6 +49,20 @@ self.addEventListener('push', (event) => {
 
     await self.registration.showNotification(title, options);
     await swlog(SW_VERSION + ' push shown tag=' + (d && d.tag || '-'));
+
+    // Delivery receipt: tell the database this device received the push (after the notification is shown; never blocks it).
+    try {
+      if (d && d.tag) {
+        const sub = await self.registration.pushManager.getSubscription();
+        if (sub) {
+          await fetch(SB_URL + '/rest/v1/rpc/push_receipt', {
+            method: 'POST', keepalive: true,
+            headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ p_endpoint: sub.endpoint, p_tag: String(d.tag) })
+          });
+        }
+      }
+    } catch (_) { /* ignore */ }
   })());
 });
 
