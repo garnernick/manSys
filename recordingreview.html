@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Recording Review</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#12203A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#080E1B" media="(prefers-color-scheme: dark)">
+<style>
+:root { color-scheme: light dark;
+  --bg:#F2F1ED; --card:#FFFFFF; --line:#E0DDD3; --ink:#12203A; --muted:#565F73; --top:#12203A; --top-ink:#D9DFEC; --brand:#FFC24B;
+  --ok-bg:#E3F5E9; --ok-ink:#1B6B3A; --warn-bg:#FFF1D6; --warn-ink:#7A4B00; --bad-bg:#FDE8E6; --bad-ink:#8A1C12; --field:#FBFAF7;
+  --font:-apple-system,system-ui,'Helvetica Neue',Arial,sans-serif; }
+@media (prefers-color-scheme: dark) { :root {
+  --bg:#0C1424; --card:#15203A; --line:#26345A; --ink:#EAEEF7; --muted:#A6B0C6; --top:#080E1B; --top-ink:#A6B0C6; --field:#0F1930;
+  --ok-bg:#12341F; --ok-ink:#8FE0AC; --warn-bg:#3A2D0E; --warn-ink:#FFD98A; --bad-bg:#3A1714; --bad-ink:#F4A59B; } }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--ink); font-family:var(--font); font-size:15px; line-height:1.45; -webkit-text-size-adjust:100%; }
+.top { background:var(--top); color:var(--top-ink); padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px; display:flex; justify-content:space-between; align-items:center; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+.top b { color:var(--brand); letter-spacing:.14em; }
+main { max-width:760px; margin:0 auto; padding:16px 16px 130px; }
+h1 { font-size:22px; letter-spacing:-.01em; }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:24px 0 4px; }
+.sub { color:var(--muted); font-size:13px; margin-top:2px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:10px 0; }
+.card h3 { font-size:15px; }
+.chip { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--warn-bg); color:var(--warn-ink); margin-left:6px; vertical-align:middle; }
+.chip.done { background:var(--ok-bg); color:var(--ok-ink); }
+.chip.kind { background:var(--field); color:var(--muted); border:1px solid var(--line); }
+.summary { white-space:pre-wrap; font-size:14px; }
+.quote { font-style:italic; color:var(--muted); font-size:13px; margin:6px 0; border-left:3px solid var(--line); padding-left:8px; }
+.dupe { background:var(--warn-bg); color:var(--warn-ink); border-radius:10px; padding:8px 10px; margin:8px 0; font-size:13px; }
+label.f { display:block; font-size:12px; color:var(--muted); margin-top:8px; }
+input[type=text], input[type=date], select, textarea { width:100%; border:1px solid var(--line); border-radius:10px; background:var(--field); color:var(--ink); font:inherit; font-size:15px; padding:8px 10px; }
+textarea { min-height:56px; resize:vertical; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.dec { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.dec label { border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; background:var(--card); }
+.dec input { display:none; }
+.dec input:checked + span { font-weight:700; }
+.dec label:has(input:checked) { background:var(--top); color:var(--brand); border-color:var(--top); }
+.dec label:has(input[value=reject]:checked) { background:var(--bad-bg); color:var(--bad-ink); border-color:var(--bad-ink); }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; font-size:14px; }
+.row input[type=checkbox] { width:18px; height:18px; }
+.list a { display:block; text-decoration:none; color:var(--ink); }
+button { font:inherit; font-size:14px; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:7px 12px; cursor:pointer; }
+.bar { position:fixed; left:0; right:0; bottom:0; background:var(--card); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
+.bar .in { max-width:760px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+.bar .msg { flex:1; font-size:13px; color:var(--muted); }
+button.go { background:var(--top); color:var(--brand); border-color:var(--top); font-weight:700; padding:10px 18px; }
+button.go[disabled] { opacity:.45; }
+.msg.ok { color:var(--ok-ink); font-weight:600; } .msg.err { color:var(--bad-ink); font-weight:600; }
+.gate { max-width:360px; margin:60px auto; text-align:center; }
+.gate input { font-size:18px; padding:12px; text-align:center; margin:12px 0; }
+.empty { color:var(--muted); text-align:center; padding:40px 0; }
+.err-box { background:var(--bad-bg); color:var(--bad-ink); border-radius:12px; padding:10px 14px; margin:12px 0; font-size:14px; }
+a.back { font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="top"><b>MANSYS</b><span>Recording Review</span></div>
+<main id="root"></main>
+<div class="bar" id="bar" hidden><div class="in"><span class="msg" id="msg"></span><button class="go" id="go">Apply my decisions</button></div></div>
+<script>
+const FN_URL = 'https://dglotzmioswcmhfttcqx.supabase.co/functions/v1/recordingreview';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+const fmtDT = d => d ? new Date(d).toLocaleString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone:'Europe/London' }) : 'Date unknown';
+const mins = s => Math.max(1, Math.round((Number(s) || 0) / 60)) + ' min';
+const KIND = { task:'Task', commitment_outbound:'You promised', commitment_inbound:'Promised to you' };
+let D = null, dirty = false;
+
+async function call(body) {
+  const r = await fetch(FN_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) { const err = new Error(j.error || ('HTTP ' + r.status)); err.code = j.error; err.status = r.status; throw err; }
+  return j;
+}
+function gate(msg) {
+  $('bar').hidden = true;
+  $('root').innerHTML = '<div class="gate"><h1>Recording Review</h1><div class="sub">Enter your PIN</div>' + (msg ? '<div class="err-box">' + esc(msg) + '</div>' : '') +
+    '<input id="pin" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"><button class="go" id="pinGo">Open</button></div>';
+  const go = () => { const v = $('pin').value.trim(); if (v) { store.set('mansys_review_pin', v); start(); } };
+  $('pinGo').onclick = go; $('pin').onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+function fail(e) {
+  if (e.code === 'bad_pin') { store.del('mansys_review_pin'); return gate('That PIN is not right.'); }
+  if (e.code === 'locked') return gate('Too many wrong attempts. Try again in 15 minutes.');
+  $('bar').hidden = true; $('root').innerHTML = '<div class="empty">Could not load. Try again shortly.</div>';
+}
+async function start() {
+  const pin = store.get('mansys_review_pin');
+  if (!pin) return gate('');
+  $('root').innerHTML = '<div class="empty">Loading…</div>';
+  const r = new URLSearchParams(location.search).get('r');
+  try {
+    if (/^\d+$/.test(r || '')) { D = await call({ pin, action:'get', recording_id: Number(r) }); renderDetail(); }
+    else { const L = await call({ pin, action:'list' }); renderList(L.recordings || []); }
+  } catch (e) { fail(e); }
+}
+function renderList(rows) {
+  $('bar').hidden = true;
+  $('root').innerHTML = '<h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list">' +
+    (rows.length ? rows.map(r => '<a class="card" href="?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '<span class="chip ' + (r.status === 'approved' ? 'done' : '') + '">' + (r.status === 'approved' ? 'Approved' : r.pending_actions + ' to review') + '</span></h3><div class="sub">' + esc(fmtDT(r.recorded_at || r.created_at)) + '</div></a>').join('') : '<div class="empty">No recordings yet.</div>') + '</div>';
+}
+function personOpts(sel, withNew) {
+  let h = '<option value="">None / unknown</option>' + (withNew ? '<option value="new"' + (sel === 'new' ? ' selected' : '') + '>New person…</option>' : '');
+  D.people.forEach(p => { const v = 'p:' + p.person_id; h += '<option value="' + v + '"' + (sel === v ? ' selected' : '') + '>' + esc(p.full_name) + (p.company ? ' (' + esc(p.company) + ')' : '') + '</option>'; });
+  return h;
+}
+function refOpts(sel) {
+  let h = '<option value="">None</option>';
+  D.speakers.forEach(s => { const v = 's:' + s.speaker_label; h += '<option value="' + v + '"' + (sel === v ? ' selected' : '') + '>Speaker ' + esc(s.speaker_label) + (s.proposed_name ? ' – ' + esc(s.proposed_name) : '') + (s.is_nick ? ' (me)' : '') + '</option>'; });
+  D.people.forEach(p => { const v = 'p:' + p.person_id; h += '<option value="' + v + '"' + (sel === v ? ' selected' : '') + '>' + esc(p.full_name) + '</option>'; });
+  return h;
+}
+function renderDetail() {
+  const rec = D.recording, approved = rec.status === 'approved';
+  const nick = D.speakers.find(s => s.is_nick);
+  let h = '<a class="back" href="recordingreview.html">‹ All recordings</a><h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
+    '<div class="sub">' + esc(fmtDT(rec.recorded_at)) + ' · ' + mins(rec.duration_seconds) + '</div>';
+  if (rec.summary) h += '<h2>Summary</h2><div class="card summary">' + esc(rec.summary) + '</div>';
+  h += '<h2>Who was on the call</h2>';
+  D.speakers.forEach((s, i) => {
+    const match = D.people.find(p => s.proposed_name && p.full_name.toLowerCase() === s.proposed_name.toLowerCase());
+    const sel = s.person_id ? 'p:' + s.person_id : match ? 'p:' + match.person_id : s.proposed_name ? 'new' : '';
+    h += '<div class="card" data-sp="' + i + '"><h3>Speaker ' + esc(s.speaker_label) + ' <span class="chip kind">' + mins(s.talk_seconds) + ' talking</span>' + (s.confirmed ? '<span class="chip done">Confirmed</span>' : '') + '</h3>' +
+      (approved ? '' : '<label class="f">This is</label><select data-f="person">' + personOpts(sel, true) + '</select>' +
+      '<div data-new style="display:' + (sel === 'new' ? 'block' : 'none') + '"><div class="grid"><div><label class="f">Full name</label><input type="text" data-f="name" value="' + esc(s.proposed_name || '') + '"></div><div><label class="f">Company</label><input type="text" data-f="company"></div></div>' +
+      '<div class="grid"><div><label class="f">Job title / role</label><input type="text" data-f="job" value="' + esc(s.proposed_role || '') + '"></div><div><label class="f">Type</label><select data-f="ptype">' + D.person_types.map(t => '<option value="' + t.person_type_id + '"' + (t.person_type_id === 3 ? ' selected' : '') + '>' + esc(t.description) + '</option>').join('') + '</select></div></div>' +
+      '<div class="row"><input type="checkbox" data-f="stake"> Add as a stakeholder</div></div>' +
+      '<div class="row"><input type="checkbox" data-f="me"' + (s.is_nick ? ' checked' : '') + '> This is me</div>') + '</div>';
+  });
+  h += '<h2>Proposed actions</h2>';
+  if (!D.actions.length) h += '<div class="card">No actions were proposed.</div>';
+  D.actions.forEach((a, i) => {
+    if (a.status !== 'pending') { h += '<div class="card"><h3>' + esc(a.title) + '<span class="chip ' + (a.status === 'approved' ? 'done' : '') + '">' + esc(a.status) + '</span></h3></div>'; return; }
+    const dup = a.duplicates || [];
+    h += '<div class="card" data-ac="' + i + '"><h3>' + esc(a.title) + '<span class="chip kind">' + esc(KIND[a.kind] || a.kind) + '</span></h3>' +
+      (a.evidence_quote ? '<div class="quote">“' + esc(a.evidence_quote) + '”</div>' : '') +
+      (dup.length ? '<div class="dupe"><b>Possible duplicate' + (dup.length > 1 ? 's' : '') + ':</b> ' + dup.map(d => esc(d.source) + ' #' + d.id + ' “' + esc(d.title) + '” (' + esc(d.status || '') + ', ' + Math.round(d.score * 100) + '% word overlap)').join('; ') + '. This is a word match only, so check it.</div>' : '') +
+      '<label class="f">Title</label><input type="text" data-f="title" value="' + esc(a.title) + '">' +
+      '<label class="f">Details</label><textarea data-f="desc">' + esc(a.description || '') + '</textarea>' +
+      '<div class="grid"><div><label class="f">' + (a.kind === 'task' ? 'Owner' : 'Recorded for') + '</label><select data-f="owner">' + refOpts(nick ? 's:' + nick.speaker_label : 'p:1') + '</select></div>' +
+      '<div><label class="f">' + (a.kind === 'task' ? 'Requested by' : a.kind === 'commitment_outbound' ? 'Promised to' : 'Promised by') + '</label><select data-f="other">' + refOpts('') + '</select></div></div>' +
+      '<label class="f">Due date</label><input type="date" data-f="due" value="' + esc(a.due_date || '') + '">' +
+      '<div class="dec"><label><input type="radio" name="d' + i + '" value="later" checked><span>Decide later</span></label><label><input type="radio" name="d' + i + '" value="approve"><span>Approve</span></label><label><input type="radio" name="d' + i + '" value="done"><span>Already done</span></label><label><input type="radio" name="d' + i + '" value="reject"><span>Reject</span></label>' +
+      dup.map(d => '<label><input type="radio" name="d' + i + '" value="link|' + esc(d.source) + '|' + d.id + '"><span>Same as ' + esc(d.source) + ' #' + d.id + '</span></label>').join('') + '</div></div>';
+  });
+  if (D.quotes.length) {
+    h += '<h2>Key quotes</h2>';
+    D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub">Speaker ' + esc(q.speaker_label) + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
+  }
+  if (D.sentiment.length) {
+    h += '<h2>Sentiment (Claude’s read, not fact)</h2>';
+    D.sentiment.forEach(s => { h += '<div class="card"><h3>Speaker ' + esc(s.speaker_label) + ' · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
+  }
+  $('root').innerHTML = h;
+  document.querySelectorAll('[data-sp]').forEach(c => { const sel = c.querySelector('[data-f=person]'); if (!sel) return; sel.onchange = () => { c.querySelector('[data-new]').style.display = sel.value === 'new' ? 'block' : 'none'; setDirty(); }; });
+  document.querySelectorAll('input,select,textarea').forEach(el => el.addEventListener('change', setDirty));
+  const pend = D.actions.filter(a => a.status === 'pending').length;
+  $('bar').hidden = approved; $('go').disabled = false; $('go').onclick = submit;
+  $('msg').className = 'msg'; $('msg').textContent = pend + ' action' + (pend === 1 ? '' : 's') + ' waiting. Nothing is created until you apply.';
+}
+function setDirty() { dirty = true; $('msg').className = 'msg'; $('msg').textContent = 'Unsaved decisions.'; }
+function collect() {
+  const speakers = [], actions = [], quotes = [];
+  document.querySelectorAll('[data-sp]').forEach(c => {
+    const s = D.speakers[+c.dataset.sp], v = c.querySelector('[data-f=person]').value, g = f => c.querySelector('[data-f=' + f + ']');
+    const o = { speaker_label: s.speaker_label, is_nick: g('me').checked };
+    if (v.startsWith('p:')) o.person_id = Number(v.slice(2));
+    else if (v === 'new' && g('name').value.trim()) o.create = { full_name: g('name').value.trim(), company: g('company').value.trim(), job_title: g('job').value.trim(), person_type_id: Number(g('ptype').value), is_stakeholder: g('stake').checked };
+    speakers.push(o);
+  });
+  document.querySelectorAll('[data-ac]').forEach(c => {
+    const a = D.actions[+c.dataset.ac], g = f => c.querySelector('[data-f=' + f + ']');
+    const r = c.querySelector('input[type=radio]:checked').value;
+    if (r === 'later') return;
+    const o = { action_id: a.action_id, decision: r, title: g('title').value.trim(), description: g('desc').value.trim(), due_date: g('due').value, owner_ref: g('owner').value, other_ref: g('other').value };
+    if (r.startsWith('link|')) { const p = r.split('|'); o.decision = 'link'; o.link_source = p[1]; o.link_id = Number(p[2]); }
+    actions.push(o);
+  });
+  document.querySelectorAll('[data-q]').forEach(c => { const q = D.quotes[+c.dataset.q], e = c.querySelector('[data-f=ext]'); if (e) quotes.push({ quote_id: q.quote_id, external_ok: e.checked }); });
+  return { speakers, actions, quotes };
+}
+async function submit() {
+  const p = collect();
+  const bad = p.actions.find(a => a.decision === 'approve' && D.actions.find(x => x.action_id === a.action_id).kind !== 'task' && !a.other_ref);
+  if (bad) { $('msg').className = 'msg err'; $('msg').textContent = 'Pick who made the promise for each commitment you approve.'; return; }
+  const n = k => p.actions.filter(a => a.decision === k).length, np = p.speakers.filter(s => s.create).length;
+  if (!p.actions.length && !np) { $('msg').className = 'msg err'; $('msg').textContent = 'No decisions made yet.'; return; }
+  if (!confirm('Apply now?\n\n' + n('approve') + ' approved (creates tasks or commitments)\n' + n('link') + ' linked to existing\n' + n('done') + ' already done, ' + n('reject') + ' rejected\n' + np + ' new ' + (np === 1 ? 'person' : 'people') + ' added')) return;
+  $('go').disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Saving…';
+  try {
+    const r = await call({ pin: store.get('mansys_review_pin'), action:'apply', recording_id: D.recording.recording_id, ...p });
+    dirty = false; $('msg').className = 'msg ok'; $('msg').textContent = 'Done: ' + r.tasks + ' task(s), ' + r.commitments + ' commitment(s), ' + r.people + ' new people.';
+    setTimeout(start, 1500);
+  } catch (e) {
+    $('go').disabled = false; $('msg').className = 'msg err';
+    $('msg').textContent = e.code === 'already_approved' ? 'This recording was already approved. Reload.' : e.code === 'bad_pin' ? 'PIN no longer accepted.' : 'Could not save (' + (e.code || e.status) + '). Nothing was changed.';
+  }
+}
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+start();
+</script>
+</body>
+</html>
