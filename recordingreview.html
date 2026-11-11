@@ -244,12 +244,12 @@ async function loadEmail() {
   try { EM = await call({ pin: store.get('mansys_review_pin'), action:'email_draft', recording_id: D.recording.recording_id }); } catch (e) { return; }
   const box = document.createElement('div'); box.id = 'emailbox';
   const prev = EM.previous && EM.previous.status === 'sent';
-  box.innerHTML = '<h2>Follow-up email to everyone on the call</h2><div class="sub">Nothing is sent until you press Send. Everyone gets the same list, whatever their notification settings. Nick is blind-copied.</div>' +
+  box.innerHTML = '<h2>Follow-up email to everyone on the call</h2><div class="sub">This is the last step. The text below is sent exactly as you leave it, and nothing goes until you press Send. Everyone gets the same email, whatever their notification settings.</div>' +
     (prev ? '<div class="dupe">A summary for this recording was already sent (' + esc(fmtDT(EM.previous.sent_at)) + '). Sending again will send a second copy.</div>' : '') +
-    '<div class="card"><label class="f">Send from</label><select id="emFrom">' + (EM.senders || []).map(x => '<option value="' + x.sender_id + '"' + (x.configured ? '' : ' disabled') + '>' + esc(x.label) + (x.configured ? '' : ' (not set up yet)') + '</option>').join('') + '</select><label class="f">Subject</label><input type="text" id="emSubj" value="' + esc(EM.subject) + '"><label class="f">Opening</label><textarea id="emIntro" style="min-height:90px">' + esc(EM.intro) + '</textarea>' +
-    '<label class="f">Actions (from the approved list)</label>' + EM.rows.map(r => '<div class="quote" style="font-style:normal">' + esc(r.action) + ' · <b>' + esc(r.owner) + '</b> · ' + esc(r.due ? r.due : 'no date') + '</div>').join('') +
-    '<label class="f">Closing</label><textarea id="emOutro">' + esc(EM.outro) + '</textarea>' +
+    '<div class="card"><label class="f">Send from</label><select id="emFrom">' + (EM.senders || []).map(x => '<option value="' + x.sender_id + '"' + (x.configured ? '' : ' disabled') + '>' + esc(x.label) + (x.configured ? '' : ' (not set up yet)') + '</option>').join('') + '</select>' +
     '<label class="f">Send to</label>' + EM.recipients.map((r, i) => '<div class="row" data-rc="' + i + '"><input type="checkbox" ' + (r.email || r.kind === 'bcc' ? 'checked' : '') + '> <b>' + esc(r.name) + '</b>' + (r.kind === 'bcc' ? ' (bcc)' : '') + '<input type="text" data-f="em" placeholder="email address" value="' + esc(r.email) + '" style="flex:1;min-width:200px"></div>').join('') +
+    '<label class="f">Subject</label><input type="text" id="emSubj" value="' + esc(EM.subject) + '">' +
+    '<label class="f">Email text (edit anything)</label><textarea id="emBody" style="min-height:340px">' + esc(EM.body) + '</textarea>' +
     '<div class="row"><button class="go" id="emSend">Send emails</button><span class="msg" id="emMsg"></span></div></div>';
   $('root').appendChild(box);
   $('emSend').onclick = sendEmail;
@@ -260,11 +260,12 @@ async function sendEmail() {
   const m = $('emMsg');
   if (!rc.length) { m.className = 'msg err'; m.textContent = 'Tick at least one recipient.'; return; }
   const miss = rc.find(r => !r.email); if (miss) { m.className = 'msg err'; m.textContent = 'Add an email address for ' + miss.name + ' or untick them.'; return; }
+  if (!$('emBody').value.trim() || !$('emSubj').value.trim()) { m.className = 'msg err'; m.textContent = 'The subject and text cannot be empty.'; return; }
   const from = $('emFrom'), fromTxt = from.options[from.selectedIndex].text;
-  if (!confirm('Send this summary now\nFrom: ' + fromTxt + '\n\nTo:\n' + rc.map(r => r.name + ' <' + r.email + '>' + (r.kind === 'bcc' ? ' (bcc)' : '')).join('\n') + '\n\nEach person gets their own copy. This cannot be undone.')) return;
+  if (!confirm('Send this email now\nFrom: ' + fromTxt + '\n\nTo:\n' + rc.map(r => r.name + ' <' + r.email + '>' + (r.kind === 'bcc' ? ' (bcc)' : '')).join('\n') + '\n\nEach person gets their own copy. This cannot be undone.')) return;
   $('emSend').disabled = true; m.className = 'msg'; m.textContent = 'Sending…';
   try {
-    const r = await call({ pin: store.get('mansys_review_pin'), action:'email_send', recording_id: D.recording.recording_id, sender_id: Number(from.value), subject: $('emSubj').value, intro: $('emIntro').value, outro: $('emOutro').value, recipients: rc, resend: !!(EM.previous && EM.previous.status === 'sent') });
+    const r = await call({ pin: store.get('mansys_review_pin'), action:'email_send', recording_id: D.recording.recording_id, sender_id: Number(from.value), subject: $('emSubj').value, body: $('emBody').value, recipients: rc, resend: !!(EM.previous && EM.previous.status === 'sent') });
     m.className = 'msg ' + (r.failed.length ? 'err' : 'ok'); m.textContent = 'Sent ' + r.sent + (r.failed.length ? '; failed: ' + r.failed.join(', ') : '.');
   } catch (e) { $('emSend').disabled = false; m.className = 'msg err'; m.textContent = e.code === 'bad_email' ? 'One of the email addresses looks wrong.' : e.code === 'sender_not_configured' ? 'That sender mailbox is not set up yet.' : 'Could not send (' + (e.code || e.status) + ').'; }
 }
