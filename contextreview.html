@@ -51,6 +51,11 @@ button.go[disabled] { opacity:.45; }
 .empty { color:var(--muted); text-align:center; padding:40px 0; }
 .err-box { background:var(--bad-bg); color:var(--bad-ink); border-radius:12px; padding:10px 14px; margin:12px 0; font-size:14px; }
 @media print { .bar,.nav,.top { display:none; } body { background:#fff; color:#000; } }
+
+.pk{margin:0 0 10px}.pk h3{margin:0 0 4px;font-size:15px}.pk .meta{font-size:12px;opacity:.7;margin-bottom:10px}
+.pk .btns{display:flex;gap:8px;flex-wrap:wrap}.pk button{flex:1 1 90px;min-height:44px;border-radius:10px;border:1px solid rgba(128,128,128,.4);background:transparent;color:inherit;font:inherit;font-size:14px;font-weight:600}
+.pk button.back{background:#1f6f3f;color:#fff;border-color:#1f6f3f}.pk button.drop{color:#b42318;border-color:#b42318}
+.pk input[type=date]{width:100%;margin:0 0 8px;min-height:40px;font:inherit;box-sizing:border-box}.pk.gone{opacity:.45;pointer-events:none}
 </style>
 </head>
 <body>
@@ -106,6 +111,14 @@ function render() {
     '<div class="sub">Week commencing ' + esc(fmtDate(rv.week_start)) + '</div>' +
     '<div class="nav"><a class="' + (earlier ? '' : 'off') + '" href="?w=' + esc(earlier || '') + '">‹ Earlier</a><a class="' + (later ? '' : 'off') + '" href="?w=' + esc(later || '') + '">Later ›</a></div>';
   if (rv.review_text) h += '<h2>Claude’s review</h2><div class="card review">' + esc(rv.review_text) + '</div>';
+  const pk = STATE.parking || [];
+  if (pk.length) {
+    h += '<h2>Parking lot (' + pk.length + ')</h2><div class="sub">Tap a decision for each. Keep leaves it parked, Back puts it on your list, Drop closes it without counting it as done.</div>';
+    pk.forEach((x, n) => {
+      h += '<div class="card pk" data-pk="' + n + '"><h3>' + esc(x.title) + '</h3><div class="meta">' + esc([x.kind, x.owner, x.theme, 'parked ' + x.days_parked + ' days', x.promise_date ? 'original due ' + x.promise_date : ''].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="sub" style="margin:0 0 4px">New due date if putting it back (optional)</div><input type="date" data-due="' + n + '" aria-label="New due date (optional)"><div class="btns"><button data-d="keep" data-n="' + n + '">Keep parked</button><button class="back" data-d="unpark" data-n="' + n + '">Back on list</button><button class="drop" data-d="drop" data-n="' + n + '">Drop</button></div><div class="sub" data-pkmsg="' + n + '"></div></div>';
+    });
+  }
   h += '<h2>Suggested updates</h2>';
   weeklyFirst.forEach((p, n) => {
     const cur = p.context_doc_id != null ? byId[p.context_doc_id] : null;
@@ -125,9 +138,24 @@ function render() {
   document.querySelectorAll('details[data-kind="doc"]').forEach(dt => dt.addEventListener('toggle', () => { const t = dt.querySelector('textarea'); if (dt.open) fit(t); }));
   document.querySelectorAll('[data-reset]').forEach(b => b.onclick = () => { const n = +b.dataset.reset.slice(1), t = document.querySelector('[data-ta="p' + n + '"]'); t.value = weeklyFirst[n].proposed_content || ''; fit(t); setDirty(); });
   document.querySelectorAll('[data-use]').forEach(c => c.onchange = setDirty);
+  document.querySelectorAll('.pk [data-d]').forEach(btn => btn.onclick = () => decide(+btn.dataset.n, btn.dataset.d));
   $('bar').hidden = false; $('msg').className = 'msg'; $('msg').textContent = rv.status === 'submitted' ? 'Already submitted. You can submit again.' : 'Review, amend, then submit.';
   $('go').disabled = false;
   $('go').onclick = () => submit(weeklyFirst, others, byId);
+}
+async function decide(n, d) {
+  const x = (STATE.parking || [])[n], card = document.querySelector('.pk[data-pk="' + n + '"]'), m = document.querySelector('[data-pkmsg="' + n + '"]');
+  if (!x || !card) return;
+  if (d === 'drop' && !confirm('Drop "' + x.title + '"? It is closed, not counted as done.')) return;
+  card.classList.add('gone');
+  try {
+    const due = document.querySelector('[data-due="' + n + '"]').value;
+    await call({ pin: store.get('mansys_review_pin'), action:'parking_decide', kind: x.kind, id: x.id, decision: d, due: d === 'unpark' && due ? due : undefined });
+    m.textContent = d === 'keep' ? 'Kept parked.' : d === 'unpark' ? 'Back on your list.' : 'Dropped.';
+    card.querySelectorAll('button,input').forEach(e => e.disabled = true);
+  } catch (e) {
+    card.classList.remove('gone'); m.textContent = e.code === 'not_parked' ? 'Already changed. Reload.' : e.code === 'bad_pin' ? 'PIN no longer accepted.' : 'Could not save (' + (e.code || e.status) + '). Try again.';
+  }
 }
 function setDirty() { dirty = true; $('msg').className = 'msg'; $('msg').textContent = 'Unsaved edits.'; }
 async function submit(props, others, byId) {
