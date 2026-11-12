@@ -771,7 +771,7 @@ function openMore() {
   document.getElementById('sheet-title').textContent = 'More';
   document.getElementById('sheet-body').innerHTML = TABS.filter(t => t.more).map(t =>
     '<div class="more-row" onclick="closeSheet();switchTab(\'' + t.id + '\')"><span>' + t.icon + '</span><span>' + t.label + '</span></div>'
-  ).join('');
+  ).join('') + '<a class="more-row" href="recordingreview.html" style="text-decoration:none"><span>\u25CF</span><span>Recordings</span></a>';
   document.getElementById('sheet-footer').innerHTML = '<button class="btn-cancel" onclick="closeSheet()">Close</button>';
   document.getElementById('sheet-body').insertAdjacentHTML('beforeend', '<div class="pp" id="push-block" style="margin-top:14px"></div>');
   pushRender();
@@ -846,6 +846,10 @@ if (window.visualViewport) window.visualViewport.addEventListener('resize', fixG
 [50, 150, 400, 900, 2000, 4000].forEach(t => setTimeout(fixGap, t)); window.addEventListener('orientationchange', () => setTimeout(fixGap, 300));
 
 function renderStats(data) {
+  // Tasks: the All / Mine / Others switch also drives the stat tiles (same ownership rule as the list filter)
+  if (activeTab === 'tasks' && whoFilter !== 'all') {
+    data = data.filter(r => { const theirs = r.owner_id != null && r.owner_id !== MY_ID; return whoFilter === 'mine' ? !theirs : theirs; });
+  }
   const stats = TAB_DEF[activeTab].stats(data);
   document.getElementById('stats-row').innerHTML = stats.map(s =>
     '<div class="stat"><div class="stat-label">' + s.label + '</div><div class="stat-value ' + s.cls + '">' + s.value + '</div></div>'
@@ -853,6 +857,7 @@ function renderStats(data) {
 }
 
 function applyFilters() {
+  renderStats(allRows);
   const q = document.getElementById('search-input').value.toLowerCase();
   const def = TAB_DEF[activeTab];
   const filtered = allRows.filter(r => def.filter(r, { q, who: activeTab === 'tasks' ? whoFilter : 'all', upd: updFilter, ...activeFilters }));

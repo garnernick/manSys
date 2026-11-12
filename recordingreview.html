@@ -102,7 +102,7 @@ async function start() {
 }
 function renderList(rows) {
   $('bar').hidden = true;
-  $('root').innerHTML = '<h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list">' +
+  $('root').innerHTML = '<a class="back" href="#" onclick="history.length > 1 ? history.back() : (location.href = \'dashboard-mobile-push.html\'); return false;">‹ Dashboard</a><h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list">' +
     (rows.length ? rows.map(r => '<a class="card" href="?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '<span class="chip ' + (r.status === 'approved' ? 'done' : '') + '">' + (r.status === 'approved' ? 'Approved' : r.pending_actions + ' to review') + '</span></h3><div class="sub">' + esc(fmtDT(r.recorded_at || r.created_at)) + '</div></a>').join('') : '<div class="empty">No recordings yet.</div>') + '</div>';
 }
 function personOpts(sel) {
