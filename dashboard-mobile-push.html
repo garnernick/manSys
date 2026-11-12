@@ -395,7 +395,7 @@ const NAV_META = { tasks: ['\u2713','Tasks'], commitments: ['\u27F3','Commits'],
 let whoFilter = 'all';
 const MY_ID = 1;
 
-const DONE = ['Done', 'Delivered'];
+const DONE = ['Done', 'Delivered', 'Dropped'];
 const PARKED = 'Parked'; // parking lot: still on the list, deprioritised; due date kept but not relevant
 const INACTIVE = [...DONE, PARKED];
 
@@ -982,7 +982,7 @@ async function loadTab(quiet) {
 
 function defaultStatusFilter() {
   // Default to all statuses except terminal ones
-  const exclude = ['Done', 'Delivered', PARKED]; // parking lot is opt-in via the Parked chip
+  const exclude = ['Done', 'Delivered', 'Dropped', PARKED]; // parking lot is opt-in via the Parked chip
   if (activeTab === 'commitments' || activeTab === 'updates') {
     activeFilters.status = [];
   } else {
