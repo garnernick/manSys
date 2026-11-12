@@ -73,11 +73,12 @@ body { background:var(--nav); }
 .legend i { width:12px; height:12px; border-radius:3px; background:var(--tint); border:1px solid var(--edge); display:inline-block; }
 
 /* Stats */
-.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:8px 16px; flex-shrink:0; }
+.stats-row { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:8px; padding:8px 16px; flex-shrink:0; }
 .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:7px 9px; box-shadow:var(--shadow); min-width:0; }
 .stat-label { font-family:var(--mono); font-size:8.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .stat-value { font-family:var(--mono); font-size:18px; font-weight:500; color:var(--ink); }
-.stat-value.accent { color:var(--soft-ink); } .stat-value.red { color:var(--danger-ink); } .stat-value.blue { color:var(--info-ink); } .stat-value.amber { color:var(--warn-ink); }
+.stat-value.accent { color:var(--soft-ink); } .stat-value.red { color:var(--danger-ink); } .stat-value.blue { color:var(--info-ink); } .stat-value.amber { color:var(--warn-ink); } .stat-value.purple { color:var(--pur-ink); }
+@media (prefers-color-scheme: dark) { .stat-value.purple { color:var(--pur-ink); } }
 @media (prefers-color-scheme: dark) { .stat-value.accent { color:var(--accent); } }
 
 /* Search */
@@ -394,7 +395,9 @@ const NAV_META = { tasks: ['\u2713','Tasks'], commitments: ['\u27F3','Commits'],
 let whoFilter = 'all';
 const MY_ID = 1;
 
-const DONE = ['Done', 'Delivered'];
+const DONE = ['Done', 'Delivered', 'Dropped'];
+const PARKED = 'Parked'; // parking lot: still on the list, deprioritised; due date kept but not relevant
+const INACTIVE = [...DONE, PARKED];
 
 const TAB_DEF = {
   tasks: {
@@ -403,15 +406,16 @@ const TAB_DEF = {
     stats(d) {
       const today = new Date().toISOString().substring(0,10);
       return [
-        { label: 'Active', value: d.filter(r => !DONE.includes(r.statuses?.status_label)).length, cls: '' },
-        { label: 'Must', value: d.filter(r => r.is_must_achieve && !DONE.includes(r.statuses?.status_label)).length, cls: 'accent' },
+        { label: 'Active', value: d.filter(r => !INACTIVE.includes(r.statuses?.status_label)).length, cls: '' },
+        { label: 'Must', value: d.filter(r => r.is_must_achieve && !INACTIVE.includes(r.statuses?.status_label)).length, cls: 'accent' },
         { label: 'Progress', value: d.filter(r => r.statuses?.status_label === 'In Progress').length, cls: 'blue' },
-        { label: 'Overdue', value: d.filter(r => r.promise_date && r.promise_date < today && !DONE.includes(r.statuses?.status_label)).length, cls: 'red' },
+        { label: 'Overdue', value: d.filter(r => r.promise_date && r.promise_date < today && !INACTIVE.includes(r.statuses?.status_label)).length, cls: 'red' },
+        { label: 'Parked', value: d.filter(r => r.statuses?.status_label === PARKED).length, cls: 'purple' },
       ];
     },
     card(r) {
       const today = new Date().toISOString().substring(0,10);
-      const overdue = r.promise_date && r.promise_date < today && !DONE.includes(r.statuses?.status_label);
+      const overdue = r.promise_date && r.promise_date < today && !INACTIVE.includes(r.statuses?.status_label);
       return `
         <div class="card-row">
           <div class="card-title">${esc(r.title)}${r.is_must_achieve ? ' <span class="badge b-must">must</span>' : ''}${r.is_deep_work ? ' <span class="badge b-deep">deep</span>' : ''}</div>
@@ -530,6 +534,7 @@ const TAB_DEF = {
         { label: 'Outstanding', value: d.filter(r => r.status === 'Outstanding').length, cls: 'amber' },
         { label: 'Overdue', value: d.filter(r => r.promised_date && r.promised_date < today && r.status === 'Outstanding').length, cls: 'red' },
         { label: 'Inbound', value: d.filter(r => r.direction === 'inbound').length, cls: 'blue' },
+        { label: 'Parked', value: d.filter(r => r.status === PARKED).length, cls: 'purple' },
       ];
     },
     card(r) {
@@ -541,7 +546,7 @@ const TAB_DEF = {
           <div class="card-arrow">›</div>
         </div>
         <div class="card-meta">
-          ${r.status === 'Outstanding' ? '<span class="badge b-amber">outstanding</span>' : r.status === 'Delivered' ? '<span class="badge b-green">delivered</span>' : '<span class="badge b-purple">renegotiated</span>'}
+          ${r.status === 'Outstanding' ? '<span class="badge b-amber">outstanding</span>' : r.status === 'Delivered' ? '<span class="badge b-green">delivered</span>' : r.status === PARKED ? '<span class="badge b-purple">parked</span>' : '<span class="badge b-purple">renegotiated</span>'}
           ${r.direction === 'inbound' ? '<span class="badge b-blue">inbound</span>' : '<span class="badge b-gray">outbound</span>'}
           ${r.people?.full_name ? '<span class="card-sub">' + esc(r.people.full_name) + '</span>' : ''}
           ${r.promised_date ? '<span class="card-sub ' + (overdue ? 'overdue-date' : '') + '">' + r.promised_date + '</span>' : ''}
@@ -589,7 +594,7 @@ function esc(s) { if (!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g
 function capFirst(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
 function statusBadge(label) {
-  const map = { 'Done': 'b-green', 'In Progress': 'b-blue', 'Blocked': 'b-red', 'Not Started': 'b-gray', 'Outstanding': 'b-amber', 'Delivered': 'b-green', 'Renegotiated': 'b-purple' };
+  const map = { 'Done': 'b-green', 'In Progress': 'b-blue', 'Blocked': 'b-red', 'Not Started': 'b-gray', 'Outstanding': 'b-amber', 'Delivered': 'b-green', 'Renegotiated': 'b-purple', 'Parked': 'b-purple' };
   return label ? '<span class="badge ' + (map[label] || 'b-gray') + '">' + label + '</span>' : '';
 }
 function priBadge(p) {
@@ -885,7 +890,7 @@ function resetFilters() {
 
 function openFilters() {
   const statusList = activeTab === 'commitments'
-    ? ['Outstanding','Delivered','Renegotiated']
+    ? ['Outstanding','Parked','Delivered','Renegotiated']
     : ref.statuses.map(s => s.status_label);
 
   let html = '<div class="filter-section"><div class="filter-section-label">Status</div><div class="filter-chips">';
@@ -977,7 +982,7 @@ async function loadTab(quiet) {
 
 function defaultStatusFilter() {
   // Default to all statuses except terminal ones
-  const exclude = ['Done', 'Delivered'];
+  const exclude = ['Done', 'Delivered', 'Dropped', PARKED]; // parking lot is opt-in via the Parked chip
   if (activeTab === 'commitments' || activeTab === 'updates') {
     activeFilters.status = [];
   } else {
@@ -1093,7 +1098,7 @@ function buildForm(tab, r) {
       <div class="form-row"><label>Direction</label><div class="select-arrow"><select id="ff-direction"><option value="outbound" ${r?.direction!=='inbound'?'selected':''}>Outbound</option><option value="inbound" ${r?.direction==='inbound'?'selected':''}>Inbound</option></select></div></div>
       <div class="form-row"><label>Due date</label><input id="ff-due" type="date" value="${r?.promised_date || ''}"></div>
     </div>
-    <div class="form-row"><label>Status</label><div class="select-arrow"><select id="ff-status-c"><option value="Outstanding" ${(r?.status||'Outstanding')==='Outstanding'?'selected':''}>Outstanding</option><option value="Delivered" ${r?.status==='Delivered'?'selected':''}>Delivered</option><option value="Renegotiated" ${r?.status==='Renegotiated'?'selected':''}>Renegotiated</option></select></div></div>`;
+    <div class="form-row"><label>Status</label><div class="select-arrow"><select id="ff-status-c"><option value="Outstanding" ${(r?.status||'Outstanding')==='Outstanding'?'selected':''}>Outstanding</option><option value="Delivered" ${r?.status==='Delivered'?'selected':''}>Delivered</option><option value="Parked" ${r?.status==='Parked'?'selected':''}>Parked</option><option value="Renegotiated" ${r?.status==='Renegotiated'?'selected':''}>Renegotiated</option></select></div></div>`;
 
   if (tab === 'people') {
     const ptOpts = '<option value=""></option>' + selOpts(ref.personTypes.map(pt => ({v: pt.person_type_id, l: pt.description})), r?.person_type_id);
@@ -1714,7 +1719,7 @@ function buildSystemPromptM() {
     + 'THEME IDs (use ONLY these integers — never a name string):\n' + themeLines + '\n\n'
     + 'AVAILABLE ACTIONS — append one <action> block per action:\n\n'
     + 'task_create: { title(req), owner_id(req,default 1), theme_id(opt,int), priority("High"/"Medium"/"Low"), promise_date(YYYY-MM-DD), is_must_achieve(bool), is_deep_work(bool), status_id(always 1) }\n'
-    + 'task_update: { task_id(req,int), ...fields to update }\n'
+    + 'task_update: { task_id(req,int), ...fields to update; to PARK a task (parking lot: deprioritised, still listed, due date ignored) set status_id to 5 — this also clears is_must_achieve }\n'
     + 'task_complete: { task_id(req,int) }\n'
     + 'commitment_log: { description(req), person_id(req,int), direction("outbound"/"inbound"), promised_date(YYYY-MM-DD), status(always "Outstanding") }\n'
     + 'commitment_complete: { commitment_id(req,int) }\n'
