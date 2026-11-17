@@ -122,9 +122,10 @@ function advice(a) {
   const none = /^no action needed/i.test(a.trim());
   return '<div class="' + (none ? 'small' : 'note') + '"><b>What to do:</b> ' + esc(a) + '</div>';
 }
-function driver(d, src, q) {
+function driver(d, src, q, s0, s1) {
   if (!d) return '';
-  return '<div class="small" style="margin-top:6px"><b>Driver</b> (' + esc(SRC[src] || 'unclear') + '): ' + esc(d) + '</div>' + (q ? '<div class="quote">“' + esc(q) + '”</div>' : '');
+  const moved = s0 != null && s1 != null && Math.abs(s1 - s0) >= FLAG;
+  return '<div class="small" style="margin-top:6px"><b>' + (moved ? 'What moved it' : 'Nothing moved it much; description only') + '</b> (' + esc(SRC[src] || 'unclear') + '): ' + esc(d) + '</div>' + (q ? '<div class="quote">“' + esc(q) + '”</div>' : '');
 }
 function render(D) {
   let h = '<a class="back" href="#" onclick="history.length > 1 ? history.back() : (location.href = \'dashboard-mobile-push.html\'); return false;">‹ Dashboard</a><h1>Sentiment</h1>' +
@@ -134,8 +135,8 @@ function render(D) {
   h += people.length ? people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
     '<div class="small">' + p.readings + ' call' + (p.readings === 1 ? '' : 's') + ' · last ' + fmtD(p.latest_at) + ' · confidence ' + esc(p.latest_confidence) + '</div></div>' +
     '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + spark(p.series) +
-    driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote) + advice(p.latest_advice) +
-    '<div class="quote">“' + esc(p.latest_quote) + '”</div><div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
+    driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote, p.latest_start, p.latest_end) + advice(p.latest_advice) +
+    '<div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') + '<div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
     : '<div class="empty">No “toward you” readings for confirmed people yet.</div>';
   h += '<h2>Your own mood</h2>';
   if (D.nick_state.length) {
@@ -144,7 +145,7 @@ function render(D) {
   } else h += '<div class="empty">None yet.</div>';
   h += '<h2>Recordings</h2>';
   h += D.recordings.length ? D.recordings.map(r => {
-    const rd = r.readings.filter(o => o.subject !== 'call_overall').map(o => '<tr><td>' + esc(SUBJ[o.subject] || o.subject) + '</td><td>' + esc(o.speaker || '') + (o.identified ? '' : '<div class="small">not linked to a person</div>') + '</td><td>' + o.score + (o.score_start != null && o.score_end != null ? '<div class="small">' + o.score_start + ' → ' + o.score_end + '</div>' : '') + '<div>' + delta(o.score, o.baseline) + '</div></td></tr>').join('');
+    const rd = r.readings.filter(o => o.subject !== 'call_overall').map(o => '<tr><td>' + esc(SUBJ[o.subject] || o.subject) + '</td><td>' + esc(o.speaker || '') + (o.identified ? '' : '<div class="small">not linked to a person</div>') + (o.quote_verified === false ? '<div class="small">quote not verified</div>' : '') + '</td><td>' + o.score + (o.score_start != null && o.score_end != null ? '<div class="small">' + o.score_start + ' → ' + o.score_end + '</div>' : '') + '<div>' + delta(o.score, o.baseline) + '</div></td></tr>').join('');
     const bh = r.behaviours.map(b => '<tr><td>' + esc(b.name) + '</td><td>' + (b.measure === 'metric' ? esc(b.value) + ' ' + esc(b.unit || '') : esc(b.rating || '')) + (b.quote ? '<div class="small">“' + esc(b.quote) + '”</div>' : '') + '</td></tr>').join('');
     return '<a class="card" style="display:block;text-decoration:none;color:inherit" href="recordingreview.html?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '</h3><div class="small">' + fmtD(r.recorded_at) + '</div>' +
       (rd ? '<table class="t"><tr><th>Reading</th><th>Who</th><th>Score</th></tr>' + rd + '</table>' : '<div class="small">No readings.</div>') +
