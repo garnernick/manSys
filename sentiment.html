@@ -97,6 +97,7 @@ function fail(e) {
 }
 const SRC = { nick:'something you said or did', topic:'the subject matter', other_person:'another person on the call', external:'something outside the call', none:'no clear cause' };
 // Provisional thresholds: score movement of this size or more is flagged. They are not calibrated; scores can wobble between runs.
+const PAGE_VERSION = '2026-11-17 c'; // bump on every change so a stale copy is easy to spot
 const FLAG = 10;
 const TREND = 5; // provisional: points of difference for the 7-day arrow, not calibrated
 const DAY = 86400000;
@@ -184,6 +185,7 @@ function render(D) {
       (rd ? '<table class="t"><tr><th>Reading</th><th>Who</th><th>Score</th></tr>' + rd + '</table>' : '<div class="small">No readings.</div>') +
       (bh ? '<table class="t"><tr><th>Behaviour</th><th>Result</th></tr>' + bh + '</table>' : '') + '</a>';
   }).join('') : '<div class="empty">No recordings yet.</div>';
+  h += '<div class="small" style="margin:24px 0 8px;text-align:center">Page version ' + PAGE_VERSION + ' · <a href="#" onclick="location.replace(location.pathname + \'?r=\' + Date.now()); return false;">Reload latest</a></div>';
   $('root').innerHTML = h;
 }
 async function start() {
