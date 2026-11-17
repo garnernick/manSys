@@ -776,7 +776,8 @@ function openMore() {
   document.getElementById('sheet-title').textContent = 'More';
   document.getElementById('sheet-body').innerHTML = TABS.filter(t => t.more).map(t =>
     '<div class="more-row" onclick="closeSheet();switchTab(\'' + t.id + '\')"><span>' + t.icon + '</span><span>' + t.label + '</span></div>'
-  ).join('') + '<a class="more-row" href="recordingreview.html" style="text-decoration:none"><span>\u25CF</span><span>Recordings</span></a>';
+  ).join('') + '<a class="more-row" href="recordingreview.html" style="text-decoration:none"><span>\u25CF</span><span>Recordings</span></a>' +
+    '<a class="more-row" href="sentiment.html" style="text-decoration:none"><span>\u25D0</span><span>Sentiment</span></a>';
   document.getElementById('sheet-footer').innerHTML = '<button class="btn-cancel" onclick="closeSheet()">Close</button>';
   document.getElementById('sheet-body').insertAdjacentHTML('beforeend', '<div class="pp" id="push-block" style="margin-top:14px"></div>');
   pushRender();
