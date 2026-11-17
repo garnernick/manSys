@@ -59,6 +59,9 @@ a.back { font-size:13px; color:var(--muted); }
 .big { font-size:28px; font-weight:700; }
 .delta.up { color:var(--ok-ink); } .delta.down { color:var(--bad-ink); } .delta { font-size:13px; font-weight:600; margin-left:6px; }
 .spark { display:block; margin-top:6px; }
+.traj { display:inline-block; font-size:13px; font-weight:700; border-radius:999px; padding:3px 10px; margin-top:8px; }
+.traj.up { background:var(--ok-bg); color:var(--ok-ink); } .traj.down { background:var(--bad-bg); color:var(--bad-ink); } .traj.flat { background:var(--field); color:var(--muted); border:1px solid var(--line); }
+.spark30 { width:100%; height:auto; display:block; margin-top:8px; color:var(--ink); }
 .two { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
 .small { font-size:12px; color:var(--muted); }
 table.t { width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
@@ -95,6 +98,8 @@ function fail(e) {
 const SRC = { nick:'something you said or did', topic:'the subject matter', other_person:'another person on the call', external:'something outside the call', none:'no clear cause' };
 // Provisional thresholds: score movement of this size or more is flagged. They are not calibrated; scores can wobble between runs.
 const FLAG = 10;
+const TREND = 5; // provisional: points of difference for the 7-day arrow, not calibrated
+const DAY = 86400000;
 function delta(score, base) {
   if (base == null) return '<span class="small"> no earlier calls to compare</span>';
   const d = score - base;
@@ -112,6 +117,33 @@ function spark(vals) {
   const pts = vals.map((v, i) => (i * (w - 4) / (n - 1) + 2).toFixed(1) + ',' + (h - 2 - (Math.max(0, Math.min(100, v)) / 100) * (h - 4)).toFixed(1)).join(' ');
   return '<svg class="spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-label="Trend, oldest to newest"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts + '"/></svg>';
 }
+
+function trajectory(ser) {
+  const now = Date.now();
+  const pts = (ser || []).map(o => ({ t: Date.parse(o.d), s: o.s }));
+  const recent = pts.filter(o => o.t >= now - 7 * DAY);
+  const earlier = pts.filter(o => o.t < now - 7 * DAY);
+  const avg = a => a.reduce((x, o) => x + o.s, 0) / a.length;
+  if (!recent.length) return '<span class="traj flat">&#9644; No reading in the last 7 days</span>';
+  if (!earlier.length) return '<span class="traj flat">&#9644; Not enough history yet (needs an earlier reading in the 30 days)</span>';
+  const d = Math.round(avg(recent) - avg(earlier));
+  if (d >= TREND) return '<span class="traj up">&#9650; Up ' + d + ' over the last 7 days</span>';
+  if (d <= -TREND) return '<span class="traj down">&#9660; Down ' + Math.abs(d) + ' over the last 7 days</span>';
+  return '<span class="traj flat">&#9644; Flat over the last 7 days (' + (d > 0 ? '+' : '') + d + ')</span>';
+}
+function spark30(ser) {
+  const now = Date.now(), t0 = now - 30 * DAY, w = 300, h = 64, px = 6, py = 6;
+  const pts = (ser || []).map(o => ({ t: Date.parse(o.d), s: o.s })).filter(o => o.t >= t0).sort((a, b) => a.t - b.t);
+  const X = t => (px + (t - t0) / (now - t0) * (w - 2 * px)).toFixed(1);
+  const Y = v => (h - py - Math.max(0, Math.min(100, v)) / 100 * (h - 2 * py)).toFixed(1);
+  let g = '<rect x="' + X(now - 7 * DAY) + '" y="0" width="' + (w - px - X(now - 7 * DAY)).toFixed(1) + '" height="' + h + '" fill="currentColor" opacity="0.07"/>' +
+    '<line x1="' + px + '" x2="' + (w - px) + '" y1="' + Y(50) + '" y2="' + Y(50) + '" stroke="currentColor" opacity="0.25" stroke-dasharray="3 3"/>';
+  if (pts.length > 1) g += '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts.map(o => X(o.t) + ',' + Y(o.s)).join(' ') + '"/>';
+  g += pts.map(o => '<circle cx="' + X(o.t) + '" cy="' + Y(o.s) + '" r="3" fill="currentColor"/>').join('');
+  return '<svg class="spark30" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Scores over the last 30 days, ' + pts.length + ' reading' + (pts.length === 1 ? '' : 's') + '">' + g + '</svg>' +
+    '<div class="small" style="display:flex;justify-content:space-between"><span>30 days ago</span><span>shaded: last 7 days · dashed: 50 (neutral)</span><span>today</span></div>' +
+    (pts.length ? '' : '<div class="small">No readings in the last 30 days.</div>');
+}
 function needs(p) {
   const dBase = p.latest_baseline == null ? 0 : p.latest_score - p.latest_baseline;
   const dCall = (p.latest_start == null || p.latest_end == null) ? 0 : p.latest_end - p.latest_start;
@@ -122,9 +154,10 @@ function advice(a) {
   const none = /^no action needed/i.test(a.trim());
   return '<div class="' + (none ? 'small' : 'note') + '"><b>What to do:</b> ' + esc(a) + '</div>';
 }
-function driver(d, src, q) {
+function driver(d, src, q, s0, s1) {
   if (!d) return '';
-  return '<div class="small" style="margin-top:6px"><b>Driver</b> (' + esc(SRC[src] || 'unclear') + '): ' + esc(d) + '</div>' + (q ? '<div class="quote">“' + esc(q) + '”</div>' : '');
+  const moved = s0 != null && s1 != null && Math.abs(s1 - s0) >= FLAG;
+  return '<div class="small" style="margin-top:6px"><b>' + (moved ? 'What moved it' : 'Nothing moved it much; description only') + '</b> (' + esc(SRC[src] || 'unclear') + '): ' + esc(d) + '</div>' + (q ? '<div class="quote">“' + esc(q) + '”</div>' : '');
 }
 function render(D) {
   let h = '<a class="back" href="#" onclick="history.length > 1 ? history.back() : (location.href = \'dashboard-mobile-push.html\'); return false;">‹ Dashboard</a><h1>Sentiment</h1>' +
@@ -133,9 +166,10 @@ function render(D) {
   h += '<h2>How people feel toward you</h2>';
   h += people.length ? people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
     '<div class="small">' + p.readings + ' call' + (p.readings === 1 ? '' : 's') + ' · last ' + fmtD(p.latest_at) + ' · confidence ' + esc(p.latest_confidence) + '</div></div>' +
-    '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + spark(p.series) +
-    driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote) + advice(p.latest_advice) +
-    '<div class="quote">“' + esc(p.latest_quote) + '”</div><div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
+    '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + '<div>' + trajectory(p.series30) + '</div>' + spark30(p.series30) +
+    '<div class="small" style="margin-top:8px"><b>Why this score, in their words:</b></div><div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') +
+    driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote, p.latest_start, p.latest_end) + advice(p.latest_advice) +
+    '<div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
     : '<div class="empty">No “toward you” readings for confirmed people yet.</div>';
   h += '<h2>Your own mood</h2>';
   if (D.nick_state.length) {
@@ -144,7 +178,7 @@ function render(D) {
   } else h += '<div class="empty">None yet.</div>';
   h += '<h2>Recordings</h2>';
   h += D.recordings.length ? D.recordings.map(r => {
-    const rd = r.readings.filter(o => o.subject !== 'call_overall').map(o => '<tr><td>' + esc(SUBJ[o.subject] || o.subject) + '</td><td>' + esc(o.speaker || '') + (o.identified ? '' : '<div class="small">not linked to a person</div>') + '</td><td>' + o.score + (o.score_start != null && o.score_end != null ? '<div class="small">' + o.score_start + ' → ' + o.score_end + '</div>' : '') + '<div>' + delta(o.score, o.baseline) + '</div></td></tr>').join('');
+    const rd = r.readings.filter(o => o.subject !== 'call_overall').map(o => '<tr><td>' + esc(SUBJ[o.subject] || o.subject) + '</td><td>' + esc(o.speaker || '') + (o.identified ? '' : '<div class="small">not linked to a person</div>') + (o.quote_verified === false ? '<div class="small">quote not verified</div>' : '') + '</td><td>' + o.score + (o.score_start != null && o.score_end != null ? '<div class="small">' + o.score_start + ' → ' + o.score_end + '</div>' : '') + '<div>' + delta(o.score, o.baseline) + '</div></td></tr>').join('');
     const bh = r.behaviours.map(b => '<tr><td>' + esc(b.name) + '</td><td>' + (b.measure === 'metric' ? esc(b.value) + ' ' + esc(b.unit || '') : esc(b.rating || '')) + (b.quote ? '<div class="small">“' + esc(b.quote) + '”</div>' : '') + '</td></tr>').join('');
     return '<a class="card" style="display:block;text-decoration:none;color:inherit" href="recordingreview.html?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '</h3><div class="small">' + fmtD(r.recorded_at) + '</div>' +
       (rd ? '<table class="t"><tr><th>Reading</th><th>Who</th><th>Score</th></tr>' + rd + '</table>' : '<div class="small">No readings.</div>') +
