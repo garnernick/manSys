@@ -182,6 +182,18 @@ body { background:var(--nav); }
   .hov svg { width:17px; height:17px; }
 }
 
+@media (min-width:900px) {
+  #stats-row .stat.act { grid-column:span 3; padding:10px 14px; }
+  .act-h { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
+  .act-leg { display:flex; align-items:center; gap:5px; font:500 11px var(--mono); color:var(--muted); white-space:nowrap; }
+  .act-leg b { width:8px; height:8px; border-radius:2px; display:inline-block; margin-left:8px; }
+  .act-chart { display:flex; gap:8px; align-items:flex-end; }
+  .act-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
+  .act-bars { height:46px; display:flex; align-items:flex-end; gap:3px; }
+  .act-bars i { width:8px; border-radius:2px; display:block; }
+  .act-col span { font:400 10px var(--mono); color:var(--muted); }
+}
+
 /* ---- Desktop: sidebar with themes/epics tree, task table, shortcuts, notifications popover ---- */
 @media (min-width:900px) {
   #app[style*="flex"] { grid-template-columns:260px minmax(0,1fr) 420px; grid-template-rows:repeat(5,auto) minmax(0,1fr) auto; }
@@ -1140,6 +1152,41 @@ function renderStats(data) {
   document.getElementById('stats-row').innerHTML = stats.map(s =>
     '<div class="stat"><div class="stat-label">' + s.label + '</div><div class="stat-value ' + s.cls + '">' + s.value + '</div></div>'
   ).join('');
+  renderActivity();
+}
+
+/* ---- Last 7 days: opened / closed / overdue per day (wide pages) ---- */
+let _actKey = '', _actRows = null, _actTok = 0;
+function isoLocal(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+async function renderActivity() {
+  const host = document.getElementById('stats-row');
+  if (!host || activeTab !== 'tasks' || !WIDE()) return;
+  const tok = ++_actTok;
+  const n = new Date(), today = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  const days = []; for (let i = 6; i >= 0; i--) days.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - i));
+  const key = allRows.map(r => r.task_id + ':' + r.status_id + ':' + (r.promise_date || '')).join(',');
+  if (key !== _actKey || !_actRows) {
+    try { _actRows = await api('task_updates?select=task_id,event_type_id,new_status_id,event_date&event_date=gte.' + days[0].toISOString() + '&order=event_date.asc') || []; _actKey = key; }
+    catch (e) { console.warn('Activity: failed to load task_updates', e); _actRows = _actRows || []; }
+  }
+  if (tok !== _actTok || activeTab !== 'tasks') return;
+  const upd = _actRows;
+  const data = days.map(d => {
+    const ds = isoLocal(d);
+    return { d, ds,
+      opened: upd.filter(u => u.event_type_id === 1 && (u.event_date || '').substring(0, 10) === ds).length,
+      closed: upd.filter(u => u.event_type_id === 2 && u.new_status_id === DONE_STATUS_ID && (u.event_date || '').substring(0, 10) === ds).length,
+      overdue: allRows.filter(r => (r.promise_date || '') === ds && !['Done', 'Delivered'].includes(r.statuses?.status_label)).length };
+  });
+  const mx = Math.max(1, ...data.map(x => Math.max(x.opened, x.closed, x.overdue)));
+  const H = 46, sum = k => data.reduce((a, x) => a + x[k], 0);
+  const cols = data.map(x => {
+    const bar = (k, c) => '<i style="height:' + (x[k] ? Math.max(3, Math.round(x[k] / mx * H)) : 1) + 'px;background:' + c + ';opacity:' + (x[k] ? 1 : .25) + '"></i>';
+    const lab = isoLocal(x.d) === isoLocal(today) ? 'Today' : x.d.toLocaleDateString('en-GB', { weekday: 'short' });
+    return '<div class="act-col" title="' + x.ds + ': ' + x.opened + ' opened, ' + x.closed + ' closed, ' + x.overdue + ' overdue"><div class="act-bars">' + bar('opened', '#E5A23B') + bar('closed', '#2FA562') + bar('overdue', '#E5533D') + '</div><span>' + lab + '</span></div>';
+  }).join('');
+  const old = document.getElementById('act-tile'); if (old) old.remove();
+  host.insertAdjacentHTML('beforeend', '<div class="stat act" id="act-tile"><div class="act-h"><span class="stat-label">Last 7 days</span><span class="act-leg"><b style="background:#E5A23B"></b>opened ' + sum('opened') + '<b style="background:#2FA562"></b>closed ' + sum('closed') + '<b style="background:#E5533D"></b>overdue ' + sum('overdue') + '</span></div><div class="act-chart">' + cols + '</div></div>');
 }
 
 function applyFilters() {
