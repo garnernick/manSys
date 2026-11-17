@@ -128,7 +128,14 @@ function trendOf(ser) {
   const earlier = pts.filter(o => o.t < now - 7 * DAY);
   const avg = a => a.reduce((x, o) => x + o.s, 0) / a.length;
   if (!recent.length) return { dir: 'flat', text: 'No reading in the last 7 days' };
-  if (!earlier.length) return { dir: 'flat', text: 'Not enough history yet (needs an earlier reading in the 30 days)' };
+  if (!earlier.length) {
+    // No earlier reading to compare with: use where the score sits against 50 (neutral) as the direction. This is a level, not a change.
+    const m = Math.round(avg(recent)), d0 = m - 50;
+    const note = '; no earlier reading yet, so this shows level, not change';
+    if (d0 >= TREND) return { dir: 'up', text: 'Above neutral (' + m + ' vs 50)' + note };
+    if (d0 <= -TREND) return { dir: 'down', text: 'Below neutral (' + m + ' vs 50)' + note };
+    return { dir: 'flat', text: 'Around neutral (' + m + ' vs 50)' + note };
+  }
   const d = Math.round(avg(recent) - avg(earlier));
   if (d >= TREND) return { dir: 'up', text: 'Up ' + d + ' over the last 7 days' };
   if (d <= -TREND) return { dir: 'down', text: 'Down ' + Math.abs(d) + ' over the last 7 days' };
@@ -148,7 +155,7 @@ function spark30(ser) {
   if (pts.length > 1) g += '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts.map(o => X(o.t) + ',' + Y(o.s)).join(' ') + '"/>';
   g += pts.map(o => '<circle cx="' + X(o.t) + '" cy="' + Y(o.s) + '" r="3" fill="currentColor"/>').join('');
   return '<svg class="spark30 ' + dir + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Scores over the last 30 days, ' + pts.length + ' reading' + (pts.length === 1 ? '' : 's') + '">' + g + '</svg>' +
-    '<div class="small" style="display:flex;justify-content:space-between"><span>30 days ago</span><span>shaded: last 7 days · dashed: 50 (neutral)</span><span>today</span></div>' +
+    '<div class="small" style="display:flex;justify-content:space-between"><span>30 days ago</span><span>&mdash;&gt;</span><span>Today</span></div>' +
     (pts.length ? '' : '<div class="small">No readings in the last 30 days.</div>');
 }
 function needs(p) {
