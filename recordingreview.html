@@ -141,6 +141,33 @@ function refOpts(sel) {
   D.people.forEach(p => { const v = 'p:' + p.person_id; h += '<option value="' + v + '"' + (sel === v ? ' selected' : '') + '>' + esc(p.full_name) + '</option>'; });
   return h;
 }
+// Who a speaker label is, for display. Live from the "This is" dropdown while reviewing; from the saved match once approved.
+function spName(label) {
+  const i = D.speakers.findIndex(x => x.speaker_label === label), s = D.speakers[i];
+  if (!s) return 'Speaker ' + label;
+  const c = document.querySelector('[data-sp="' + i + '"]'), sel = c && c.querySelector('[data-f=person]');
+  let name = '';
+  if (sel) {
+    const v = sel.value;
+    if (v.startsWith('p:')) { const p = D.people.find(x => 'p:' + x.person_id === v); name = p ? p.full_name : ''; }
+    else if (v.startsWith('c:')) { const k = (D.contacts || []).find(x => 'c:' + x.contact_id === v); name = k ? k.full_name : ''; }
+    else if (v === 'new' || v === 'contactnew') { const n = c.querySelector('[data-f=name]'); name = n ? n.value.trim() : ''; }
+    if (!name && c.querySelector('[data-f=me]') && c.querySelector('[data-f=me]').checked) name = 'Nick';
+  } else {
+    if (s.person_id) { const p = D.people.find(x => x.person_id === s.person_id); name = p ? p.full_name : ''; }
+    else if (s.contact_id) { const k = (D.contacts || []).find(x => x.contact_id === s.contact_id); name = k ? k.full_name : ''; }
+    if (!name && s.is_nick) name = 'Nick';
+  }
+  if (!name) name = s.proposed_name || '';
+  return name || 'Speaker ' + label;
+}
+function refreshNames() { document.querySelectorAll('.spn').forEach(el => { el.textContent = spName(el.dataset.l); }); }
+function themeOpts(sel) {
+  return '<option value="">None</option>' + (D.themes || []).map(t => '<option value="' + t.theme_id + '"' + (sel === t.theme_id ? ' selected' : '') + '>' + esc(t.title) + '</option>').join('');
+}
+function epicOpts(theme, sel) {
+  return '<option value="">None</option>' + (D.epics || []).filter(e => theme && e.theme_id === theme).map(e => '<option value="' + e.epic_id + '"' + (sel === e.epic_id ? ' selected' : '') + '>' + esc(e.title) + '</option>').join('');
+}
 function renderDetail() {
   const rec = D.recording, approved = rec.status === 'approved';
   const nick = D.speakers.find(s => s.is_nick);
@@ -173,23 +200,34 @@ function renderDetail() {
       '<div><label class="f">' + (a.kind === 'task' ? 'Requested by' : a.kind === 'commitment_outbound' ? 'Promised to' : 'Promised by') + '</label><select data-f="other">' + refOpts('') + '</select></div></div>' +
       '<div class="sub hint" style="margin-top:6px"></div>' +
       '<label class="f">Due date</label><input type="date" data-f="due" value="' + esc(a.due_date || '') + '">' +
+      (a.kind === 'task' ? '<div class="grid"><div><label class="f">Theme</label><select data-f="theme">' + themeOpts(a.theme_id) + '</select></div>' +
+      '<div><label class="f">Epic</label><select data-f="epic">' + epicOpts(a.theme_id, a.epic_id) + '</select></div></div>' +
+      '<div class="sub" style="margin-top:4px">' + (a.theme_id ? 'Theme and epic are Claude’s guess from the conversation. Change them if wrong.' : 'Claude could not tell the theme. Pick one if you know it.') + '</div>' : '') +
       '<div class="dec"><label><input type="radio" name="d' + i + '" value="later" checked><span>Decide later</span></label><label><input type="radio" name="d' + i + '" value="approve"><span>Approve</span></label><label><input type="radio" name="d' + i + '" value="done"><span>Already done</span></label><label><input type="radio" name="d' + i + '" value="reject"><span>Reject</span></label>' +
       dup.map(d => '<label><input type="radio" name="d' + i + '" value="link|' + esc(d.source) + '|' + d.id + '"><span>Same as ' + esc(d.source) + ' #' + d.id + '</span></label>').join('') + '</div></div>';
   });
   if (D.quotes.length) {
     h += '<h2>Key quotes</h2>';
-    D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub">Speaker ' + esc(q.speaker_label) + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
+    D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub"><span class="spn" data-l="' + esc(q.speaker_label) + '"></span>' + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
   }
   if (D.sentiment.length) {
     h += '<h2>Sentiment (Claude’s read, not fact)</h2>';
-    D.sentiment.forEach(s => { h += '<div class="card"><h3>Speaker ' + esc(s.speaker_label) + ' · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
+    D.sentiment.forEach(s => { h += '<div class="card"><h3><span class="spn" data-l="' + esc(s.speaker_label) + '"></span> · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
   }
   $('root').innerHTML = h;
   const hintAll = () => document.querySelectorAll('[data-ac]').forEach(hint);
   document.querySelectorAll('[data-sp]').forEach(c => { const sel = c.querySelector('[data-f=person]'); if (!sel) return; const upd = () => { c.querySelector('[data-new]').style.display = (sel.value === 'new' || sel.value === 'contactnew') ? 'block' : 'none'; c.querySelector('[data-stakerow]').style.display = sel.value === 'new' ? 'flex' : 'none'; hintAll(); }; sel.onchange = () => { upd(); setDirty(); }; upd(); });
   document.querySelectorAll('[data-ac] select').forEach(el => el.addEventListener('change', hintAll));
+  document.querySelectorAll('[data-ac] [data-f=theme]').forEach(th => th.addEventListener('change', () => {
+    const ep = th.closest('[data-ac]').querySelector('[data-f=epic]'), cur = Number(ep.value) || null, t = Number(th.value) || null;
+    const keep = cur && (D.epics || []).some(e => e.epic_id === cur && e.theme_id === t) ? cur : null;
+    ep.innerHTML = epicOpts(t, keep);
+  }));
+  document.querySelectorAll('[data-sp]').forEach(c => c.addEventListener('change', refreshNames));
+  document.querySelectorAll('[data-sp] [data-f=name]').forEach(el => el.addEventListener('input', refreshNames));
   document.querySelectorAll('input,select,textarea').forEach(el => el.addEventListener('change', setDirty));
   hintAll();
+  refreshNames();
   if (D.actions.some(a => a.status === 'approved' && a.owner_name)) loadEmail();
   const pend = D.actions.filter(a => a.status === 'pending').length;
   $('bar').hidden = approved; $('go').disabled = false; $('go').onclick = submit;
@@ -213,6 +251,7 @@ function collect() {
     const r = c.querySelector('input[type=radio]:checked').value;
     if (r === 'later') return;
     const o = { action_id: a.action_id, decision: r, title: g('title').value.trim(), description: g('desc').value.trim(), due_date: g('due').value, owner_ref: g('owner').value, other_ref: g('other').value };
+    if (g('theme')) { o.theme_id = Number(g('theme').value) || null; o.epic_id = Number(g('epic').value) || null; }
     if (r.startsWith('link|')) { const p = r.split('|'); o.decision = 'link'; o.link_source = p[1]; o.link_id = Number(p[2]); }
     actions.push(o);
   });
