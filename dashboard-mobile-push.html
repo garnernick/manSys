@@ -1714,13 +1714,15 @@ function buildSystemPromptM() {
 
   const peopleLines = (ref.people || []).map(p => '  ' + p.person_id + ' = ' + p.full_name + (p.job_title ? ' (' + p.job_title + ')' : '')).join('\n');
   const themeLines  = (ref.themes  || []).map(t => '  ' + t.theme_id  + ' = ' + t.title  + (t.domain  ? ' [' + t.domain  + ']' : '')).join('\n');
+  const epicLines  = (ref.epics   || []).map(e => '  ' + e.roadmap_item_id + ' = ' + e.title + (e.theme_id ? ' [theme ' + e.theme_id + ']' : ' [no theme]')).join('\n');
 
   return 'You are Nick Garner\'s AI Chief of Staff. Today is ' + today + ' (' + todayISO + '). Nick\'s person_id is 1.\n\n'
     + 'PEOPLE IDs (use ONLY these integers — never a name string):\n' + peopleLines + '\n\n'
     + 'THEME IDs (use ONLY these integers — never a name string):\n' + themeLines + '\n\n'
+    + 'EPIC IDs (use ONLY these integers; an epic belongs to the theme shown, so only use an epic whose theme matches the task\'s theme_id):\n' + epicLines + '\n\n'
     + 'AVAILABLE ACTIONS — append one <action> block per action:\n\n'
-    + 'task_create: { title(req), owner_id(req,default 1), theme_id(opt,int), priority("High"/"Medium"/"Low"), promise_date(YYYY-MM-DD), is_must_achieve(bool), is_deep_work(bool), status_id(always 1) }\n'
-    + 'task_update: { task_id(req,int), ...fields to update; to PARK a task (parking lot: deprioritised, still listed, due date ignored) set status_id to 5 — this also clears is_must_achieve }\n'
+    + 'task_create: { title(req), owner_id(req,default 1), requested_by_id(opt,int: person_id of who asked for it, from PEOPLE IDs), theme_id(opt,int), epic_id(opt,int, from EPIC IDs and must belong to theme_id), priority("High"/"Medium"/"Low"), promise_date(YYYY-MM-DD), is_must_achieve(bool), is_deep_work(bool), status_id(always 1) }\n'
+    + 'task_update: { task_id(req,int), ...fields to update (owner_id, requested_by_id, theme_id, epic_id are all allowed); to PARK a task (parking lot: deprioritised, still listed, due date ignored) set status_id to 5 — this also clears is_must_achieve }\n'
     + 'task_complete: { task_id(req,int) }\n'
     + 'commitment_log: { description(req), person_id(req,int), direction("outbound"/"inbound"), promised_date(YYYY-MM-DD), status(always "Outstanding") }\n'
     + 'commitment_complete: { commitment_id(req,int) }\n'
@@ -1737,6 +1739,8 @@ function buildSystemPromptM() {
     + '- Never invent IDs. Only use IDs from the lists above.\n'
     + '- Omit optional fields entirely if unknown — do not send null or empty strings for integer fields.\n'
     + '- If you cannot resolve a name to an ID, ASK Nick.\n'
+    + '- "Requested by" / "asked by" / "for X" on a task means requested_by_id (the person who asked for it), which is different from owner_id (who will do it). Owner defaults to 1 (Nick) unless Nick says someone else will do it.\n'
+    + '- Offer a theme and epic when the task clearly belongs to one; if unsure, leave them out or ask. Never pair an epic with a theme it does not belong to.\n'
     + '- Always confirm details with Nick before saving.\n'
     + '- For multiple actions (e.g. two commitments), emit one <action> block per item — never combine into one block.\n'
     + '- Do NOT say actions are complete in your message text — confirmation appears automatically after each action executes. Just describe what you are about to do.\n'
@@ -1831,9 +1835,25 @@ async function logChatActionM(actionType, actionData, resultId, resultTable, sta
   } catch(e) { console.warn('Failed to log chat action:', e.message); }
 }
 
+// Keep chat-created task references valid: integers only, epic must belong to the theme.
+function cleanTaskRefsM(d) {
+  ['owner_id', 'requested_by_id', 'theme_id', 'epic_id'].forEach(k => {
+    if (d[k] === undefined) return;
+    const n = Number(d[k]);
+    if (d[k] === null || d[k] === '' || !Number.isInteger(n) || n <= 0) delete d[k]; else d[k] = n;
+  });
+  if (d.epic_id !== undefined) {
+    const e = (ref.epics || []).find(x => x.roadmap_item_id === d.epic_id);
+    if (!e) delete d.epic_id;
+    else if (d.theme_id === undefined && e.theme_id) d.theme_id = e.theme_id;
+    else if (d.theme_id !== undefined && e.theme_id && e.theme_id !== d.theme_id) delete d.epic_id;
+  }
+  return d;
+}
+
 async function handleChatActionM(action, userMsg, claudeResp) {
   const t = action.type;
-  const d = action.data || {};
+  const d = (t === 'task_create' || t === 'task_update') ? cleanTaskRefsM(action.data || {}) : (action.data || {});
 
   if (t === 'task_create') {
     try {
