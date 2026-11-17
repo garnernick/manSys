@@ -61,7 +61,10 @@ a.back { font-size:13px; color:var(--muted); }
 .spark { display:block; margin-top:6px; }
 .traj { display:inline-block; font-size:13px; font-weight:700; border-radius:999px; padding:3px 10px; margin-top:8px; }
 .traj.up { background:var(--ok-bg); color:var(--ok-ink); } .traj.down { background:var(--bad-bg); color:var(--bad-ink); } .traj.flat { background:var(--field); color:var(--muted); border:1px solid var(--line); }
-.spark30 { width:100%; height:auto; display:block; margin-top:8px; color:var(--ink); }
+.spark30 { width:100%; height:auto; display:block; margin-top:8px; color:var(--muted); }
+.spark30.up { color:var(--ok-ink); } .spark30.down { color:var(--bad-ink); }
+.arrow { font-size:14px; margin-left:8px; vertical-align:2px; }
+.arrow.up { color:var(--ok-ink); } .arrow.down { color:var(--bad-ink); } .arrow.flat { color:var(--muted); }
 .two { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
 .small { font-size:12px; color:var(--muted); }
 table.t { width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
@@ -118,20 +121,24 @@ function spark(vals) {
   return '<svg class="spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-label="Trend, oldest to newest"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts + '"/></svg>';
 }
 
-function trajectory(ser) {
+function trendOf(ser) {
   const now = Date.now();
   const pts = (ser || []).map(o => ({ t: Date.parse(o.d), s: o.s }));
   const recent = pts.filter(o => o.t >= now - 7 * DAY);
   const earlier = pts.filter(o => o.t < now - 7 * DAY);
   const avg = a => a.reduce((x, o) => x + o.s, 0) / a.length;
-  if (!recent.length) return '<span class="traj flat">&#9644; No reading in the last 7 days</span>';
-  if (!earlier.length) return '<span class="traj flat">&#9644; Not enough history yet (needs an earlier reading in the 30 days)</span>';
+  if (!recent.length) return { dir: 'flat', text: 'No reading in the last 7 days' };
+  if (!earlier.length) return { dir: 'flat', text: 'Not enough history yet (needs an earlier reading in the 30 days)' };
   const d = Math.round(avg(recent) - avg(earlier));
-  if (d >= TREND) return '<span class="traj up">&#9650; Up ' + d + ' over the last 7 days</span>';
-  if (d <= -TREND) return '<span class="traj down">&#9660; Down ' + Math.abs(d) + ' over the last 7 days</span>';
-  return '<span class="traj flat">&#9644; Flat over the last 7 days (' + (d > 0 ? '+' : '') + d + ')</span>';
+  if (d >= TREND) return { dir: 'up', text: 'Up ' + d + ' over the last 7 days' };
+  if (d <= -TREND) return { dir: 'down', text: 'Down ' + Math.abs(d) + ' over the last 7 days' };
+  return { dir: 'flat', text: 'Flat over the last 7 days (' + (d > 0 ? '+' : '') + d + ')' };
 }
+const ARROW = { up: '&#9650;', down: '&#9660;', flat: '&#9644;' };
+function trajectory(ser) { const t = trendOf(ser); return '<span class="traj ' + t.dir + '">' + ARROW[t.dir] + ' ' + t.text + '</span>'; }
+function nameArrow(ser) { const t = trendOf(ser); return '<span class="arrow ' + t.dir + '" role="img" aria-label="' + t.text + '" title="' + t.text + '">' + ARROW[t.dir] + '</span>'; }
 function spark30(ser) {
+  const dir = trendOf(ser).dir;
   const now = Date.now(), t0 = now - 30 * DAY, w = 300, h = 64, px = 6, py = 6;
   const pts = (ser || []).map(o => ({ t: Date.parse(o.d), s: o.s })).filter(o => o.t >= t0).sort((a, b) => a.t - b.t);
   const X = t => (px + (t - t0) / (now - t0) * (w - 2 * px)).toFixed(1);
@@ -140,7 +147,7 @@ function spark30(ser) {
     '<line x1="' + px + '" x2="' + (w - px) + '" y1="' + Y(50) + '" y2="' + Y(50) + '" stroke="currentColor" opacity="0.25" stroke-dasharray="3 3"/>';
   if (pts.length > 1) g += '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts.map(o => X(o.t) + ',' + Y(o.s)).join(' ') + '"/>';
   g += pts.map(o => '<circle cx="' + X(o.t) + '" cy="' + Y(o.s) + '" r="3" fill="currentColor"/>').join('');
-  return '<svg class="spark30" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Scores over the last 30 days, ' + pts.length + ' reading' + (pts.length === 1 ? '' : 's') + '">' + g + '</svg>' +
+  return '<svg class="spark30 ' + dir + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Scores over the last 30 days, ' + pts.length + ' reading' + (pts.length === 1 ? '' : 's') + '">' + g + '</svg>' +
     '<div class="small" style="display:flex;justify-content:space-between"><span>30 days ago</span><span>shaded: last 7 days · dashed: 50 (neutral)</span><span>today</span></div>' +
     (pts.length ? '' : '<div class="small">No readings in the last 30 days.</div>');
 }
@@ -164,7 +171,7 @@ function render(D) {
     '<div class="note">Each score is Claude’s reading of how someone felt toward you during one call (0–100, 50 neutral), from the words only, not tone of voice. “Usual” is their average from earlier calls. Movements under ' + FLAG + ' points are treated as steady; that threshold is a provisional rule of thumb, not calibrated. Treat flags as a prompt to look at the quote, not as a measurement. People appear once you have confirmed who they are in Recording Review.</div>';
   const people = D.people.slice().sort((a, b) => (needs(b) - needs(a)) || a.name.localeCompare(b.name));
   h += '<h2>How people feel toward you</h2>';
-  h += people.length ? people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
+  h += people.length ? people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + nameArrow(p.series30) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
     '<div class="small">' + p.readings + ' call' + (p.readings === 1 ? '' : 's') + ' · last ' + fmtD(p.latest_at) + ' · confidence ' + esc(p.latest_confidence) + '</div></div>' +
     '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + '<div>' + trajectory(p.series30) + '</div>' + spark30(p.series30) +
     '<div class="small" style="margin-top:8px"><b>Why this score, in their words:</b></div><div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') +
