@@ -239,6 +239,7 @@ body { background:var(--nav); }
 .swipe .card { margin-bottom:0; position:relative; z-index:1; transition:transform .18s ease; will-change:transform; }
 .swipe.drag .card { transition:none; }
 .swipe .sw-del { position:absolute; top:0; right:0; bottom:0; width:92px; background:#D92D20; color:#fff; border:0; font:700 15px system-ui,-apple-system,sans-serif; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.swipe .sw-ok { position:absolute; top:0; left:0; bottom:0; width:92px; background:#12805C; color:#fff; border:0; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .swipe.gone { transition:max-height .2s ease, opacity .2s ease, margin .2s ease; max-height:0 !important; opacity:0; margin-bottom:0; }
 .udot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#E5484D; margin-right:7px; vertical-align:1px; }
 .ucount { position:absolute; top:2px; left:calc(50% + 6px); min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#E5484D; color:#fff; font:700 10px/16px var(--font); text-align:center; }
@@ -644,12 +645,14 @@ async function openUpdate(id) {
 }
 // ---- swipe left on an update to reveal Delete; tap Delete to remove it permanently ----
 const BIN_SVG = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6h17"/><path d="M9 6V4.2c0-.66.54-1.2 1.2-1.2h3.6c.66 0 1.2.54 1.2 1.2V6"/><path d="M5.5 6l.9 13.2c.06.98.88 1.8 1.86 1.8h7.48c.98 0 1.8-.82 1.86-1.8L18.5 6"/><path d="M10 10.5v6"/><path d="M14 10.5v6"/></svg>';
+const TICK_SVG = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>';
+const DONE_STATUS_ID = 4; // statuses: 4 = Done
 const SW_W = 92;
 let _swOpen = null, _sw = null, _swSuppressClick = 0;
 function swClose(el, animate) {
   if (!el) return;
   const c = el.querySelector('.card'); if (c) c.style.transform = '';
-  el.classList.remove('open');
+  el.classList.remove('open'); el.classList.remove('open-r');
   if (_swOpen === el) _swOpen = null;
 }
 (function initSwipe() {
@@ -657,9 +660,9 @@ function swClose(el, animate) {
   wrap.addEventListener('touchstart', e => {
     const el = e.target.closest && e.target.closest('.swipe');
     if (_swOpen && _swOpen !== el) swClose(_swOpen);
-    if (!el || e.target.closest('.sw-del') || e.touches.length !== 1) { _sw = null; return; }
+    if (!el || e.target.closest('.sw-del') || e.target.closest('.sw-ok') || e.touches.length !== 1) { _sw = null; return; }
     const t0 = e.touches[0];
-    _sw = { el, card: el.querySelector('.card'), x: t0.clientX, y: t0.clientY, base: el.classList.contains('open') ? -SW_W : 0, dx: 0, lock: null };
+    _sw = { el, card: el.querySelector('.card'), x: t0.clientX, y: t0.clientY, base: el.classList.contains('open') ? -SW_W : (el.classList.contains('open-r') ? SW_W : 0), canR: !!el.querySelector('.sw-ok'), dx: 0, lock: null };
   }, { passive: true });
   wrap.addEventListener('touchmove', e => {
     if (!_sw) return;
@@ -667,7 +670,7 @@ function swClose(el, animate) {
     if (_sw.lock === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) _sw.lock = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'h' : 'v';
     if (_sw.lock !== 'h') return;
     _sw.el.classList.add('drag');
-    _sw.dx = Math.max(-SW_W * 1.4, Math.min(0, _sw.base + dx));
+    _sw.dx = Math.max(-SW_W * 1.4, Math.min(_sw.canR ? SW_W * 1.4 : 0, _sw.base + dx));
     _sw.card.style.transform = 'translateX(' + _sw.dx + 'px)';
   }, { passive: true });
   const end = () => {
@@ -676,7 +679,9 @@ function swClose(el, animate) {
     s.el.classList.remove('drag');
     if (s.lock !== 'h') return;
     _swSuppressClick = Date.now();
+    s.el.classList.remove('open'); s.el.classList.remove('open-r');
     if (s.dx < -SW_W / 2) { s.card.style.transform = 'translateX(-' + SW_W + 'px)'; s.el.classList.add('open'); _swOpen = s.el; }
+    else if (s.dx > SW_W / 2 && s.canR) { s.card.style.transform = 'translateX(' + SW_W + 'px)'; s.el.classList.add('open-r'); _swOpen = s.el; }
     else swClose(s.el);
   };
   wrap.addEventListener('touchend', end, { passive: true });
@@ -685,7 +690,7 @@ function swClose(el, animate) {
   wrap.addEventListener('click', e => {
     if (Date.now() - _swSuppressClick < 350) { e.stopPropagation(); e.preventDefault(); return; }
     const el = e.target.closest && e.target.closest('.swipe');
-    if (el && el.classList.contains('open') && !e.target.closest('.sw-del')) { e.stopPropagation(); e.preventDefault(); swClose(el); }
+    if (el && (el.classList.contains('open') || el.classList.contains('open-r')) && !e.target.closest('.sw-del') && !e.target.closest('.sw-ok')) { e.stopPropagation(); e.preventDefault(); swClose(el); }
   }, true);
 })();
 async function deleteUpdate(id, fromSheet) {
@@ -700,6 +705,31 @@ async function deleteUpdate(id, fromSheet) {
   if (fromSheet) closeSheet();
   if (el && !fromSheet) { el.style.maxHeight = el.offsetHeight + 'px'; void el.offsetHeight; el.classList.add('gone'); setTimeout(done, 210); }
   else done();
+}
+async function completeTask(id) {
+  const el = document.querySelector('.swipe[data-id="' + id + '"]');
+  const r = allRows.find(x => x.task_id === id); if (!r) return;
+  try {
+    await api('tasks?task_id=eq.' + id, { method: 'PATCH', body: { status_id: DONE_STATUS_ID }, prefer: 'return=minimal' });
+  } catch (e) { swClose(el); alert('Could not mark this task done. Try again.'); return; }
+  r.status_id = DONE_STATUS_ID;
+  const lbl = (ref.statuses || []).find(x => x.status_id === DONE_STATUS_ID);
+  if (lbl) r.statuses = { status_label: lbl.status_label };
+  swClose(el);
+  renderStats(allRows); applyFilters();
+}
+async function deleteTaskSwipe(id) {
+  const el = document.querySelector('.swipe[data-id="' + id + '"]');
+  const r = allRows.find(x => x.task_id === id);
+  // same permanent delete (and confirmation) as the Delete button in the task sheet
+  if (!confirm('Delete "' + ((r && r.title) || 'this task') + '"? This also removes its history and linked commitments and cannot be undone.')) { swClose(el); return; }
+  try {
+    await api('commitments?task_id=eq.' + id, { method: 'DELETE' });
+    await api('task_updates?task_id=eq.' + id, { method: 'DELETE' });
+    await api('tasks?task_id=eq.' + id, { method: 'DELETE' });
+  } catch (e) { swClose(el); alert('Delete failed: ' + e.message); return; }
+  allRows = allRows.filter(x => x.task_id !== id);
+  renderStats(allRows); applyFilters();
 }
 async function setRead(id, read, keepList) {
   const r = allRows.find(x => x.update_id === id); if (!r) return;
@@ -959,6 +989,10 @@ function renderList(data) {
     const theirs = activeTab === 'tasks' && r.owner_id != null && r.owner_id !== 1;
     const unread = activeTab === 'updates' && !r.read_at;
     const cardHtml = '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
+    if (activeTab === 'tasks') {
+      const okBtn = r.status_id !== DONE_STATUS_ID ? '<button class="sw-ok" onclick="completeTask(' + id + ')" aria-label="Mark task done">' + TICK_SVG + '</button>' : '';
+      return '<div class="swipe" data-id="' + id + '">' + okBtn + '<button class="sw-del" onclick="deleteTaskSwipe(' + id + ')" aria-label="Delete task">' + BIN_SVG + '</button>' + cardHtml + '</div>';
+    }
     if (activeTab !== 'updates') return cardHtml;
     return '<div class="swipe" data-id="' + id + '"><button class="sw-del" onclick="deleteUpdate(' + id + ')" aria-label="Delete update"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6h17"/><path d="M9 6V4.2c0-.66.54-1.2 1.2-1.2h3.6c.66 0 1.2.54 1.2 1.2V6"/><path d="M5.5 6l.9 13.2c.06.98.88 1.8 1.86 1.8h7.48c.98 0 1.8-.82 1.86-1.8L18.5 6"/><path d="M10 10.5v6"/><path d="M14 10.5v6"/></svg></button>' + cardHtml + '</div>';
   }).join('');
