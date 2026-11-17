@@ -135,8 +135,9 @@ function render(D) {
   h += people.length ? people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
     '<div class="small">' + p.readings + ' call' + (p.readings === 1 ? '' : 's') + ' · last ' + fmtD(p.latest_at) + ' · confidence ' + esc(p.latest_confidence) + '</div></div>' +
     '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + spark(p.series) +
+    '<div class="small" style="margin-top:8px"><b>Why this score, in their words:</b></div><div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') +
     driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote, p.latest_start, p.latest_end) + advice(p.latest_advice) +
-    '<div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') + '<div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
+    '<div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('')
     : '<div class="empty">No “toward you” readings for confirmed people yet.</div>';
   h += '<h2>Your own mood</h2>';
   if (D.nick_state.length) {
