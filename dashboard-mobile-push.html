@@ -134,6 +134,20 @@ body { background:var(--nav); }
 .sheet-footer { position:sticky; bottom:0; background:var(--card); padding:12px 20px calc(var(--safe-bot) + 12px); border-top:1px solid var(--line); display:flex; gap:10px; flex-shrink:0; }
 .btn-cancel { flex:1; padding:13px; background:var(--card2); border:1px solid var(--line); color:var(--muted); font-family:var(--font); font-size:14px; font-weight:500; border-radius:12px; cursor:pointer; }
 .btn-save { flex:2; padding:13px; background:var(--accent); border:none; color:var(--on-accent); font-family:var(--font); font-size:14px; font-weight:600; border-radius:12px; cursor:pointer; }
+.btn-history { flex:1; padding:13px; background:var(--card2); border:1px solid var(--line); color:var(--ink); font-family:var(--font); font-size:14px; font-weight:500; border-radius:12px; cursor:pointer; }
+.hist-overlay { position:fixed; inset:0; background:var(--overlay); z-index:110; display:none; align-items:center; justify-content:center; padding:16px; }
+.hist-overlay.open { display:flex; }
+.hist-modal { background:var(--card); border:1px solid var(--line); border-radius:16px; width:100%; max-width:480px; max-height:80vh; display:flex; flex-direction:column; }
+.hist-head { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--line); gap:10px; }
+.hist-title { font-size:15px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hist-body { overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 16px 18px; }
+.hist-item { position:relative; padding:0 0 14px 18px; border-left:2px solid var(--line); margin-left:5px; }
+.hist-item:last-child { padding-bottom:0; }
+.hist-item::before { content:''; position:absolute; left:-6px; top:3px; width:10px; height:10px; border-radius:50%; background:var(--accent); }
+.hist-item.minor::before { background:var(--edge); }
+.hist-when { font-size:11.5px; color:var(--muted); }
+.hist-what { font-size:13.5px; color:var(--ink); margin-top:2px; line-height:1.35; word-break:break-word; }
+.hist-empty { font-size:13px; color:var(--muted); padding:8px 0; }
 .btn-delete-sheet { flex:1; padding:13px; background:transparent; border:1px solid var(--danger-edge); color:var(--danger-ink); font-family:var(--font); font-size:14px; font-weight:500; border-radius:12px; cursor:pointer; }
 
 /* Forms */
@@ -312,6 +326,12 @@ body { background:var(--nav); }
   <div class="tabbar" id="tabbar"></div>
 </div>
 
+<div class="hist-overlay" id="hist-overlay" onclick="if(event.target===this)closeHistory()">
+  <div class="hist-modal" role="dialog" aria-label="Task history">
+    <div class="hist-head"><span class="hist-title" id="hist-title">History</span><button class="sheet-close" onclick="closeHistory()">&#x2715;</button></div>
+    <div class="hist-body" id="hist-body"></div>
+  </div>
+</div>
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
@@ -1138,10 +1158,52 @@ function openEdit(id) {
   const label = TABS.find(t => t.id === activeTab)?.label || activeTab;
   document.getElementById('sheet-title').textContent = 'Edit ' + (label.toLowerCase() === 'people' ? 'person' : label.toLowerCase().slice(0,-1));
   document.getElementById('sheet-body').innerHTML = buildForm(activeTab, r) + '<div class="form-error" id="form-error"></div>';
-  document.getElementById('sheet-footer').innerHTML = '<button class="btn-delete-sheet" onclick="confirmDelete(' + id + ')">Delete</button><button class="btn-cancel" onclick="closeSheet()">Cancel</button><button class="btn-save" onclick="saveRecord()">Save</button>';
+  document.getElementById('sheet-footer').innerHTML = '<button class="btn-delete-sheet" onclick="confirmDelete(' + id + ')">Delete</button>' + (activeTab === 'tasks' ? '<button class="btn-history" onclick="openHistory(' + id + ')">History</button>' : '') + '<button class="btn-cancel" onclick="closeSheet()">Cancel</button><button class="btn-save" onclick="saveRecord()">Save</button>';
   openSheet();
   setFormVals(r);
 }
+
+function histWhen(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/London' }) + ' ' +
+         d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' });
+}
+
+function histLine(u, statusLabel) {
+  const t = u.event_type_id;
+  if (t === 2) {
+    const from = u.prior_status_id != null ? statusLabel(u.prior_status_id) : 'none';
+    const to = u.new_status_id != null ? statusLabel(u.new_status_id) : 'none';
+    return 'Status: ' + from + ' \u2192 ' + to;
+  }
+  if (t === 1) return 'Created' + (u.notes ? ' \u2013 ' + u.notes : '');
+  if (t === 3) return 'Deleted' + (u.notes ? ' \u2013 ' + u.notes : '');
+  return u.notes || 'Updated';
+}
+
+function renderHistory(rows, statusLabel) {
+  if (!rows.length) return '<div class="hist-empty">No history recorded for this task.</div>';
+  return rows.map(u => '<div class="hist-item' + (u.event_type_id === 2 || u.event_type_id === 1 ? '' : ' minor') + '"><div class="hist-when">' +
+    esc(histWhen(u.event_date)) + '</div><div class="hist-what">' + esc(histLine(u, statusLabel)) + '</div></div>').join('');
+}
+
+async function openHistory(id) {
+  const r = allRows.find(x => x.task_id === id);
+  document.getElementById('hist-title').textContent = 'History' + (r && r.title ? ' \u2013 ' + r.title : '');
+  const body = document.getElementById('hist-body');
+  body.innerHTML = '<div class="hist-empty">Loading\u2026</div>';
+  document.getElementById('hist-overlay').classList.add('open');
+  try {
+    const rows = await api('task_updates?select=event_type_id,event_date,notes,prior_status_id,new_status_id&task_id=eq.' + encodeURIComponent(id) + '&order=event_date.asc,update_id.asc');
+    const map = {}; (ref.statuses || []).forEach(s => { map[s.status_id] = s.status_label; });
+    body.innerHTML = renderHistory(rows || [], sid => map[sid] || ('status ' + sid));
+  } catch (e) {
+    body.innerHTML = '<div class="hist-empty">Could not load history.</div>';
+  }
+}
+
+function closeHistory() { document.getElementById('hist-overlay').classList.remove('open'); }
 
 function setFormVals(r) {
   if (!r) return;
