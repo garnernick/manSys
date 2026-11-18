@@ -401,6 +401,39 @@ body { background:var(--nav); }
 }
 
 
+
+/* ---- Desktop: push status card, task chat box ---- */
+@media (min-width:900px) {
+  .side-push { margin-top:auto; background:rgba(255,255,255,.08); border-radius:14px; padding:12px 14px; display:flex; flex-direction:column; gap:3px; }
+  .side-push:empty { display:none; }
+  .side-push + .side-user { margin-top:12px; }
+  .side-push .sp-h { display:flex; align-items:center; gap:8px; font:600 13px var(--font); color:#fff; }
+  .side-push .sp-t { font-size:12px; color:#A9B3CB; line-height:1.4; }
+  .sp-dot { width:8px; height:8px; border-radius:50%; background:#4DB37A; } .sp-dot.warn { background:#FFC24B; }
+  .det-scroll { flex:1; min-height:0; }
+  .det-ask { flex:none; margin:0 16px 16px; display:flex; flex-direction:column; gap:8px; }
+  .ask-out { max-height:170px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+  .ask-out:empty { display:none; }
+  .ask-q { align-self:flex-end; background:var(--accent); color:var(--on-accent); border-radius:14px 14px 4px 14px; padding:7px 12px; font-size:13px; max-width:90%; }
+  .ask-a { align-self:flex-start; background:var(--bg); border:1px solid var(--line); border-radius:14px 14px 14px 4px; padding:8px 12px; font-size:13px; line-height:1.45; white-space:pre-wrap; max-width:96%; }
+  .ask-a.wait { color:var(--muted); font-style:italic; }
+  .ask-row { height:52px; border-radius:18px; background:var(--bg); border:1px solid var(--line); display:flex; align-items:center; gap:10px; padding:0 8px 0 14px; }
+  .ask-row svg { flex:none; color:var(--ink); }
+  .ask-row input { flex:1; min-width:0; border:0; background:transparent; font:400 13px var(--font); color:var(--ink); outline:none; }
+  .ask-row button { height:36px; padding:0 14px; border:0; border-radius:12px; background:var(--accent); color:var(--on-accent); font:600 13px var(--font); cursor:pointer; }
+  .ask-row button:disabled { opacity:.4; }
+  .notif-push { background:var(--bg); padding:12px 18px 14px; border-top:1px solid var(--line); }
+  .notif-push .ph { font:600 11px var(--font); letter-spacing:.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .notif-push .pr { display:flex; align-items:center; gap:8px; font-size:13px; margin-top:5px; }
+}
+
+/* ---- Embedded Recordings / Sentiment (desktop shell) ---- */
+.embed-view { display:none; }
+@media (min-width:900px) {
+  #app[data-tab="recordings"] > .embed-view, #app[data-tab="sentiment"] > .embed-view { display:block; grid-column:2 / -1; grid-row:1 / -1; min-width:0; min-height:0; background:var(--bg); }
+  .embed-view iframe { width:100%; height:100%; border:0; display:block; background:var(--bg); }
+  #app[data-tab="recordings"] > :not(#tabbar):not(.embed-view), #app[data-tab="sentiment"] > :not(#tabbar):not(.embed-view) { display:none !important; }
+}
 </style>
 </head>
 <body>
@@ -467,6 +500,7 @@ body { background:var(--nav); }
 
   <div class="kbd wide-only" id="kbd-hint"><span><b>J</b><b>K</b>move</span><span><b>E</b>mark done</span><span><b>H</b>history</span><span><b>Del</b>delete</span><span><b>/</b>or<b>⌘K</b>search</span></div>
   <aside class="detail" id="detail-pane" aria-label="Task detail"></aside>
+  <div class="embed-view" id="embed-view"><iframe id="embed-frame" title="Embedded review page" src="about:blank"></iframe></div>
   <div class="tabbar" id="tabbar"></div>
 </div>
 <div class="notif" id="notif" role="dialog" aria-label="Notifications"></div>
@@ -965,8 +999,8 @@ function renderTabBar() {
     const count = id === 'tasks' && _tc ? '<span class="n-count">' + _tc.total + '</span>' : (id === 'updates' && _unread > 0 ? '<span class="ucount">' + (_unread > 99 ? '99+' : _unread) + '</span>' : '');
     return '<button class="tab-item ' + (id === activeTab ? 'active' : '') + '" onclick="switchTab(\'' + id + '\')"><span class="tab-icon">' + meta(id)[0] + '</span><span class="tab-label">' + meta(id)[1] + '</span>' + count + '</button>';
   }).join('');
-  const links = '<a class="tab-item" href="recordingreview.html"><span class="tab-icon">●</span><span class="tab-label">Recordings</span></a>' +
-    '<a class="tab-item" href="sentiment.html"><span class="tab-icon">◐</span><span class="tab-label">Sentiment</span></a>';
+  const links = [['recordings', '●', 'Recordings'], ['sentiment', '◐', 'Sentiment']].map(x =>
+    '<button class="tab-item ' + (activeTab === x[0] ? 'active' : '') + '" onclick="switchTab(\'' + x[0] + '\')"><span class="tab-icon">' + x[1] + '</span><span class="tab-label">' + x[2] + '</span></button>').join('');
   const onAll = !activeFilters.theme && !activeFilters.epic;
   let tree = '<div class="side-h">Themes and epics</div><button class="tree-row' + (activeTab === 'tasks' && onAll ? ' on' : '') + '" onclick="treeSel(null,null)"><span class="tl">All tasks</span><span class="tn">' + (_tc ? _tc.total : '') + '</span></button>';
   (ref.themes || []).forEach(t => {
@@ -979,7 +1013,8 @@ function renderTabBar() {
   });
   document.getElementById('tabbar').innerHTML = '<div class="side-brand"><i>M</i>ManSys</div>' +
     '<button class="side-search" onclick="focusSearch()"><span>Search or ask</span><kbd>⌘K</kbd></button>' + nav + links + tree +
-    '<div class="side-user"><i>NG</i>Nick Garner</div>';
+    '<div class="side-push" id="side-push"></div><div class="side-user"><i>NG</i>Nick Garner</div>';
+  renderPush();
   renderBell();
 }
 // Counts for the sidebar tree come from the task list already in memory (the tasks tab loads all tasks, filtering is client-side).
@@ -1001,6 +1036,63 @@ function focusSearch() {
   if (el && el.offsetParent !== null) { el.focus(); el.select && el.select(); }
   else { switchTab('tasks').then(() => { const e2 = document.getElementById('search-input'); if (e2) e2.focus(); }); }
 }
+
+/* ---- Push delivery status (sidebar card and notifications popover) ---- */
+let _push = null;
+async function loadPush() {
+  try { _push = await api('rpc/push_delivery_status', { method: 'POST', body: {} }); } catch (e) { _push = null; }
+  renderPush();
+}
+function pushSummary() {
+  const d = (_push && _push.devices) || [], sent = d.filter(x => !x.never_sent);
+  return { d, sent, ok: sent.filter(x => x.confirmed).length };
+}
+function renderPush() {
+  const el = document.getElementById('side-push'); if (!el) return;
+  if (!_push) { el.innerHTML = ''; return; }
+  const s = pushSummary(), all = s.sent.length > 0 && s.ok === s.sent.length;
+  el.innerHTML = '<div class="sp-h"><span class="sp-dot' + (all ? '' : ' warn') + '"></span>Notifications</div><div class="sp-t">' +
+    (s.sent.length ? s.ok + ' of ' + s.sent.length + ' devices confirmed receipt of their last push.' : 'No push has been sent to a device yet.') + '</div>';
+}
+function pushPopHtml() {
+  if (!_push) return '';
+  const fmt = t => new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const rows = pushSummary().d.map(x => '<div class="pr"><span class="sp-dot' + (x.confirmed ? '' : ' warn') + '"></span>' + esc(x.device) + ': ' +
+    (x.never_sent ? 'no push sent yet' : x.confirmed ? 'confirmed last push' : 'no receipt for the push sent ' + fmt(x.last_sent_at)) + '</div>').join('');
+  return rows ? '<div class="notif-push"><div class="ph">Push delivery</div>' + rows + '</div>' : '';
+}
+/* ---- Ask ManSys about this task (read only: answers in the panel, never changes data) ---- */
+const _ask = {};
+function renderAsk() {
+  const out = document.getElementById('ask-out'); if (!out) return;
+  out.innerHTML = (_ask[selTaskId] || []).map(m => '<div class="' + (m.role === 'user' ? 'ask-q' : 'ask-a' + (m.wait ? ' wait' : '')) + '">' + esc(m.text) + '</div>').join('');
+  out.scrollTop = out.scrollHeight;
+}
+function askContext(r) {
+  const nm = (arr, k, id, l) => { const x = (arr || []).find(o => o[k] === id); return x ? x[l] : 'none'; };
+  const hist = (document.getElementById('det-hist') || {}).textContent || '';
+  return 'The person is looking at ONE task and asking about it. Answer briefly and only from the facts below and what you know of his situation. This is read-only: do NOT emit <action> blocks and do not claim to have changed anything.\n' +
+    'TASK #' + r.task_id + ': ' + (r.title || '') + '\nDescription: ' + (r.description || 'none') + '\nStatus: ' + (r.statuses && r.statuses.status_label || '') +
+    '\nTheme: ' + nm(ref.themes, 'theme_id', r.theme_id, 'title') + '\nEpic: ' + nm(ref.epics, 'roadmap_item_id', r.epic_id, 'title') + '\nOwner: ' + nm(ref.peopleAll, 'person_id', r.owner_id, 'full_name') +
+    '\nRequested by: ' + nm(ref.peopleAll, 'person_id', r.requested_by_id, 'full_name') + '\nDue: ' + (r.promise_date || 'none') + '\nPriority: ' + (r.priority || 'none') +
+    '\nMust achieve: ' + (r.is_must_achieve ? 'yes' : 'no') + '; Deep work: ' + (r.is_deep_work ? 'yes' : 'no') + '\nHistory: ' + hist.replace(/\s+/g, ' ').slice(0, 600);
+}
+async function askTask() {
+  const r = allRows.find(x => x.task_id === selTaskId), inp = document.getElementById('ask-in'), btn = document.getElementById('ask-go');
+  const q = inp && inp.value.trim(); if (!r || !q) return;
+  const id = r.task_id, log = _ask[id] = _ask[id] || [];
+  log.push({ role: 'user', text: q }); const wait = { role: 'ai', text: 'Thinking\u2026', wait: true }; log.push(wait);
+  inp.value = ''; btn.disabled = true; renderAsk();
+  const messages = log.filter(m => !m.wait).slice(-8).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }));
+  try {
+    const res = await fetch('https://ngarner.app.n8n.cloud/webhook/dashboard-chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages, system: buildSystemPromptM() + '\n\n' + askContext(r) }) });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const reply = (data.reply || (data.content && data.content[0] && data.content[0].text) || '').replace(/<action>[\s\S]*?<\/action>/g, '').trim();
+    wait.text = reply || 'No answer came back.';
+  } catch (e) { wait.text = 'Could not get an answer: ' + e.message; }
+  wait.wait = false; btn.disabled = false; if (selTaskId === id) renderAsk();
+}
 /* ---- Notifications popover ---- */
 async function toggleNotif(ev) {
   if (ev) ev.stopPropagation();
@@ -1011,7 +1103,7 @@ async function toggleNotif(ev) {
     const rows = (await api('rpc/updates_list', { method: 'POST', body: { p_person_id: MY_ID, p_limit: 8 } })) || [];
     el.innerHTML = '<div class="notif-h">Notifications<button onclick="notifMarkAll()">Mark all read</button></div>' +
       (rows.length ? rows.map(r => '<div class="notif-i' + (r.read_at ? '' : ' unread') + '" onclick="notifOpen(' + r.update_id + ')"><span class="d"></span><div style="min-width:0"><div class="t">' + esc(r.title || '') + '</div>' + (r.summary ? '<div class="s">' + esc(r.summary) + '</div>' : '') + '<div class="w">' + esc(whenText(r.created_at)) + '</div></div></div>').join('') : '<div class="notif-e">Nothing yet.</div>') +
-      '<div class="notif-f"><button onclick="document.getElementById(\'notif\').classList.remove(\'open\');switchTab(\'updates\')">View all updates</button></div>';
+      pushPopHtml() + '<div class="notif-f"><button onclick="document.getElementById(\'notif\').classList.remove(\'open\');switchTab(\'updates\')">View all updates</button></div>';
   } catch (e) { el.innerHTML = '<div class="notif-e">Could not load notifications.</div>'; }
 }
 async function notifOpen(id) {
@@ -1366,7 +1458,8 @@ function defaultStatusFilter() {
       .filter(s => !exclude.includes(s));
   }
 }
-async function switchTab(tab) {
+async function switchTab(tab, recId) {
+  if (tab === 'recordings' || tab === 'sentiment') { if (!WIDE()) { location.href = tab === 'recordings' ? 'recordingreview.html' : 'sentiment.html'; return; } return openEmbed(tab, recId); }
   activeTab = tab;
   document.getElementById('app').dataset.tab = tab;
   activeFilters = { status: [], theme: null, epic: null, owner: null, priority: null, active: true };
@@ -1397,6 +1490,23 @@ async function switchTab(tab) {
   renderTabBar();
   await loadTab();
 }
+
+// Recordings and Sentiment run as the standalone review pages inside the desktop shell (same origin, so the PIN in localStorage is shared).
+function openEmbed(tab, recId) {
+  activeTab = tab;
+  document.getElementById('app').dataset.tab = tab;
+  const f = document.getElementById('embed-frame');
+  const src = tab === 'recordings' ? 'recordingreview.html?embed=1' + (recId ? '&r=' + encodeURIComponent(recId) : '') : 'sentiment.html?embed=1';
+  if (!f.getAttribute('src') || f.getAttribute('src') !== src) f.setAttribute('src', src);
+  document.getElementById('tab-title').textContent = tab === 'recordings' ? 'Recordings' : 'Sentiment';
+  renderTabBar();
+}
+window.addEventListener('message', e => {
+  const f = document.getElementById('embed-frame');
+  if (!f || e.source !== f.contentWindow) return;
+  const d = e.data || {};
+  if (d.mansys === 'open' && (d.tab === 'recordings' || d.tab === 'sentiment')) switchTab(d.tab, d.r);
+});
 
 /* ---- Forms ---- */
 function selOpts(options, selected) {
@@ -1548,7 +1658,9 @@ function taskDetailHtml(r) {
       f('Theme', detName(ref.themes, 'theme_id', r.theme_id, 'title')) + f('Epic', detName(ref.epics, 'roadmap_item_id', r.epic_id, 'title')) + f('Due', detDue(r.promise_date)) +
       f('Owner', detName(ref.peopleAll, 'person_id', r.owner_id, 'full_name')) + f('Requested by', detName(ref.peopleAll, 'person_id', r.requested_by_id, 'full_name')) + f('Priority', r.priority) +
     '</div>' +
-    '<div class="det-h">History</div><div id="det-hist" class="hist-empty">Loading…</div></div>';
+    '<div class="det-h">History</div><div id="det-hist" class="hist-empty">Loading…</div></div>' +
+    '<div class="det-ask"><div class="ask-out" id="ask-out"></div><div class="ask-row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z M18.5 16l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>' +
+      '<input id="ask-in" type="text" placeholder="Ask ManSys about this task" autocomplete="off" onkeydown="if(event.key===\'Enter\'){event.preventDefault();askTask();}"><button id="ask-go" onclick="askTask()">Send</button></div></div>';
 }
 async function refreshDetail() {
   const pane = document.getElementById('detail-pane'); if (!pane) return;
@@ -1558,7 +1670,7 @@ async function refreshDetail() {
   const sig = [r.task_id, r.last_updated_at, r.status_id, r.title, r.description, r.owner_id, r.theme_id, r.epic_id, r.promise_date, r.priority].join('|');
   if (sig === _detSig && pane.firstChild) return;
   _detSig = sig;
-  pane.innerHTML = taskDetailHtml(r);
+  pane.innerHTML = taskDetailHtml(r); renderAsk();
   const id = r.task_id;
   try {
     const rows = await api('task_updates?select=event_type_id,event_date,notes,prior_status_id,new_status_id&task_id=eq.' + encodeURIComponent(id) + '&order=event_date.desc,update_id.desc');
@@ -1903,7 +2015,7 @@ async function init() {
   } catch(e) {
     document.getElementById('list-wrap').innerHTML = '<div class="empty-state">Failed to load: ' + e.message + '</div>';
   }
-  refreshUnread();
+  refreshUnread(); loadPush();
   const sp = new URLSearchParams(window.location.search);
   if (sp.get('task') || sp.get('u') || sp.get('tab')) { await handleDeepLink(sp); dropDeepLinkParams(); }
 }
