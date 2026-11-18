@@ -121,67 +121,6 @@ body { background:var(--nav); }
 .tab-item.active { color:var(--ink); }
 .tab-item.active .tab-icon { background:var(--soft); color:var(--soft-ink); }
 
-
-/* ---- Wide screens (iPad landscape, desktop): rail + list + detail pane. Phones keep the layout above. ---- */
-.wide-only { display:none; }
-.detail { display:none; }
-@media (min-width:900px) {
-  html, body { background:var(--bg); }
-  #app[style*="flex"] { display:grid !important; grid-template-columns:96px minmax(400px,460px) minmax(0,1fr); grid-template-rows:repeat(5,auto) minmax(0,1fr); }
-  #app > .top { display:none; }
-  #app > .head, #app > .seg-wrap, #app > .stats-row, #app > .filter-bar, #app > .search-bar, #app > .list-wrap { grid-column:2; }
-  #app > .head { grid-row:1; padding:22px 16px 8px 20px; } #app > #seg-wrap { grid-row:2; } #app > #useg-wrap { grid-row:2; }
-  #app > .filter-bar { grid-row:4; } #app > .stats-row { grid-row:3; } #app > .search-bar { grid-row:5; } #app > .list-wrap { grid-row:6; }
-  #app > .seg-wrap, #app > .stats-row, #app > .search-bar, #app > .filter-bar { padding-left:20px; padding-right:16px; }
-  #app > .list-wrap { padding:4px 16px 16px 20px; }
-  #app:not([data-tab="tasks"]) > .head, #app:not([data-tab="tasks"]) > .seg-wrap, #app:not([data-tab="tasks"]) > .stats-row, #app:not([data-tab="tasks"]) > .filter-bar, #app:not([data-tab="tasks"]) > .search-bar, #app:not([data-tab="tasks"]) > .list-wrap { grid-column:2 / 4; max-width:920px; }
-  #app > .chat-view { grid-column:2 / 4; grid-row:2 / -1; max-width:920px; }
-  .wide-only { display:flex; } .head-date { display:block; font-size:13px; color:var(--muted); margin-bottom:4px; }
-  .tab-title { font-size:30px; font-weight:700; letter-spacing:-.03em; }
-  .ibtn, .add-fab { width:44px; height:44px; border-radius:14px; position:relative; }
-  .bell-n { position:absolute; top:-5px; right:-5px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--brand); color:#12203A; font:700 11px/18px var(--font); text-align:center; }
-  .stat { border-radius:16px; padding:10px 12px; } .stat-value { font-size:22px; }
-  .card { border-radius:18px; } .card.sel { box-shadow:0 0 0 2px var(--brand), 0 6px 16px rgba(18,32,58,.12); }
-  .swipe { border-radius:18px; }
-  /* rail */
-  .tabbar { grid-column:1; grid-row:1 / -1; flex-direction:column; align-items:center; margin:12px 0 12px 12px; padding:16px 0; gap:3px; background:var(--top); border:0; border-radius:26px; overflow-y:auto; }
-  .rail-brand { width:44px; height:44px; flex:none; border-radius:14px; background:var(--brand); color:#12203A; align-items:center; justify-content:center; font-weight:700; font-size:20px; margin-bottom:12px; }
-  .rail-sp { flex:1; }
-  .tab-item { position:relative; flex:none; width:68px; height:58px; border-radius:18px; color:#A9B3CB; justify-content:center; text-decoration:none; }
-  .tab-item.wide-only { display:flex; }
-  .tab-icon, .tab-item.active .tab-icon { width:auto; height:auto; background:transparent; font-size:19px; }
-  .tab-item.active { background:var(--soft); color:var(--soft-ink); }
-  .ucount { top:4px; left:calc(50% + 4px); }
-  /* detail pane */
-  .detail { grid-column:3; grid-row:1 / -1; display:flex; flex-direction:column; margin:12px 12px 12px 4px; background:var(--card); border:1px solid var(--line); border-radius:26px; box-shadow:0 12px 32px rgba(18,32,58,.07); overflow:hidden; }
-  #app:not([data-tab="tasks"]) > .detail { display:none; }
-  .det-scroll { overflow-y:auto; padding:26px 28px 24px; display:flex; flex-direction:column; gap:14px; }
-  .det-empty { margin:auto; color:var(--muted); font-size:14px; }
-  .det-top { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .det-title { font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1.18; }
-  .det-desc { font-size:14.5px; line-height:1.5; color:var(--ink); white-space:pre-wrap; word-break:break-word; max-width:680px; }
-  .det-actions { display:flex; gap:8px; margin-left:auto; }
-  .det-btn { height:44px; padding:0 16px; border-radius:14px; border:1px solid var(--line); background:var(--card); color:var(--ink); font-family:var(--font); font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; }
-  .det-btn.primary { background:var(--accent); color:var(--on-accent); border-color:transparent; }
-  .det-btn.danger { background:var(--danger-bg); color:var(--danger-ink); border-color:var(--danger-edge); }
-  .det-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-  .det-field { background:var(--bg); border-radius:14px; padding:10px 12px; min-width:0; }
-  .det-field .k { font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
-  .det-field .v { font-size:14px; font-weight:600; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .det-h { font-size:15px; font-weight:700; margin-top:6px; }
-  /* sheets become a right-hand drawer */
-  .sheet { left:auto; right:12px; top:12px; bottom:12px; width:460px; max-height:none; border-radius:24px; border:1px solid var(--line); transform:translateX(calc(100% + 24px)); }
-  .sheet.open { transform:translateX(0); }
-  .sheet-handle { display:none; }
-}
-@media (hover:hover) and (min-width:900px) {
-  .hov { display:none; position:absolute; right:10px; top:50%; margin-top:-17px; gap:6px; z-index:3; }
-  .swipe:hover .hov { display:flex; }
-  .hov button { width:34px; height:34px; border:0; border-radius:10px; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-  .hov .h-ok { background:#12805C; } .hov .h-del { background:#D92D20; }
-  .hov svg { width:17px; height:17px; }
-}
-
 /* Sheets */
 .sheet-overlay { position:fixed; inset:0; background:var(--overlay); z-index:100; opacity:0; pointer-events:none; transition:opacity .25s; }
 .sheet-overlay.open { opacity:1; pointer-events:all; }
@@ -332,15 +271,14 @@ body { background:var(--nav); }
   <p>&#x2715; Access denied</p>
 </div>
 
-<div id="app" data-tab="tasks" style="display:none;flex-direction:column">
+<div id="app" style="display:none;flex-direction:column">
   <div class="top">
     <div class="brand">&#x25A0; MANSYS</div>
     <div class="clock"><span id="clk-date"></span><b id="clk-time"></b></div>
   </div>
   <div class="head">
-    <div><div class="head-date wide-only" id="head-date"></div><div class="tab-title" id="tab-title">Tasks</div></div>
+    <div class="tab-title" id="tab-title">Tasks</div>
     <div class="head-btns">
-      <button class="ibtn wide-only" id="bell-btn" onclick="switchTab('updates')" aria-label="Notifications" style="align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z M10 20a2 2 0 0 0 4 0"/></svg><span class="bell-n" id="bell-n" style="display:none"></span></button>
       <button class="ibtn" id="filter-btn" onclick="openFilters()" aria-label="Filter">&#x2699;</button>
       <button class="ibtn" id="sort-btn" onclick="openSort()" style="display:none" aria-label="Sort">&#x2195;</button>
       <button class="ibtn" id="export-btn" onclick="openExport()" style="display:none" aria-label="Export"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4M5 14v4a2 2 0 002 2h10a2 2 0 002-2v-4"/></svg></button>
@@ -386,7 +324,6 @@ body { background:var(--nav); }
   </div>
 </div>
 
-  <aside class="detail" id="detail-pane" aria-label="Task detail"></aside>
   <div class="tabbar" id="tabbar"></div>
 </div>
 
@@ -477,8 +414,6 @@ const TABS = [
 const NAV = ['tasks', 'commitments', 'updates', 'people', 'chat', 'more'];
 const NAV_META = { tasks: ['\u2713','Tasks'], commitments: ['\u27F3','Commits'], updates: ['\u2709','Updates'], people: ['\u25C9','People'], chat: ['\u2726','Chat'], more: ['\u22EF','More'] };
 let whoFilter = 'all';
-const WIDE = () => window.matchMedia('(min-width: 900px)').matches;
-let selTaskId = null, _detSig = '';
 const MY_ID = 1;
 
 const DONE = ['Done', 'Delivered', 'Dropped'];
@@ -877,25 +812,14 @@ window.addEventListener('pageshow', () => checkPendingSoon('show'));
 
 function renderTabBar() {
   const moreOn = TABS.find(t => t.id === activeTab)?.more;
-  const tabHtml = id => {
+  document.getElementById('tabbar').innerHTML = NAV.map(id => {
     const on = id === 'more' ? moreOn : id === activeTab;
     const onclick = id === 'more' ? 'openMore()' : "switchTab('" + id + "')";
     return '<button class="tab-item ' + (on ? 'active' : '') + '" onclick="' + onclick + '">' +
       '<span class="tab-icon">' + NAV_META[id][0] + '</span>' +
       (id === 'updates' && _unread > 0 ? '<span class="ucount">' + (_unread > 99 ? '99+' : _unread) + '</span>' : '') +
       '<span class="tab-label">' + NAV_META[id][1] + '</span></button>';
-  };
-  // Records and Mood are separate pages; they only get a rail entry on wide screens (phones reach them from More).
-  const wideLinks = '<a class="tab-item wide-only" href="recordingreview.html"><span class="tab-icon">\u25CF</span><span class="tab-label">Records</span></a>' +
-    '<a class="tab-item wide-only" href="sentiment.html"><span class="tab-icon">\u25D0</span><span class="tab-label">Mood</span></a>';
-  document.getElementById('tabbar').innerHTML = '<div class="rail-brand wide-only">M</div>' +
-    NAV.map(id => (id === 'people' ? wideLinks : '') + (id === 'more' ? '<div class="rail-sp wide-only"></div>' : '') + tabHtml(id)).join('');
-  renderBell();
-}
-function renderBell() {
-  const b = document.getElementById('bell-n'); if (!b) return;
-  b.textContent = _unread > 99 ? '99+' : String(_unread);
-  b.style.display = _unread > 0 ? '' : 'none';
+  }).join('');
 }
 
 function openMore() {
@@ -921,8 +845,6 @@ function tickClock() {
   const de = document.getElementById('clk-date'), te = document.getElementById('clk-time');
   if (de) de.textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
   if (te) te.textContent = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  const hd = document.getElementById('head-date');
-  if (hd) hd.textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 }
 tickClock(); setInterval(tickClock, 15000);
 
@@ -1078,10 +1000,7 @@ function reopenFilters() {
 
 function renderList(data) {
   const def = TAB_DEF[activeTab];
-  const wideTasks = WIDE() && activeTab === 'tasks';
-  if (wideTasks && data && data.length && !data.some(r => r.task_id === selTaskId)) selTaskId = data[0].task_id;
   if (!data || data.length === 0) {
-    if (wideTasks) { selTaskId = null; refreshDetail(); }
     document.getElementById('list-wrap').innerHTML = '<div class="empty-state">' + (activeTab === 'updates' && updFilter === 'unread' ? 'No unread updates.' : 'No records found.') + '</div>';
     return;
   }
@@ -1089,16 +1008,14 @@ function renderList(data) {
     const id = r[def.idKey];
     const theirs = activeTab === 'tasks' && r.owner_id != null && r.owner_id !== 1;
     const unread = activeTab === 'updates' && !r.read_at;
-    const cardHtml = '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + (wideTasks && id === selTaskId ? ' sel' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
+    const cardHtml = '<div class="card' + (theirs ? ' theirs' : '') + (unread ? ' unread' : '') + '" onclick="' + (activeTab === 'updates' ? 'openUpdate' : 'openEdit') + '(' + id + ')">' + def.card(r) + '</div>';
     if (activeTab === 'tasks') {
       const okBtn = r.status_id !== DONE_STATUS_ID ? '<button class="sw-ok" onclick="completeTask(' + id + ')" aria-label="Mark task done">' + TICK_SVG + '</button>' : '';
-      const hov = '<span class="hov">' + (r.status_id !== DONE_STATUS_ID ? '<button class="h-ok" onclick="completeTask(' + id + ')" aria-label="Mark task done">' + TICK_SVG + '</button>' : '') + '<button class="h-del" onclick="deleteTaskSwipe(' + id + ')" aria-label="Delete task">' + BIN_SVG + '</button></span>';
-      return '<div class="swipe" data-id="' + id + '">' + okBtn + '<button class="sw-del" onclick="deleteTaskSwipe(' + id + ')" aria-label="Delete task">' + BIN_SVG + '</button>' + cardHtml + hov + '</div>';
+      return '<div class="swipe" data-id="' + id + '">' + okBtn + '<button class="sw-del" onclick="deleteTaskSwipe(' + id + ')" aria-label="Delete task">' + BIN_SVG + '</button>' + cardHtml + '</div>';
     }
     if (activeTab !== 'updates') return cardHtml;
     return '<div class="swipe" data-id="' + id + '"><button class="sw-del" onclick="deleteUpdate(' + id + ')" aria-label="Delete update"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6h17"/><path d="M9 6V4.2c0-.66.54-1.2 1.2-1.2h3.6c.66 0 1.2.54 1.2 1.2V6"/><path d="M5.5 6l.9 13.2c.06.98.88 1.8 1.86 1.8h7.48c.98 0 1.8-.82 1.86-1.8L18.5 6"/><path d="M10 10.5v6"/><path d="M14 10.5v6"/></svg></button>' + cardHtml + '</div>';
   }).join('');
-  if (wideTasks) refreshDetail();
 }
 
 async function loadTab(quiet) {
@@ -1131,7 +1048,6 @@ function defaultStatusFilter() {
 }
 async function switchTab(tab) {
   activeTab = tab;
-  document.getElementById('app').dataset.tab = tab;
   activeFilters = { status: [], theme: null, owner: null, priority: null, active: true };
   activeSort = { field: null, dir: 'desc' };
   defaultStatusFilter();
@@ -1269,10 +1185,6 @@ function openAdd() {
 }
 
 function openEdit(id) {
-  if (WIDE() && activeTab === 'tasks') { showDetail(id); return; }
-  openEditForm(id);
-}
-function openEditForm(id) {
   const def = TAB_DEF[activeTab];
   const r = allRows.find(x => x[def.idKey] === id);
   if (!r) return;
@@ -1284,55 +1196,6 @@ function openEditForm(id) {
   openSheet();
   setFormVals(r);
 }
-
-/* ---- Detail pane (wide screens): selected task with inline history ---- */
-function showDetail(id) {
-  selTaskId = id;
-  document.querySelectorAll('#list-wrap .swipe').forEach(el => {
-    const c = el.querySelector('.card'); if (c) c.classList.toggle('sel', Number(el.dataset.id) === id);
-  });
-  refreshDetail();
-}
-function detName(arr, key, id, lab) { const x = (arr || []).find(o => o[key] === id); return x ? x[lab] : ''; }
-function detDue(d) { if (!d) return 'No date'; const t = new Date(d + 'T00:00:00'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); }
-function taskDetailHtml(r) {
-  const status = r.statuses?.status_label || detName(ref.statuses, 'status_id', r.status_id, 'status_label');
-  const done = r.status_id === DONE_STATUS_ID;
-  const f = (k, v) => '<div class="det-field"><div class="k">' + k + '</div><div class="v">' + (v ? esc(String(v)) : '&mdash;') + '</div></div>';
-  return '<div class="det-scroll">' +
-    '<div class="det-top">' + statusBadge(status) + (r.is_must_achieve ? '<span class="badge b-must">MUST</span>' : '') + (r.is_deep_work ? '<span class="badge b-deep">DEEP</span>' : '') +
-      '<div class="det-actions">' +
-      (done ? '' : '<button class="det-btn primary" onclick="completeTask(' + r.task_id + ')">' + TICK_SVG.replace('width="28" height="28"', 'width="17" height="17"') + 'Mark done</button>') +
-      '<button class="det-btn" onclick="openEditForm(' + r.task_id + ')">Edit</button>' +
-      '<button class="det-btn danger" onclick="deleteTaskSwipe(' + r.task_id + ')" aria-label="Delete task">' + BIN_SVG.replace('width="26" height="26"', 'width="18" height="18"') + '</button></div></div>' +
-    '<div class="det-title">' + esc(r.title || '') + '</div>' +
-    (r.description ? '<div class="det-desc">' + esc(r.description) + '</div>' : '') +
-    '<div class="det-grid">' +
-      f('Theme', detName(ref.themes, 'theme_id', r.theme_id, 'title')) + f('Epic', detName(ref.epics, 'roadmap_item_id', r.epic_id, 'title')) + f('Due', detDue(r.promise_date)) +
-      f('Owner', detName(ref.peopleAll, 'person_id', r.owner_id, 'full_name')) + f('Requested by', detName(ref.peopleAll, 'person_id', r.requested_by_id, 'full_name')) + f('Priority', r.priority) +
-    '</div>' +
-    '<div class="det-h">History</div><div id="det-hist" class="hist-empty">Loading…</div></div>';
-}
-async function refreshDetail() {
-  const pane = document.getElementById('detail-pane'); if (!pane) return;
-  const r = (WIDE() && activeTab === 'tasks') ? allRows.find(x => x.task_id === selTaskId) : null;
-  if (!r) { _detSig = ''; pane.innerHTML = '<div class="det-empty">' + (activeTab === 'tasks' ? 'No task selected' : '') + '</div>'; return; }
-  // list searches and filters re-render often; only rebuild the pane (and refetch history) when this task changed
-  const sig = [r.task_id, r.last_updated_at, r.status_id, r.title, r.description, r.owner_id, r.theme_id, r.epic_id, r.promise_date, r.priority].join('|');
-  if (sig === _detSig && pane.firstChild) return;
-  _detSig = sig;
-  pane.innerHTML = taskDetailHtml(r);
-  const id = r.task_id;
-  try {
-    const rows = await api('task_updates?select=event_type_id,event_date,notes,prior_status_id,new_status_id&task_id=eq.' + encodeURIComponent(id) + '&order=event_date.desc,update_id.desc');
-    const map = {}; (ref.statuses || []).forEach(x => { map[x.status_id] = x.status_label; });
-    const el = document.getElementById('det-hist');
-    if (el && selTaskId === id) { el.className = ''; el.innerHTML = renderHistory(rows || [], sid => map[sid] || ('status ' + sid)); }
-  } catch (e) {
-    const el = document.getElementById('det-hist'); if (el && selTaskId === id) el.textContent = 'Could not load history.';
-  }
-}
-try { window.matchMedia('(min-width: 900px)').addEventListener('change', () => { if (ref.statuses && ref.statuses.length && allRows) applyFilters(); }); } catch (e) { /* older browsers: layout still adapts, list refreshes on next load */ }
 
 function histWhen(iso) {
   const d = new Date(iso);
