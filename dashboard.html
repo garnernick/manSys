@@ -354,6 +354,7 @@ body { background:var(--nav); }
   .det-title { font-size:23px; }
   /* sidebar */
   .tabbar { margin:0; border-radius:0; align-items:stretch; padding:20px 14px; gap:2px; overflow-y:auto; }
+  .tabbar > * { flex-shrink:0; }
   .side-brand { display:flex; align-items:center; gap:10px; padding:0 6px 14px; color:#fff; font-size:17px; font-weight:700; letter-spacing:-.3px; }
   .side-brand i { font-style:normal; width:34px; height:34px; border-radius:11px; background:var(--brand); color:#12203A; display:flex; align-items:center; justify-content:center; font-size:16px; }
   .side-search { height:40px; border:0; border-radius:12px; background:rgba(255,255,255,.08); color:#A9B3CB; display:flex; align-items:center; gap:9px; padding:0 12px; margin-bottom:12px; font:400 13.5px var(--font); cursor:pointer; text-align:left; }
@@ -2016,6 +2017,8 @@ async function init() {
     document.getElementById('list-wrap').innerHTML = '<div class="empty-state">Failed to load: ' + e.message + '</div>';
   }
   refreshUnread(); loadPush();
+  const hm = /^#(recordings|sentiment)(?::(\d+))?$/.exec(location.hash || '');
+  if (hm && WIDE()) { history.replaceState(null, '', location.pathname + location.search); switchTab(hm[1], hm[2]); }
   const sp = new URLSearchParams(window.location.search);
   if (sp.get('task') || sp.get('u') || sp.get('tab')) { await handleDeepLink(sp); dropDeepLinkParams(); }
 }

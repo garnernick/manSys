@@ -123,6 +123,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&am
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
 const fmtD = d => d ? new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric', timeZone:'Europe/London' }) : 'Date unknown';
 const EMBED = new URLSearchParams(location.search).has('embed');
+if (!EMBED && window.top === window && matchMedia('(min-width:1100px) and (pointer:fine)').matches && localStorage.getItem('mansys_token')) location.replace('dashboard.html#sentiment');
 if (EMBED) document.documentElement.classList.add('embed');
 const recHref = id => 'recordingreview.html?r=' + id + (EMBED ? '&embed=1' : '');
 function openRec(id) { if (EMBED && window.parent !== window) { window.parent.postMessage({ mansys: 'open', tab: 'recordings', r: id }, '*'); return false; } return true; }
