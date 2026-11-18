@@ -170,9 +170,9 @@ body { background:var(--nav); }
   .det-field .v { font-size:14px; font-weight:600; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .det-h { font-size:15px; font-weight:700; margin-top:6px; }
   /* sheets become a right-hand drawer */
-  .sheet { left:auto; right:12px; top:12px; bottom:12px; width:460px; max-height:none; border-radius:24px; border:1px solid var(--line); transform:translateX(calc(100% + 24px)); }
-  .sheet.open { transform:translateX(0); }
-  .sheet-handle { display:none; }
+  html .sheet { left:auto; right:12px; top:12px; bottom:12px; width:460px; max-height:none; border-radius:24px; border:1px solid var(--line); transform:translateX(calc(100% + 24px)); }
+  html .sheet.open { transform:translateX(0); }
+  html .sheet-handle { display:none; }
 }
 @media (hover:hover) and (min-width:900px) {
   .hov { display:none; position:absolute; right:10px; top:50%; margin-top:-17px; gap:6px; z-index:3; }
@@ -183,11 +183,12 @@ body { background:var(--nav); }
 }
 
 @media (min-width:900px) {
-  #stats-row .stat.act { grid-column:span 3; padding:10px 14px; }
+  #app[data-tab="tasks"] > .stats-row { grid-auto-flow:row; grid-template-columns:repeat(5,minmax(0,1fr)); }
+  #stats-row .stat.act { grid-column:1 / -1; padding:10px 14px; }
   .act-h { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
   .act-leg { display:flex; align-items:center; gap:5px; font:500 11px var(--mono); color:var(--muted); white-space:nowrap; }
   .act-leg b { width:8px; height:8px; border-radius:2px; display:inline-block; margin-left:8px; }
-  .act-chart { display:flex; gap:8px; align-items:flex-end; }
+  .act-chart { display:flex; gap:8px; align-items:flex-end; } .act-bars { height:40px !important; }
   .act-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
   .act-bars { height:46px; display:flex; align-items:flex-end; gap:3px; }
   .act-bars i { width:8px; border-radius:2px; display:block; }
@@ -1027,7 +1028,7 @@ async function renderActivity() {
       overdue: allRows.filter(r => (r.promise_date || '') === ds && !['Done', 'Delivered'].includes(r.statuses?.status_label)).length };
   });
   const mx = Math.max(1, ...data.map(x => Math.max(x.opened, x.closed, x.overdue)));
-  const H = 46, sum = k => data.reduce((a, x) => a + x[k], 0);
+  const H = 40, sum = k => data.reduce((a, x) => a + x[k], 0);
   const cols = data.map(x => {
     const bar = (k, c) => '<i style="height:' + (x[k] ? Math.max(3, Math.round(x[k] / mx * H)) : 1) + 'px;background:' + c + ';opacity:' + (x[k] ? 1 : .25) + '"></i>';
     const lab = isoLocal(x.d) === isoLocal(today) ? 'Today' : x.d.toLocaleDateString('en-GB', { weekday: 'short' });

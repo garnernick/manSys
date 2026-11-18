@@ -170,9 +170,9 @@ body { background:var(--nav); }
   .det-field .v { font-size:14px; font-weight:600; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .det-h { font-size:15px; font-weight:700; margin-top:6px; }
   /* sheets become a right-hand drawer */
-  .sheet { left:auto; right:12px; top:12px; bottom:12px; width:460px; max-height:none; border-radius:24px; border:1px solid var(--line); transform:translateX(calc(100% + 24px)); }
-  .sheet.open { transform:translateX(0); }
-  .sheet-handle { display:none; }
+  html .sheet { left:auto; right:12px; top:12px; bottom:12px; width:460px; max-height:none; border-radius:24px; border:1px solid var(--line); transform:translateX(calc(100% + 24px)); }
+  html .sheet.open { transform:translateX(0); }
+  html .sheet-handle { display:none; }
 }
 @media (hover:hover) and (min-width:900px) {
   .hov { display:none; position:absolute; right:10px; top:50%; margin-top:-17px; gap:6px; z-index:3; }
@@ -183,11 +183,12 @@ body { background:var(--nav); }
 }
 
 @media (min-width:900px) {
-  #stats-row .stat.act { grid-column:span 3; padding:10px 14px; }
+  #app[data-tab="tasks"] > .stats-row { grid-auto-flow:row; grid-template-columns:repeat(5,minmax(0,1fr)); }
+  #stats-row .stat.act { grid-column:1 / -1; padding:10px 14px; }
   .act-h { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
   .act-leg { display:flex; align-items:center; gap:5px; font:500 11px var(--mono); color:var(--muted); white-space:nowrap; }
   .act-leg b { width:8px; height:8px; border-radius:2px; display:inline-block; margin-left:8px; }
-  .act-chart { display:flex; gap:8px; align-items:flex-end; }
+  .act-chart { display:flex; gap:8px; align-items:flex-end; } .act-bars { height:40px !important; }
   .act-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
   .act-bars { height:46px; display:flex; align-items:flex-end; gap:3px; }
   .act-bars i { width:8px; border-radius:2px; display:block; }
@@ -228,7 +229,7 @@ body { background:var(--nav); }
   .side-user i { font-style:normal; width:34px; height:34px; border-radius:50%; background:#2A3A5C; color:#D9DFEC; display:flex; align-items:center; justify-content:center; font-size:12px; }
   /* task table */
   .ttable { background:var(--card); border:1px solid var(--line); border-radius:22px; overflow:hidden; box-shadow:0 10px 28px rgba(18,32,58,.05); }
-  .thead, .trow { display:grid; grid-template-columns:minmax(0,1fr) 170px 52px 104px 112px; gap:12px; align-items:center; padding:0 20px; }
+  .thead, .trow { display:grid; grid-template-columns:minmax(0,1fr) 44px 100px 112px; gap:12px; align-items:center; padding:0 20px; }
   .thead { height:44px; font:600 11px var(--font); text-transform:uppercase; letter-spacing:.5px; color:var(--muted); border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--card); z-index:2; }
   .trow { position:relative; height:58px; border-bottom:1px solid var(--line); cursor:pointer; }
   .trow:last-child { border-bottom:0; }
@@ -459,7 +460,7 @@ body { background:var(--nav); }
   </div>
 </div>
 
-  <div class="kbd wide-only" id="kbd-hint"><span><b>J</b><b>K</b>move</span><span><b>E</b>mark done</span><span><b>H</b>history</span><span><b>Del</b>delete</span><span><b>/</b>or<b>\u2318K</b>search</span></div>
+  <div class="kbd wide-only" id="kbd-hint"><span><b>J</b><b>K</b>move</span><span><b>E</b>mark done</span><span><b>H</b>history</span><span><b>Del</b>delete</span><span><b>/</b>or<b>⌘K</b>search</span></div>
   <aside class="detail" id="detail-pane" aria-label="Task detail"></aside>
   <div class="tabbar" id="tabbar"></div>
 </div>
@@ -1179,7 +1180,7 @@ async function renderActivity() {
       overdue: allRows.filter(r => (r.promise_date || '') === ds && !['Done', 'Delivered'].includes(r.statuses?.status_label)).length };
   });
   const mx = Math.max(1, ...data.map(x => Math.max(x.opened, x.closed, x.overdue)));
-  const H = 46, sum = k => data.reduce((a, x) => a + x[k], 0);
+  const H = 40, sum = k => data.reduce((a, x) => a + x[k], 0);
   const cols = data.map(x => {
     const bar = (k, c) => '<i style="height:' + (x[k] ? Math.max(3, Math.round(x[k] / mx * H)) : 1) + 'px;background:' + c + ';opacity:' + (x[k] ? 1 : .25) + '"></i>';
     const lab = isoLocal(x.d) === isoLocal(today) ? 'Today' : x.d.toLocaleDateString('en-GB', { weekday: 'short' });
@@ -1310,18 +1311,17 @@ function renderTaskTable(data) {
     const overdue = r.promise_date && r.promise_date < today && !INACTIVE.includes(r.statuses?.status_label);
     const owner = r.people?.full_name || '';
     const req = detName(ref.peopleAll, 'person_id', r.requested_by_id, 'full_name');
-    const sub = req ? 'Requested by ' + req : (r.owner_id != null && r.owner_id !== MY_ID && owner ? 'Owned by ' + owner : 'Owned by you');
     const epic = r.roadmap_items?.title || '';
-    const where = [r.themes?.title, epic].filter(Boolean).join(' · ');
+    const who = req ? 'Requested by ' + req : (r.owner_id != null && r.owner_id !== MY_ID && owner ? 'Owned by ' + owner : '');
+    const sub = [r.themes?.title, epic, who].filter(Boolean).join(' · ');
     const hov = '<span class="hov">' + (done ? '' : '<button class="h-ok" onclick="event.stopPropagation();completeTask(' + id + ')" aria-label="Mark task done">' + TICK_SVG + '</button>') + '<button class="h-del" onclick="event.stopPropagation();deleteTaskSwipe(' + id + ')" aria-label="Delete task">' + BIN_SVG + '</button></span>';
     return '<div class="trow' + (id === selTaskId ? ' sel' : '') + (done ? ' done' : '') + '" data-id="' + id + '" onclick="openEdit(' + id + ')">' +
       '<div style="min-width:0"><div class="t-title">' + esc(r.title || '') + (r.is_must_achieve ? ' <span class="badge b-must">must</span>' : '') + (r.is_deep_work ? ' <span class="badge b-deep">deep</span>' : '') + '</div><div class="t-sub">' + esc(sub) + '</div></div>' +
-      '<div class="t-where">' + esc(where) + '</div>' +
       '<div class="t-av" title="' + esc(owner || 'Nick Garner') + '">' + esc(initials(owner || (r.owner_id === MY_ID ? 'Nick Garner' : ''))) + '</div>' +
       '<div class="t-due' + (overdue ? ' overdue' : '') + '">' + (r.promise_date ? esc(r.promise_date) : '') + '</div>' +
       '<div>' + statusBadge(r.statuses?.status_label) + '</div>' + hov + '</div>';
   }).join('');
-  document.getElementById('list-wrap').innerHTML = '<div class="ttable"><div class="thead"><span>Task</span><span>Theme and epic</span><span>Owner</span><span>Due</span><span>Status</span></div>' + rows + '</div>';
+  document.getElementById('list-wrap').innerHTML = '<div class="ttable"><div class="thead"><span>Task</span><span>Owner</span><span>Due</span><span>Status</span></div>' + rows + '</div>';
 }
 
 async function loadTab(quiet) {
