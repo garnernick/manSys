@@ -89,6 +89,17 @@ table.t td, table.t th { text-align:left; padding:8px 10px 8px 0; border-bottom:
 table.t tr:last-child td { border-bottom:0; }
 .note { background:var(--warn-bg); color:var(--warn-ink); border:1px solid var(--warn-edge); border-radius:14px; padding:10px 14px; margin:12px 0; font-size:13px; }
 .dgrid, .cards2 { display:block; }
+.dpage { display:block; } .dside { margin-top:8px; }
+.mood { background:var(--bg); border-radius:16px; padding:12px 14px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px; }
+.mood .mh { display:flex; align-items:center; justify-content:space-between; gap:10px; } .mood .mn { font-size:14px; font-weight:600; } .mood .ms { font-size:26px; font-weight:700; letter-spacing:-.5px; }
+.mood .mbar { height:8px; border-radius:4px; background:var(--line); overflow:hidden; } .mood .mbar i { display:block; height:100%; border-radius:4px; background:var(--muted); }
+.mood.up .mbar i { background:#12805C; } .mood.up .ms { color:var(--ok-ink); } .mood.down .mbar i { background:#C2362B; } .mood.down .ms { color:var(--bad-ink); } .mood.flat .mbar i { background:#8A8F9C; }
+.mood .chip { align-self:flex-start; margin-left:0; }
+@media (min-width:1100px) {
+  .dpage { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:0 22px; align-items:start; }
+  .dside { margin-top:0; background:var(--card); border-radius:26px; box-shadow:var(--shadow); padding:22px; position:sticky; top:14px; max-height:calc(100vh - 28px); overflow-y:auto; }
+  .dside h2 { margin-top:0; font:700 16px var(--font); letter-spacing:-.2px; text-transform:none; color:var(--ink); }
+}
 @media (min-width:900px) {
   .dgrid { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:0 22px; align-items:start; }
   .cards2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; align-items:start; }
@@ -262,10 +273,10 @@ function epicOpts(theme, sel) {
 function renderDetail() {
   const rec = D.recording, approved = rec.status === 'approved';
   const nick = D.speakers.find(s => s.is_nick);
-  let h = (WIDE() ? '' : '<a class="back" href="' + (EMBED ? 'recordingreview.html?embed=1' : 'recordingreview.html') + '">‹ All recordings</a>') + '<h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
+  let h = '<div class="dpage"><div class="dleft">' + (WIDE() ? '' : '<a class="back" href="' + (EMBED ? 'recordingreview.html?embed=1' : 'recordingreview.html') + '">‹ All recordings</a>') + '<h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
     '<div class="sub">' + esc(fmtDT(rec.recorded_at)) + ' · ' + mins(rec.duration_seconds) + '</div>';
   if (rec.summary) h += '<h2>Summary</h2><div class="card summary">' + esc(rec.summary) + '</div>';
-  h += '<div class="dgrid"><div class="dmain"><h2>Who was on the call</h2>';
+  h += '<div class="dmain"><h2>Who was on the call</h2>';
   D.speakers.forEach((s, i) => {
     const match = D.people.find(p => s.proposed_name && p.full_name.toLowerCase() === s.proposed_name.toLowerCase());
     const sel = s.person_id ? 'p:' + s.person_id : s.contact_id ? 'c:' + s.contact_id : match ? 'p:' + match.person_id : s.proposed_name ? 'contactnew' : 'skip';
@@ -301,12 +312,18 @@ function renderDetail() {
     h += '<h2>Key quotes</h2>';
     D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub"><span class="spn" data-l="' + esc(q.speaker_label) + '"></span>' + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
   }
-  h += '</div><div class="dside">';
+  h += '</div></div><aside class="dside">';
   if (D.sentiment.length) {
-    h += '<h2>Sentiment (Claude’s read, not fact)</h2>';
-    D.sentiment.forEach(s => { h += '<div class="card"><h3><span class="spn" data-l="' + esc(s.speaker_label) + '"></span> · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
-  }
-  h += '</div></div>';
+    h += '<h2>How they felt toward you</h2><div class="sub" style="margin:-4px 0 12px">Claude’s read of the words only, not tone of voice. Not fact.</div>';
+    D.sentiment.forEach(s => {
+      const sc = Number(s.score), lvl = sc >= 60 ? 'up' : sc < 40 ? 'down' : 'flat';
+      h += '<div class="mood ' + lvl + '"><div class="mh"><div class="mn"><span class="spn" data-l="' + esc(s.speaker_label) + '"></span> · ' + esc(String(s.subject).replace(/_/g, ' ')) + '</div><div class="ms">' + sc + '</div></div>' +
+        '<div class="mbar"><i style="width:' + Math.max(0, Math.min(100, sc)) + '%"></i></div>' +
+        '<div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div>' +
+        '<span class="chip kind">' + esc(s.confidence) + ' confidence</span></div>';
+    });
+  } else h += '<h2>How they felt toward you</h2><div class="sub">No sentiment reading for this recording.</div>';
+  h += '</aside></div>';
   HOST().innerHTML = h;
   const hintAll = () => document.querySelectorAll('[data-ac]').forEach(hint);
   document.querySelectorAll('[data-sp]').forEach(c => { const sel = c.querySelector('[data-f=person]'); if (!sel) return; const upd = () => { c.querySelector('[data-new]').style.display = (sel.value === 'new' || sel.value === 'contactnew') ? 'block' : 'none'; c.querySelector('[data-stakerow]').style.display = sel.value === 'new' ? 'flex' : 'none'; hintAll(); }; sel.onchange = () => { upd(); setDirty(); }; upd(); });

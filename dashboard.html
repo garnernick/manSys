@@ -368,6 +368,7 @@ body { background:var(--nav); }
   .tree-row { display:flex; align-items:center; gap:10px; height:32px; padding:0 10px; border-radius:10px; color:#C3CBDD; font-size:13.5px; cursor:pointer; border:0; background:transparent; font-family:var(--font); text-align:left; width:100%; }
   .tree-row.epic { height:28px; padding-left:28px; font-size:12.5px; color:#A9B3CB; }
   .tree-row:hover { background:rgba(255,255,255,.06); } .tree-row.on { background:var(--soft); color:var(--soft-ink); }
+  .tree-row .td { width:8px; height:8px; border-radius:50%; flex:none; } .tree-row.epic .td { margin-left:-2px; }
   .tree-row .tl { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .tree-row .tn { font-size:12px; color:#A9B3CB; } .tree-row.on .tn { color:var(--soft-ink); }
   .side-user { margin-top:auto; padding:14px 6px 0; display:flex; align-items:center; gap:10px; color:#fff; font-size:13.5px; font-weight:600; }
@@ -992,6 +993,14 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 window.addEventListener('focus', () => checkPendingSoon('focus'));
 window.addEventListener('pageshow', () => checkPendingSoon('show'));
 
+// Theme colours: known names get the design's colours, others take the next palette slot. Epics use a darker shade of their theme.
+const THEME_DOTS = [['odg', '#8B6FD6', '#5B3FA8'], ['vole', '#6C8FE6', '#2A4FA8'], ['pipmore', '#4DB37A', '#2E8A57'], ['personal', '#FFC24B', '#D99A1E'], ['admin', '#A9B3CB', '#7F8CA8']];
+const THEME_SPARE = [['#E0709A', '#C25A85'], ['#4FC1C9', '#37A3AB'], ['#E8895A', '#C7703F'], ['#8FB84E', '#739A3C']];
+function themeDot(t, epic) {
+  const nm = String(t.title || '').toLowerCase(); let c = THEME_DOTS.find(x => nm.includes(x[0]));
+  if (!c) c = THEME_SPARE[(Number(t.theme_id) || 0) % THEME_SPARE.length];
+  return epic ? c[c.length - 1] : (c.length > 2 ? c[1] : c[0]);
+}
 function renderTabBar() {
   if (!WIDE()) { return renderTabBarRail(); }
   const items = ['tasks', 'commitments', 'updates', 'people', 'themes', 'epics', 'chat'];
@@ -1006,10 +1015,10 @@ function renderTabBar() {
   let tree = '<div class="side-h">Themes and epics</div><button class="tree-row' + (activeTab === 'tasks' && onAll ? ' on' : '') + '" onclick="treeSel(null,null)"><span class="tl">All tasks</span><span class="tn">' + (_tc ? _tc.total : '') + '</span></button>';
   (ref.themes || []).forEach(t => {
     const n = _tc ? (_tc.theme[t.theme_id] || 0) : '';
-    tree += '<button class="tree-row' + (activeTab === 'tasks' && activeFilters.theme === t.theme_id && !activeFilters.epic ? ' on' : '') + '" onclick="treeSel(' + t.theme_id + ',null)"><span class="tl">' + esc(t.title) + '</span><span class="tn">' + n + '</span></button>';
+    tree += '<button class="tree-row' + (activeTab === 'tasks' && activeFilters.theme === t.theme_id && !activeFilters.epic ? ' on' : '') + '" onclick="treeSel(' + t.theme_id + ',null)"><i class="td" style="background:' + themeDot(t, false) + '"></i><span class="tl">' + esc(t.title) + '</span><span class="tn">' + n + '</span></button>';
     (ref.epics || []).filter(e => e.theme_id === t.theme_id).forEach(e => {
       const m = _tc ? (_tc.epic[e.roadmap_item_id] || 0) : '';
-      tree += '<button class="tree-row epic' + (activeTab === 'tasks' && activeFilters.epic === e.roadmap_item_id ? ' on' : '') + '" onclick="treeSel(' + t.theme_id + ',' + e.roadmap_item_id + ')"><span class="tl">' + esc(e.title) + '</span><span class="tn">' + m + '</span></button>';
+      tree += '<button class="tree-row epic' + (activeTab === 'tasks' && activeFilters.epic === e.roadmap_item_id ? ' on' : '') + '" onclick="treeSel(' + t.theme_id + ',' + e.roadmap_item_id + ')"><i class="td" style="background:' + themeDot(t, true) + '"></i><span class="tl">' + esc(e.title) + '</span><span class="tn">' + m + '</span></button>';
     });
   });
   document.getElementById('tabbar').innerHTML = '<div class="side-brand"><i>M</i>ManSys</div>' +
