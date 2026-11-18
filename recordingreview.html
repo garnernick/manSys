@@ -7,59 +7,99 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#12203A" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#080E1B" media="(prefers-color-scheme: dark)">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root { color-scheme: light dark;
-  --bg:#F2F1ED; --card:#FFFFFF; --line:#E0DDD3; --ink:#12203A; --muted:#565F73; --top:#12203A; --top-ink:#D9DFEC; --brand:#FFC24B;
-  --ok-bg:#E3F5E9; --ok-ink:#1B6B3A; --warn-bg:#FFF1D6; --warn-ink:#7A4B00; --bad-bg:#FDE8E6; --bad-ink:#8A1C12; --field:#FBFAF7;
-  --font:-apple-system,system-ui,'Helvetica Neue',Arial,sans-serif; }
+  --bg:#F2F1ED; --card:#FFFFFF; --card2:#E7E5DD; --line:#E0DDD3; --edge:#C8C4B8; --ink:#12203A; --muted:#565F73;
+  --top:#12203A; --top-ink:#D9DFEC; --brand:#FFC24B; --pill:#12203A; --pill-ink:#FFC24B; --field:#F7F6F2; --shadow:0 1px 2px rgba(20,20,19,.07), 0 6px 18px rgba(18,32,58,.05);
+  --ok-bg:#E3F5E9; --ok-ink:#1B6B3A; --ok-edge:#BFE3CC; --warn-bg:#FFF1D6; --warn-ink:#7A4B00; --warn-edge:#F2DCA8;
+  --bad-bg:#FDE8E6; --bad-ink:#8A1C12; --bad-edge:#F2C9C4; --info-bg:#E3E9F7; --info-ink:#2A4FA8;
+  --font:'Inter',-apple-system,system-ui,'Helvetica Neue',Arial,sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace; }
 @media (prefers-color-scheme: dark) { :root {
-  --bg:#0C1424; --card:#15203A; --line:#26345A; --ink:#EAEEF7; --muted:#A6B0C6; --top:#080E1B; --top-ink:#A6B0C6; --field:#0F1930;
-  --ok-bg:#12341F; --ok-ink:#8FE0AC; --warn-bg:#3A2D0E; --warn-ink:#FFD98A; --bad-bg:#3A1714; --bad-ink:#F4A59B; } }
-* { box-sizing:border-box; margin:0; padding:0; }
+  --bg:#0C1424; --card:#15203A; --card2:#1E2B48; --line:#26345A; --edge:#3A4A74; --ink:#EAEEF7; --muted:#A6B0C6; --top:#080E1B; --top-ink:#A6B0C6; --pill:#FFC24B; --pill-ink:#1A1200; --field:#0F1930; --shadow:0 0 0 1px var(--line);
+  --ok-bg:#12301E; --ok-ink:#6DE39A; --ok-edge:#1F4A31; --warn-bg:#3A2C0E; --warn-ink:#FFC66B; --warn-edge:#5A4519;
+  --bad-bg:#3A1714; --bad-ink:#FFB3AB; --bad-edge:#5A2622; --info-bg:#172A52; --info-ink:#9DB8FF; } }
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 body { background:var(--bg); color:var(--ink); font-family:var(--font); font-size:15px; line-height:1.45; -webkit-text-size-adjust:100%; }
-.top { background:var(--top); color:var(--top-ink); padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px; display:flex; justify-content:space-between; align-items:center; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
-.top b { color:var(--brand); letter-spacing:.14em; }
-main { max-width:760px; margin:0 auto; padding:16px 16px 130px; }
-h1 { font-size:22px; letter-spacing:-.01em; }
-h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:24px 0 4px; }
-.sub { color:var(--muted); font-size:13px; margin-top:2px; }
-.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:10px 0; }
-.card h3 { font-size:15px; }
-.chip { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--warn-bg); color:var(--warn-ink); margin-left:6px; vertical-align:middle; }
-.chip.done { background:var(--ok-bg); color:var(--ok-ink); }
+.top { background:var(--top); color:var(--top-ink); padding:calc(10px + env(safe-area-inset-top,0px)) 18px 10px; display:flex; justify-content:space-between; align-items:center; font:500 11px var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+.top b { color:var(--brand); letter-spacing:.16em; font-weight:500; font-size:12px; }
+.nav { max-width:1180px; margin:0 auto; padding:14px 20px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.nav a { text-decoration:none; color:var(--muted); font-weight:500; font-size:14px; padding:9px 16px; border-radius:999px; background:var(--card); border:1px solid var(--line); min-height:40px; display:inline-flex; align-items:center; }
+.nav a.on { background:var(--pill); color:var(--pill-ink); border-color:var(--pill); }
+@media (max-width:600px) { .nav .today { display:none; } }
+.nav .today { margin-left:auto; font:400 12px var(--mono); color:var(--muted); }
+main { max-width:1180px; margin:0 auto; padding:14px 20px 140px; }
+h1 { font-size:32px; font-weight:700; letter-spacing:-.025em; line-height:1.12; margin-top:6px; }
+h1 .chip { font-size:11px; margin-left:12px; position:relative; top:-5px; }
+h2 { font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin:28px 0 8px 4px; }
+.sub { color:var(--muted); font-size:14px; margin-top:4px; }
+a.back { font-size:14px; color:var(--muted); text-decoration:none; display:inline-block; padding:6px 0; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px 18px; margin:10px 0; box-shadow:var(--shadow); }
+.card h3 { font-size:16px; font-weight:600; letter-spacing:-.005em; }
+.list a.card { display:block; text-decoration:none; color:var(--ink); transition:background .12s; }
+.list a.card:active { background:var(--card2); }
+.list a.card h3 { display:flex; align-items:center; gap:10px; justify-content:space-between; }
+.chip { display:inline-block; font:500 10.5px var(--mono); letter-spacing:.02em; padding:3px 10px; border-radius:999px; background:var(--warn-bg); color:var(--warn-ink); border:1px solid var(--warn-edge); margin-left:8px; vertical-align:middle; white-space:nowrap; }
+.chip.done { background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-edge); }
 .chip.kind { background:var(--field); color:var(--muted); border:1px solid var(--line); }
-.summary { white-space:pre-wrap; font-size:14px; }
-.quote { font-style:italic; color:var(--muted); font-size:13px; margin:6px 0; border-left:3px solid var(--line); padding-left:8px; }
-.dupe { background:var(--warn-bg); color:var(--warn-ink); border-radius:10px; padding:8px 10px; margin:8px 0; font-size:13px; }
-label.f { display:block; font-size:12px; color:var(--muted); margin-top:8px; }
-input[type=text], input[type=date], select, textarea { width:100%; border:1px solid var(--line); border-radius:10px; background:var(--field); color:var(--ink); font:inherit; font-size:15px; padding:8px 10px; }
-textarea { min-height:56px; resize:vertical; }
-.grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.dec { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-.dec label { border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; background:var(--card); }
+.summary { white-space:pre-wrap; font-size:15px; line-height:1.55; }
+.quote { font-style:normal; color:var(--muted); font-size:14px; margin:8px 0; border-left:3px solid var(--brand); padding:2px 0 2px 12px; }
+.dupe { background:var(--warn-bg); color:var(--warn-ink); border:1px solid var(--warn-edge); border-radius:12px; padding:10px 12px; margin:10px 0; font-size:13px; }
+label.f { display:block; font:500 10.5px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin:12px 0 5px 2px; }
+input[type=text], input[type=date], select, textarea { width:100%; border:1px solid var(--line); border-radius:12px; background:var(--field); color:var(--ink); font:inherit; font-size:16px; padding:11px 12px; min-height:46px; }
+input:focus, select:focus, textarea:focus { outline:2px solid var(--brand); outline-offset:1px; border-color:transparent; }
+textarea { min-height:72px; resize:vertical; line-height:1.4; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.dec { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+.dec label { border:1px solid var(--line); border-radius:999px; padding:10px 16px; font-size:14px; font-weight:500; cursor:pointer; background:var(--card); min-height:42px; display:inline-flex; align-items:center; }
 .dec input { display:none; }
-.dec input:checked + span { font-weight:700; }
-.dec label:has(input:checked) { background:var(--top); color:var(--brand); border-color:var(--top); }
+.dec label:has(input:checked) { background:var(--pill); color:var(--pill-ink); border-color:var(--pill); font-weight:600; }
+.dec label:has(input[value=approve]:checked) { background:var(--ok-ink); color:#fff; border-color:var(--ok-ink); }
 .dec label:has(input[value=reject]:checked) { background:var(--bad-bg); color:var(--bad-ink); border-color:var(--bad-ink); }
-.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; font-size:14px; }
-.row input[type=checkbox] { width:18px; height:18px; }
-.list a { display:block; text-decoration:none; color:var(--ink); }
-button { font:inherit; font-size:14px; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:7px 12px; cursor:pointer; }
-.bar { position:fixed; left:0; right:0; bottom:0; background:var(--card); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
-.bar .in { max-width:760px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+.row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px; font-size:14px; }
+.row input[type=checkbox] { width:20px; height:20px; accent-color:var(--pill); }
+button { font:inherit; font-size:14px; font-weight:500; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:9px 14px; cursor:pointer; min-height:42px; }
+button:active { background:var(--card2); }
+.bar { position:fixed; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); background:var(--card); border:1px solid var(--line); border-radius:20px; padding:10px 12px 10px 18px; box-shadow:0 12px 36px rgba(18,32,58,.22); max-width:1140px; margin:0 auto; z-index:20; }
+.bar .in { display:flex; gap:12px; align-items:center; }
 .bar .msg { flex:1; font-size:13px; color:var(--muted); }
-button.go { background:var(--top); color:var(--brand); border-color:var(--top); font-weight:700; padding:10px 18px; }
+button.go { background:var(--pill); color:var(--pill-ink); border-color:var(--pill); font-weight:600; padding:11px 22px; border-radius:14px; min-height:46px; }
 button.go[disabled] { opacity:.45; }
 .msg.ok { color:var(--ok-ink); font-weight:600; } .msg.err { color:var(--bad-ink); font-weight:600; }
-.gate { max-width:360px; margin:60px auto; text-align:center; }
-.gate input { font-size:18px; padding:12px; text-align:center; margin:12px 0; }
-.empty { color:var(--muted); text-align:center; padding:40px 0; }
-.err-box { background:var(--bad-bg); color:var(--bad-ink); border-radius:12px; padding:10px 14px; margin:12px 0; font-size:14px; }
-a.back { font-size:13px; color:var(--muted); }
+.gate { max-width:380px; margin:70px auto; text-align:center; background:var(--card); border:1px solid var(--line); border-radius:24px; padding:30px 24px; box-shadow:var(--shadow); }
+.gate input { font-size:22px; padding:12px; text-align:center; margin:16px 0; letter-spacing:.3em; }
+.gate button.go { width:100%; }
+.empty { color:var(--muted); text-align:center; padding:48px 0; }
+.err-box { background:var(--bad-bg); color:var(--bad-ink); border:1px solid var(--bad-edge); border-radius:14px; padding:10px 14px; margin:14px 0; font-size:14px; }
+.big { font:500 34px var(--mono); letter-spacing:-.03em; line-height:1; }
+.delta.up { color:var(--ok-ink); } .delta.down { color:var(--bad-ink); } .delta { font-size:13px; font-weight:600; margin-left:6px; }
+.spark { display:block; margin-top:6px; }
+.traj { display:inline-block; font:500 11.5px var(--mono); border-radius:999px; padding:4px 12px; margin-top:10px; border:1px solid transparent; }
+.traj.up { background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-edge); } .traj.down { background:var(--bad-bg); color:var(--bad-ink); border-color:var(--bad-edge); } .traj.flat { background:var(--field); color:var(--muted); border-color:var(--line); }
+.spark30 { width:100%; height:auto; display:block; margin-top:10px; color:var(--muted); }
+.spark30.up { color:var(--ok-ink); } .spark30.down { color:var(--bad-ink); }
+.arrow { font-size:13px; margin-left:8px; vertical-align:1px; }
+.arrow.up { color:var(--ok-ink); } .arrow.down { color:var(--bad-ink); } .arrow.flat { color:var(--muted); }
+.two { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+.small { font-size:12.5px; color:var(--muted); }
+.small a { color:var(--info-ink); font-weight:500; }
+table.t { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+table.t th { font:500 10.5px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+table.t td, table.t th { text-align:left; padding:8px 10px 8px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+table.t tr:last-child td { border-bottom:0; }
+.note { background:var(--warn-bg); color:var(--warn-ink); border:1px solid var(--warn-edge); border-radius:14px; padding:10px 14px; margin:12px 0; font-size:13px; }
+.dgrid, .cards2 { display:block; }
+@media (min-width:900px) {
+  .dgrid { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:0 22px; align-items:start; }
+  .cards2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; align-items:start; }
+  .bar { left:24px; right:24px; }
+}
 </style>
 </head>
 <body>
 <div class="top"><b>MANSYS</b><span>Recording Review</span></div>
+<div class="nav"><a href="#" onclick="history.length > 1 ? history.back() : (location.href = 'dashboard-mobile-push.html'); return false;">‹ Dashboard</a><a href="recordingreview.html" class="on">Recordings</a><a href="sentiment.html">Sentiment</a><span class="today" id="today"></span></div>
+<script>document.getElementById("today").textContent=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",timeZone:"Europe/London"});</script>
 <main id="root"></main>
 <div class="bar" id="bar" hidden><div class="in"><span class="msg" id="msg"></span><button class="go" id="go">Apply my decisions</button></div></div>
 <script>
@@ -102,7 +142,7 @@ async function start() {
 }
 function renderList(rows) {
   $('bar').hidden = true;
-  $('root').innerHTML = '<a class="back" href="#" onclick="history.length > 1 ? history.back() : (location.href = \'dashboard-mobile-push.html\'); return false;">‹ Dashboard</a><h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list">' +
+  $('root').innerHTML = '<h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list cards2">' +
     (rows.length ? rows.map(r => '<a class="card" href="?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '<span class="chip ' + (r.status === 'approved' ? 'done' : '') + '">' + (r.status === 'approved' ? 'Approved' : r.pending_actions + ' to review') + '</span></h3><div class="sub">' + esc(fmtDT(r.recorded_at || r.created_at)) + '</div></a>').join('') : '<div class="empty">No recordings yet.</div>') + '</div>';
 }
 function personOpts(sel) {
@@ -174,7 +214,7 @@ function renderDetail() {
   let h = '<a class="back" href="recordingreview.html">‹ All recordings</a><h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
     '<div class="sub">' + esc(fmtDT(rec.recorded_at)) + ' · ' + mins(rec.duration_seconds) + '</div>';
   if (rec.summary) h += '<h2>Summary</h2><div class="card summary">' + esc(rec.summary) + '</div>';
-  h += '<h2>Who was on the call</h2>';
+  h += '<div class="dgrid"><div class="dmain"><h2>Who was on the call</h2>';
   D.speakers.forEach((s, i) => {
     const match = D.people.find(p => s.proposed_name && p.full_name.toLowerCase() === s.proposed_name.toLowerCase());
     const sel = s.person_id ? 'p:' + s.person_id : s.contact_id ? 'c:' + s.contact_id : match ? 'p:' + match.person_id : s.proposed_name ? 'contactnew' : 'skip';
@@ -206,6 +246,7 @@ function renderDetail() {
       '<div class="dec"><label><input type="radio" name="d' + i + '" value="later" checked><span>Decide later</span></label><label><input type="radio" name="d' + i + '" value="approve"><span>Approve</span></label><label><input type="radio" name="d' + i + '" value="done"><span>Already done</span></label><label><input type="radio" name="d' + i + '" value="reject"><span>Reject</span></label>' +
       dup.map(d => '<label><input type="radio" name="d' + i + '" value="link|' + esc(d.source) + '|' + d.id + '"><span>Same as ' + esc(d.source) + ' #' + d.id + '</span></label>').join('') + '</div></div>';
   });
+  h += '</div><div class="dside">';
   if (D.quotes.length) {
     h += '<h2>Key quotes</h2>';
     D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub"><span class="spn" data-l="' + esc(q.speaker_label) + '"></span>' + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
@@ -214,6 +255,7 @@ function renderDetail() {
     h += '<h2>Sentiment (Claude’s read, not fact)</h2>';
     D.sentiment.forEach(s => { h += '<div class="card"><h3><span class="spn" data-l="' + esc(s.speaker_label) + '"></span> · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
   }
+  h += '</div></div>';
   $('root').innerHTML = h;
   const hintAll = () => document.querySelectorAll('[data-ac]').forEach(hint);
   document.querySelectorAll('[data-sp]').forEach(c => { const sel = c.querySelector('[data-f=person]'); if (!sel) return; const upd = () => { c.querySelector('[data-new]').style.display = (sel.value === 'new' || sel.value === 'contactnew') ? 'block' : 'none'; c.querySelector('[data-stakerow]').style.display = sel.value === 'new' ? 'flex' : 'none'; hintAll(); }; sel.onchange = () => { upd(); setDirty(); }; upd(); });
