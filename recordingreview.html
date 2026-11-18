@@ -94,6 +94,26 @@ table.t tr:last-child td { border-bottom:0; }
   .cards2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; align-items:start; }
   .bar { left:24px; right:24px; }
 }
+
+.embed .top, .embed .nav { display:none; }
+.embed main { max-width:none; padding:22px 20px 130px 24px; }
+.embed .bar { left:12px; right:12px; max-width:none; }
+.rvwrap { display:block; }
+.rvlist .eyebrow { font-size:13px; color:var(--muted); }
+.rvlist h1 { font-size:30px; margin-top:2px; }
+.seg { display:flex; background:var(--card2); border-radius:12px; padding:3px; margin:14px 0; }
+.seg button { flex:1; border:0; background:transparent; border-radius:9px; min-height:34px; padding:0 8px; color:var(--muted); font-size:13px; font-weight:500; }
+.seg button.on { background:var(--card); color:var(--ink); font-weight:600; box-shadow:0 1px 2px rgba(20,20,19,.1); }
+.rvitem { display:flex; flex-direction:column; gap:8px; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:8px; box-shadow:var(--shadow); min-height:0; }
+.rvitem .rt { font-size:14px; font-weight:600; line-height:1.25; }
+.rvitem .rm { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted); }
+.rvitem .rm .chip { margin-left:0; }
+.rvitem.sel { box-shadow:0 0 0 2px var(--brand), 0 6px 16px rgba(18,32,58,.10); }
+@media (min-width:1100px) {
+  .rvwrap { display:grid; grid-template-columns:288px minmax(0,1fr); gap:0 22px; align-items:start; }
+  .rvlist { position:sticky; top:14px; max-height:calc(100vh - 28px); overflow-y:auto; }
+  .rvdetail h1 { font-size:26px; }
+}
 </style>
 </head>
 <body>
@@ -111,6 +131,12 @@ const fmtDT = d => d ? new Date(d).toLocaleString('en-GB', { weekday:'short', da
 const mins = s => Math.max(1, Math.round((Number(s) || 0) / 60)) + ' min';
 const KIND = { task:'Task', commitment_outbound:'You promised', commitment_inbound:'Promised to you' };
 let D = null, dirty = false;
+const QS = new URLSearchParams(location.search), EMBED = QS.has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+const WIDE = () => window.matchMedia('(min-width:1100px)').matches;
+let LIST = [], listTab = 'review';
+const HOST = () => $('rvdetail') || $('root');
+const qsFor = id => '?r=' + id + (EMBED ? '&embed=1' : '');
 
 async function call(body) {
   const r = await fetch(FN_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body) });
@@ -136,14 +162,36 @@ async function start() {
   $('root').innerHTML = '<div class="empty">Loading…</div>';
   const r = new URLSearchParams(location.search).get('r');
   try {
-    if (/^\d+$/.test(r || '')) { D = await call({ pin, action:'get', recording_id: Number(r) }); renderDetail(); }
+    if (WIDE()) {
+      LIST = (await call({ pin, action:'list' })).recordings || [];
+      let id = /^\d+$/.test(r || '') ? Number(r) : null;
+      if (id == null) { const f = LIST.find(x => x.status !== 'approved') || LIST[0]; id = f ? f.recording_id : null; }
+      renderShell(id);
+      if (id == null) { $('bar').hidden = true; $('rvdetail').innerHTML = '<div class="empty">No recordings yet.</div>'; return; }
+      D = await call({ pin, action:'get', recording_id: id }); renderDetail();
+    } else if (/^\d+$/.test(r || '')) { D = await call({ pin, action:'get', recording_id: Number(r) }); renderDetail(); }
     else { const L = await call({ pin, action:'list' }); renderList(L.recordings || []); }
   } catch (e) { fail(e); }
+}
+function listHtml(sel) {
+  const pend = LIST.filter(x => x.status !== 'approved'), rows = listTab === 'review' ? pend : LIST;
+  return '<div class="eyebrow">Plaud</div><h1>Recordings</h1>' +
+    '<div class="seg"><button class="' + (listTab === 'review' ? 'on' : '') + '" onclick="setListTab(\'review\')">To review ' + pend.length + '</button><button class="' + (listTab === 'all' ? 'on' : '') + '" onclick="setListTab(\'all\')">All ' + LIST.length + '</button></div>' +
+    (rows.length ? rows.map(x => '<button class="rvitem' + (x.recording_id === sel ? ' sel' : '') + '" onclick="pickRec(' + x.recording_id + ')"><div class="rt">' + esc(x.title || 'Untitled') + '</div><div class="rm"><span>' + esc(fmtDT(x.recorded_at || x.created_at)) + '</span><span class="chip ' + (x.status === 'approved' ? 'done' : '') + '">' + (x.status === 'approved' ? 'Approved' : x.pending_actions + ' to review') + '</span></div></button>').join('') : '<div class="empty">Nothing to review.</div>');
+}
+function renderShell(sel) {
+  if (!LIST.some(x => x.status !== 'approved' && x.recording_id === sel)) listTab = 'all';
+  $('root').innerHTML = '<div class="rvwrap"><section class="rvlist" id="rvlist">' + listHtml(sel) + '</section><div class="rvdetail" id="rvdetail"></div></div>';
+}
+function setListTab(t) { listTab = t; $('rvlist').innerHTML = listHtml(D ? D.recording.recording_id : null); }
+function pickRec(id) {
+  if (dirty && !confirm('Discard your unsaved decisions on this recording?')) return;
+  dirty = false; history.replaceState(null, '', qsFor(id)); start();
 }
 function renderList(rows) {
   $('bar').hidden = true;
   $('root').innerHTML = '<h1>Recordings</h1><div class="sub">Nothing below is in your tasks or people until you apply it.</div><div class="list cards2">' +
-    (rows.length ? rows.map(r => '<a class="card" href="?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '<span class="chip ' + (r.status === 'approved' ? 'done' : '') + '">' + (r.status === 'approved' ? 'Approved' : r.pending_actions + ' to review') + '</span></h3><div class="sub">' + esc(fmtDT(r.recorded_at || r.created_at)) + '</div></a>').join('') : '<div class="empty">No recordings yet.</div>') + '</div>';
+    (rows.length ? rows.map(r => '<a class="card" href="' + qsFor(r.recording_id) + '"><h3>' + esc(r.title || 'Untitled') + '<span class="chip ' + (r.status === 'approved' ? 'done' : '') + '">' + (r.status === 'approved' ? 'Approved' : r.pending_actions + ' to review') + '</span></h3><div class="sub">' + esc(fmtDT(r.recorded_at || r.created_at)) + '</div></a>').join('') : '<div class="empty">No recordings yet.</div>') + '</div>';
 }
 function personOpts(sel) {
   let h = '<option value="skip"' + (sel === 'skip' ? ' selected' : '') + '>Not sure / skip (cannot own actions)</option>' +
@@ -211,7 +259,7 @@ function epicOpts(theme, sel) {
 function renderDetail() {
   const rec = D.recording, approved = rec.status === 'approved';
   const nick = D.speakers.find(s => s.is_nick);
-  let h = '<a class="back" href="recordingreview.html">‹ All recordings</a><h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
+  let h = (WIDE() ? '' : '<a class="back" href="' + (EMBED ? 'recordingreview.html?embed=1' : 'recordingreview.html') + '">‹ All recordings</a>') + '<h1>' + esc(rec.title || 'Untitled') + '<span class="chip ' + (approved ? 'done' : '') + '">' + (approved ? 'Approved' : 'Awaiting you') + '</span></h1>' +
     '<div class="sub">' + esc(fmtDT(rec.recorded_at)) + ' · ' + mins(rec.duration_seconds) + '</div>';
   if (rec.summary) h += '<h2>Summary</h2><div class="card summary">' + esc(rec.summary) + '</div>';
   h += '<div class="dgrid"><div class="dmain"><h2>Who was on the call</h2>';
@@ -246,17 +294,17 @@ function renderDetail() {
       '<div class="dec"><label><input type="radio" name="d' + i + '" value="later" checked><span>Decide later</span></label><label><input type="radio" name="d' + i + '" value="approve"><span>Approve</span></label><label><input type="radio" name="d' + i + '" value="done"><span>Already done</span></label><label><input type="radio" name="d' + i + '" value="reject"><span>Reject</span></label>' +
       dup.map(d => '<label><input type="radio" name="d' + i + '" value="link|' + esc(d.source) + '|' + d.id + '"><span>Same as ' + esc(d.source) + ' #' + d.id + '</span></label>').join('') + '</div></div>';
   });
-  h += '</div><div class="dside">';
   if (D.quotes.length) {
     h += '<h2>Key quotes</h2>';
     D.quotes.forEach((q, i) => { h += '<div class="card" data-q="' + i + '"><div class="quote">“' + esc(q.quote_text) + '”</div><div class="sub"><span class="spn" data-l="' + esc(q.speaker_label) + '"></span>' + (q.why_it_matters ? ' · ' + esc(q.why_it_matters) : '') + '</div>' + (approved ? '' : '<div class="row"><input type="checkbox" data-f="ext"' + (q.external_ok ? ' checked' : '') + '> OK to use outside ManSys</div>') + '</div>'; });
   }
+  h += '</div><div class="dside">';
   if (D.sentiment.length) {
     h += '<h2>Sentiment (Claude’s read, not fact)</h2>';
     D.sentiment.forEach(s => { h += '<div class="card"><h3><span class="spn" data-l="' + esc(s.speaker_label) + '"></span> · ' + esc(String(s.subject).replace(/_/g, ' ')) + '<span class="chip kind">' + s.score + ' · ' + esc(s.confidence) + ' confidence</span></h3><div class="sub">' + esc(s.rationale || '') + '</div><div class="quote">“' + esc(s.evidence_quote) + '”</div></div>'; });
   }
   h += '</div></div>';
-  $('root').innerHTML = h;
+  HOST().innerHTML = h;
   const hintAll = () => document.querySelectorAll('[data-ac]').forEach(hint);
   document.querySelectorAll('[data-sp]').forEach(c => { const sel = c.querySelector('[data-f=person]'); if (!sel) return; const upd = () => { c.querySelector('[data-new]').style.display = (sel.value === 'new' || sel.value === 'contactnew') ? 'block' : 'none'; c.querySelector('[data-stakerow]').style.display = sel.value === 'new' ? 'flex' : 'none'; hintAll(); }; sel.onchange = () => { upd(); setDirty(); }; upd(); });
   document.querySelectorAll('[data-ac] select').forEach(el => el.addEventListener('change', hintAll));
@@ -332,7 +380,7 @@ async function loadEmail() {
     '<label class="f">Subject</label><input type="text" id="emSubj" value="' + esc(EM.subject) + '">' +
     '<label class="f">Email text (edit anything)</label><textarea id="emBody" style="min-height:340px">' + esc(EM.body) + '</textarea>' +
     '<div class="row"><button class="go" id="emSend">Send emails</button><span class="msg" id="emMsg"></span></div></div>';
-  $('root').appendChild(box);
+  HOST().appendChild(box);
   $('emSend').onclick = sendEmail;
 }
 async function sendEmail() {

@@ -94,6 +94,22 @@ table.t tr:last-child td { border-bottom:0; }
   .cards2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; align-items:start; }
   .bar { left:24px; right:24px; }
 }
+
+.embed .top, .embed .nav { display:none; }
+.embed main { max-width:none; padding:22px 24px 40px 28px; }
+.eyebrow { font-size:13px; color:var(--muted); }
+.sgrid { display:block; }
+.legend { font-size:12.5px; line-height:1.5; color:var(--ink); }
+.legend div { margin-top:4px; }
+.rcard { display:block; text-decoration:none; color:inherit; padding:9px 0; border-top:1px solid var(--line); }
+.rcard:first-of-type { border-top:0; }
+.rcard .rt { font-size:13px; font-weight:600; } .rcard .rb { font-size:12px; color:var(--ink); margin-top:4px; }
+@media (min-width:1100px) {
+  .sgrid { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:0 18px; align-items:start; }
+  .sright h2:first-child { margin-top:28px; }
+  .rvhead { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; }
+  .rvhead .note { max-width:520px; margin:0; font-size:12.5px; }
+}
 </style></head>
 <body>
 <div class="top"><b>MANSYS</b><span>Sentiment</span></div>
@@ -106,6 +122,10 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
 const fmtD = d => d ? new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric', timeZone:'Europe/London' }) : 'Date unknown';
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+const recHref = id => 'recordingreview.html?r=' + id + (EMBED ? '&embed=1' : '');
+function openRec(id) { if (EMBED && window.parent !== window) { window.parent.postMessage({ mansys: 'open', tab: 'recordings', r: id }, '*'); return false; } return true; }
 const SUBJ = { toward_nick:'Toward you', own_state:'Your own mood', call_overall:'Whole call' };
 async function call(body) {
   const r = await fetch(FN_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body) });
@@ -200,30 +220,32 @@ function driver(d, src, q, s0, s1) {
   return '<div class="small" style="margin-top:6px"><b>' + (moved ? 'What moved it' : 'Nothing moved it much; description only') + '</b> (' + esc(SRC[src] || 'unclear') + '): ' + esc(d) + '</div>' + (q ? '<div class="quote">“' + esc(q) + '”</div>' : '');
 }
 function render(D) {
-  let h = '<h1>Sentiment</h1>' +
-    '<div class="note">Each score is Claude’s reading of how someone felt toward you during one call (0–100, 50 neutral), from the words only, not tone of voice. “Usual” is their average from earlier calls. Movements under ' + FLAG + ' points are treated as steady; that threshold is a provisional rule of thumb, not calibrated. Treat flags as a prompt to look at the quote, not as a measurement. People appear once you have confirmed who they are in Recording Review.</div>';
+  let h = '<div class="rvhead"><div><div class="eyebrow">From your recordings</div><h1>Sentiment</h1></div>' +
+    '<div class="note">Each score is Claude’s reading of how someone felt toward you during one call (0–100, 50 neutral), from the words only, not tone of voice. “Usual” is their average from earlier calls. Movements under ' + FLAG + ' points are treated as steady; that threshold is a provisional rule of thumb, not calibrated. Treat flags as a prompt to look at the quote, not as a measurement. People appear once you have confirmed who they are in Recording Review.</div></div>';
   const people = D.people.slice().sort((a, b) => (needs(b) - needs(a)) || a.name.localeCompare(b.name));
-  h += '<h2>How people feel toward you</h2>';
+  h += '<div class="sgrid"><div class="sleft"><h2>How people feel toward you</h2>';
   h += people.length ? '<div class="cards2">' + people.map(p => '<div class="card"><div class="two"><div><h3>' + esc(p.name) + nameArrow(p.series30) + (needs(p) ? '<span class="chip">Needs attention</span>' : '') + (p.company ? '<div class="small">' + esc(p.company) + '</div>' : '') + '</h3>' +
     '<div class="small">' + p.readings + ' call' + (p.readings === 1 ? '' : 's') + ' · last ' + fmtD(p.latest_at) + ' · confidence ' + esc(p.latest_confidence) + '</div></div>' +
     '<div><span class="big">' + p.latest_score + '</span></div></div>' + delta(p.latest_score, p.latest_baseline) + inCall(p.latest_start, p.latest_end) + '<div>' + trajectory(p.series30) + '</div>' + spark30(p.series30) +
     '<div class="small" style="margin-top:8px"><b>Why this score, in their words:</b></div><div class="quote">“' + esc(p.latest_quote) + '”</div>' + (p.latest_quote_verified === false ? '<div class="small">Quote not found in this person’s own words in the transcript (possible speaker mix-up); treat the score with care.</div>' : '') +
     driver(p.latest_driver, p.latest_driver_source, p.latest_driver_quote, p.latest_start, p.latest_end) + advice(p.latest_advice) +
-    '<div class="small"><a href="recordingreview.html?r=' + p.latest_recording_id + '">Open that recording</a></div></div>').join('') + '</div>'
+    '<div class="small"><a href="' + recHref(p.latest_recording_id) + '" onclick="return openRec(' + p.latest_recording_id + ')">Open that recording</a></div></div>').join('') + '</div>'
     : '<div class="empty">No “toward you” readings for confirmed people yet.</div>';
   h += '<h2>Your own mood</h2>';
   if (D.nick_state.length) {
     h += '<div class="card"><table class="t"><tr><th>Date</th><th>Score</th><th>Why</th></tr>' + D.nick_state.slice().reverse().map(o =>
       '<tr><td>' + fmtD(o.at) + '</td><td>' + o.score + '<div>' + delta(o.score, o.baseline) + '</div><div class="small">' + esc(o.confidence) + '</div></td><td class="small">' + esc(o.driver || '') + (o.advice && !/^no action needed/i.test(o.advice) ? '<div><b>What to do:</b> ' + esc(o.advice) + '</div>' : '') + '</td></tr>').join('') + '</table></div>';
   } else h += '<div class="empty">None yet.</div>';
+  h += '</div><div class="sright"><h2>How to read the arrows</h2><div class="card legend"><div>' + ARROW.up + ' up ' + TREND + ' or more over the last 7 days</div><div>' + ARROW.flat + ' flat, within ' + TREND + ' points</div><div>' + ARROW.down + ' down ' + TREND + ' or more</div><div class="small" style="margin-top:8px">With no earlier reading, the arrow shows level against 50, not change. People appear once you confirm who they are in Recording Review.</div></div>';
   h += '<h2>Recordings</h2>';
   h += D.recordings.length ? D.recordings.map(r => {
     const rd = r.readings.filter(o => o.subject !== 'call_overall').map(o => '<tr><td>' + esc(SUBJ[o.subject] || o.subject) + '</td><td>' + esc(o.speaker || '') + (o.identified ? '' : '<div class="small">not linked to a person</div>') + (o.quote_verified === false ? '<div class="small">quote not verified</div>' : '') + '</td><td>' + o.score + (o.score_start != null && o.score_end != null ? '<div class="small">' + o.score_start + ' → ' + o.score_end + '</div>' : '') + '<div>' + delta(o.score, o.baseline) + '</div></td></tr>').join('');
     const bh = r.behaviours.map(b => '<tr><td>' + esc(b.name) + '</td><td>' + (b.measure === 'metric' ? esc(b.value) + ' ' + esc(b.unit || '') : esc(b.rating || '')) + (b.quote ? '<div class="small">“' + esc(b.quote) + '”</div>' : '') + '</td></tr>').join('');
-    return '<a class="card" style="display:block;text-decoration:none;color:inherit" href="recordingreview.html?r=' + r.recording_id + '"><h3>' + esc(r.title || 'Untitled') + '</h3><div class="small">' + fmtD(r.recorded_at) + '</div>' +
+    return '<a class="card" style="display:block;text-decoration:none;color:inherit" href="' + recHref(r.recording_id) + '" onclick="return openRec(' + r.recording_id + ')"><h3>' + esc(r.title || 'Untitled') + '</h3><div class="small">' + fmtD(r.recorded_at) + '</div>' +
       (rd ? '<table class="t"><tr><th>Reading</th><th>Who</th><th>Score</th></tr>' + rd + '</table>' : '<div class="small">No readings.</div>') +
       (bh ? '<table class="t"><tr><th>Behaviour</th><th>Result</th></tr>' + bh + '</table>' : '') + '</a>';
   }).join('') : '<div class="empty">No recordings yet.</div>';
+  h += '</div></div>';
   $('root').innerHTML = h;
 }
 async function start() {
